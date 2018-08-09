@@ -8,7 +8,7 @@ void      free_the_content_array_token(t_lexer* lexer)
   i = -1;
   while (++i < lexer->used_size)
     free(lexer->tokens[i].content);
-  // free(lexer);
+  free(lexer->tokens);
 }
 
 void lexer_init(t_lexer *lexer) {
@@ -23,7 +23,7 @@ void      addToLexer(t_lexer* lexer, const char* text, int text_size, e_token_ty
   t_lexer_token *temp;
   int i;
 
-  i = 0;
+  i = -1;
   item.content = ft_strndup(text, text_size);
   item.content[text_size] = 0;
   item.size = text_size;
@@ -35,12 +35,8 @@ void      addToLexer(t_lexer* lexer, const char* text, int text_size, e_token_ty
       lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity + 1);
       if (lexer->tokens == NULL)
         exit(EXIT_FAILURE);
-      while(i < lexer->used_size)
-      {
+      while(++i < lexer->used_size)
         lexer->tokens[i] = temp[i];
-        i++;
-      }
-      // free_the_content_array_token(temp);
       free(temp);
   }
   lexer->tokens[lexer->used_size] = item;
