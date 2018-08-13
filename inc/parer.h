@@ -20,15 +20,6 @@ struct  s_red;
     int  av_space;    
 }        t_red;
 
-struct  s_op_tab
-{
-    char *op;
-    char **comand;
-    int  used_space;
-    int  av_space;
-    
-}       t_op_tap;
-
 struct s_simple_com
 {
     char  **command;
