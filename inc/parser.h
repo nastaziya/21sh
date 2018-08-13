@@ -2,7 +2,7 @@
 # define PARSER_H
 # include "lexer.h"
 
-struct  s_op
+typedef struct  s_op
 {
     int t_pipe;
     int t_semi;
@@ -11,16 +11,16 @@ struct  s_op
     int t_ampersand;
 }       t_op;
 
-struct  s_red;
+typedef struct  s_red
 {
     int  *fd; //io numb
-    char *redirection
+    char *redirection;
     char *file;
     int  used_space;
     int  av_space;    
 }        t_red;
 
-struct s_simple_com
+typedef struct s_simple_com
 {
     char  **command;
     int   av_space; //capacite  =  100
@@ -30,7 +30,7 @@ struct s_simple_com
     t_red *redirection; // dynamic array of redirections
 }       t_simp_com;
 
-struct  s_command
+typedef struct  s_command
 {
     t_simp_com *command; 
     int av_space;
