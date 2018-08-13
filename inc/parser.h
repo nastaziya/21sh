@@ -2,6 +2,8 @@
 # define PARSER_H
 # include "lexer.h"
 
+#define TAB_INITIAL_CAPACITY 100
+
 typedef struct  s_op
 {
     int t_pipe;

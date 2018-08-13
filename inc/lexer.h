@@ -3,7 +3,7 @@
 
 # include <stdio.h>
 # include <string.h>
-#define LEXER_INITIAL_CAPACITY 1
+#define LEXER_INITIAL_CAPACITY 100
 
     typedef enum
       {
@@ -60,10 +60,10 @@
 
     static const t_oplist existing_token[] =
       {
-        {"while", 5, T_WHILE},
+       // {"while", 5, T_WHILE},
         {"$((", 3, T_OP_ARITHM},
         {">>-", 3, T_REDIR},
-        {"for", 3, T_FOR},
+       // {"for", 3, T_FOR},
         {"$(", 2, T_OP_CMD},
         {"${", 2, T_OP_CURLY},
         {">>", 2, T_REDIR},
@@ -110,5 +110,10 @@
         {"=", 1, T_EQUAL},
         {NULL, 1, 0}
       };
+
+
+  int       string_to_lexer(const char* s, t_lexer* lexer);
+  t_lexer   final_tokens();
+  void      print(const t_lexer* lexer);
 
   #endif

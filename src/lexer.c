@@ -17,7 +17,7 @@ void lexer_init(t_lexer *lexer) {
   lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity);
 }
 
-void      addToLexer(t_lexer* lexer, const char* text, int text_size, e_token_type type)
+void      add_token_to_lexer(t_lexer* lexer, const char* text, int text_size, e_token_type type)
 {
   t_lexer_token item;
   t_lexer_token *temp;
@@ -43,67 +43,52 @@ void      addToLexer(t_lexer* lexer, const char* text, int text_size, e_token_ty
   ++lexer->used_size;
 }
 
-t_oplist  searchTokenType(const char* s)
+t_oplist  type_of_token(const char* s)
 {
-  const t_oplist* ex_tok = existing_token;
-  t_oplist not_found = {0, 0, 0};
+  const t_oplist* ex_tok;
+  t_oplist not_found;
 
+  ex_tok = existing_token;
+  not_found = (t_oplist){0, 0, 0};
   while (ex_tok && ex_tok->op)
   {
     if (ft_strncmp(s, ex_tok->op, ex_tok->size) == 0)
       return *ex_tok;
     ++ex_tok;
   }
-
-  return not_found;
+  return (not_found);
 }
 
-int       fillLexerFromString(const char* s, t_lexer* lexer)
+int       string_to_lexer(const char* s, t_lexer* lexer)
 {
   t_oplist    current;
-  const char* prev = s; /* Previous time we encountered a known token. */
+  const char* prev;
 
+  prev = s; 
   while (s && *s)
   {
-    /* Handle \\ escaping */
     if (*s == '\\')
     {
       ++s;
       continue;
     }
-
-    /* Search any know token */
-    current = searchTokenType(s);
-    /*
-       if current.type == T_OP_*
-       add +1 a counter !
-       if current.type == T_CL_*
-       dec -1 a counter !
-       At the end, check if the counter is equal to 0.
-       If not, there is a syntax error!
-    */
-
-    /* Find another token ? let's see if we have something inbetween */
+    current = type_of_token(s);
     if ((current.op != 0 || *s == '"' || *s == '\'') && prev != s)
-      addToLexer(lexer, prev, s - prev, T_NAME);
-    /* Token found */
+      add_token_to_lexer(lexer, prev, s - prev, T_NAME);
     if (current.op != 0)
     {
       s += current.size;
       if (current.type != T_EAT)
-        addToLexer(lexer, current.op, current.size, current.type);
+        add_token_to_lexer(lexer, current.op, current.size, current.type);
       prev = s;
     }
-    /* Token not found, but could be an escaped string */
     else if (*s == '"' || *s == '\'')
     {
-      /* handleEscaping(); Handle it for real */
       ++s;
-      while (*s && *s != '\'' && *s != '"') /* <- dumb function */
+      while (*s && *s != '\'' && *s != '"')
         ++s;
       if (!*s || (*s != '\'' && *s != '"'))
       {
-        /* string not finished! */
         return 0;
       }
       ++s;
@@ -111,11 +96,8 @@ int       fillLexerFromString(const char* s, t_lexer* lexer)
     else
       ++s;
   }
-
-  /* Handle what's remain at the end of the input */
   if (prev != s)
-    addToLexer(lexer, prev, s - prev, T_NAME);
-
+    add_token_to_lexer(lexer, prev, s - prev, T_NAME);
   return 1;
 }
 
@@ -128,17 +110,17 @@ void      print(const t_lexer* lexer)
   printf("\n");
 }
 
-int       main()
+t_lexer   final_tokens()
 {
-  const char* cmd = "ls ; echo hei";
+  const char* cmd = "ls ; echo hei && hhoo  > ls'-l -r'";
 
   t_lexer lexer;
   lexer_init(&lexer);
 
-  if (!fillLexerFromString(cmd, &lexer))
-    printf("Syntax error !\n");
+  if (!string_to_lexer(cmd, &lexer))
+    printf("error !\n");
 
-  print(&lexer);
-  free_the_content_array_token(&lexer);
-  return 0;
+ // print(&lexer);
+  //free_the_content_array_token(&lexer); free lexer 
+  return lexer;
 }
