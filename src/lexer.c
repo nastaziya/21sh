@@ -74,7 +74,7 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
     }
     current = type_of_token(s);
     if ((current.op != 0 || *s == '"' || *s == '\'') && prev != s)
-      add_token_to_lexer(lexer, prev, s - prev, T_NAME);
+      add_token_to_lexer(lexer, prev, s - prev, T_WORD);
     if (current.op != 0)
     {
       s += current.size;
@@ -97,7 +97,7 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
       ++s;
   }
   if (prev != s)
-    add_token_to_lexer(lexer, prev, s - prev, T_NAME);
+    add_token_to_lexer(lexer, prev, s - prev, T_WORD);
   return 1;
 }
 
@@ -112,7 +112,7 @@ void      print(const t_lexer* lexer)
 
 t_lexer   final_tokens()
 {
-  const char* cmd = "ls ; echo hei && hhoo  > ls'-l -r'";
+  const char* cmd = "ls a b ; echo hei && hhoo";
 
   t_lexer lexer;
   lexer_init(&lexer);
