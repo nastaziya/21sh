@@ -3,6 +3,7 @@
 void    tab_init(t_simp_com *simple_cmd)
 {
     simple_cmd->used_space = 0;
+    simple_cmd->tok = 0;
     simple_cmd->av_space = TAB_INITIAL_CAPACITY;
     simple_cmd->cmd_simple = malloc(sizeof(char*) * simple_cmd->av_space);
 }
@@ -27,15 +28,6 @@ void    tab_assign(t_simp_com *simple_cmd, t_lexer lex, int j)
     }
     simple_cmd->cmd_simple[simple_cmd->used_space] = lex.tokens[j].content;
     ++simple_cmd->used_space;
-    /*while(i < lex.used_size)
-    {
-     //   printf("%d\n", lex.tokens[i + 1].type);
-            if (lex.tokens[i + 1].type && lex.tokens[i + 1].type == 3 && lex.tokens[i].type == 27)
-                simple_command->tok = T_PIPE;
-            if(lex.tokens[i].type == 27)
-                simple_command->cmd_simple[i] = ft_strdup(lex.tokens[i].content);
-        i++;
-    }*/
 }
 
 void simple_cmd_assign(t_command *cmd, t_simp_com simple_cmd)
@@ -58,62 +50,62 @@ void simple_cmd_assign(t_command *cmd, t_simp_com simple_cmd)
     }
     cmd->command[cmd->used_space] = simple_cmd;
     ++cmd->used_space;
-    /*while(i < lex.used_size)
-    {
-     //   printf("%d\n", lex.tokens[i + 1].type);
-            if (lex.tokens[i + 1].type && lex.tokens[i + 1].type == 3 && lex.tokens[i].type == 27)
-                simple_command->tok = T_PIPE;
-            if(lex.tokens[i].type == 27)
-                simple_command->cmd_simple[i] = ft_strdup(lex.tokens[i].content);
-        i++;
-    }*/
 }
 
+void print_array(int size, char **cmd)
+{
+    int i = 0;
+    while(i < size)
+    {
+                printf("%s\n",cmd[i]);
+                i++;
+    }
+}
 
-void    add_token_val(t_command *cmd, t_lexer lex, t_simp_com cmd_simp, int *j)
+void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 {
     int i = -1;
-    //*j = -1;
+    *j = -1;
      while (++i < lex.used_size)
      {
                 if (lex.tokens[i].type == 3)
                 {
-                    simple_cmd_assign(cmd, cmd_simp);
+                    simple_cmd_assign(cmd, *cmd->command);
                     (*j)++;
                     tab_init(&cmd->command[*j]);
-                    cmd->command[*j].tok = T_SEMI;
+                    cmd->command[*j].tok = 3;
                 }
                 else if(lex.tokens[i].type == 7)
                 {
-                    simple_cmd_assign(cmd, cmd_simp);
+                    simple_cmd_assign(cmd, *cmd->command);
                     (*j)++;
-                    cmd->command[*j].tok = T_AND;
                     tab_init(&cmd->command[*j]);
+                    cmd->command[*j].tok = T_DBLAND;
 
                 }
                 else if (i + 1 == lex.used_size)
                 {
-                    simple_cmd_assign(cmd, cmd_simp);
+                    simple_cmd_assign(cmd, *cmd->command);
                     (*j)++;
+                    tab_init(&cmd->command[*j]);
                     cmd->command[*j].tok = -1;
-                    tab_init(&cmd->command[*j]);     
+                        
                 }
      }
   
 }
-void    add_simple_command(t_command *cmd, t_lexer lex, t_simp_com cmd_simp)
+void    add_simple_command(t_command *cmd, t_lexer lex)
 {
     int size_simple_cmd;
     int i;
     int j;
 
-    i = -1;
+    i = 0;
     j = 0;
     size_simple_cmd = 0;
-    add_token_val(cmd, lex, cmd_simp,&size_simple_cmd);
-    while(++i < lex.used_size && j < size_simple_cmd)
+    add_token_val(cmd, lex, &size_simple_cmd);
+    while(i < lex.used_size)
     {
-        printf("%d\n", lex.tokens[i].type);
         if (lex.tokens[i].type == 27)
         {
             tab_assign(&cmd->command[j], lex, i);
@@ -121,25 +113,20 @@ void    add_simple_command(t_command *cmd, t_lexer lex, t_simp_com cmd_simp)
         else{
             j++;
         }
+        i++;
 
     }
     
 
 }
 
-void print_array(int size, char **cmd)
-{
-    int i = -1;
-    while(++i < size)
-        printf("%s\n",cmd[i]);
-}
 void print_struct(t_command cmd)
 {
     int i = 0;
     while (i < cmd.used_space)
     {
+        print_array(cmd.command[i].used_space,cmd.command[i].cmd_simple);
         printf("tok : %d\n", cmd.command[i].tok);
-        print_array(cmd.command->used_space,cmd.command[i].cmd_simple);
         i++;
     }
 }
@@ -170,7 +157,7 @@ int main()
 
    // add_cmd(&cmd, lex);
   
-    add_simple_command(&cmd, lex, *cmd.command);
+    add_simple_command(&cmd, lex);
    // printf("%d\n",cmd.command[1].tok);
     print_struct(cmd);
 }

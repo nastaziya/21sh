@@ -2,7 +2,7 @@
 # define PARSER_H
 # include "lexer.h"
 
-#define TAB_INITIAL_CAPACITY 100
+#define TAB_INITIAL_CAPACITY 3
 
 typedef struct  s_op
 {
@@ -32,7 +32,7 @@ typedef struct s_simp_com
     int   av_space; //capacite  =  100
     int   used_space; //
     t_op  oper; // check op
-    int   tok;;
+    int   tok;
    // e_token_type tok;
     t_red *redirection; // dynamic array of redirections
 }       t_simp_com;

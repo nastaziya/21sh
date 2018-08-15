@@ -112,7 +112,7 @@ void      print(const t_lexer* lexer)
 
 t_lexer   final_tokens()
 {
-  const char* cmd = "ls a b ; echo hei && hhoo";
+  const char* cmd = "&& ls a b ; echo hei && hhoo ; ; hoooo ;   opa";
 
   t_lexer lexer;
   lexer_init(&lexer);
