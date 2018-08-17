@@ -29,6 +29,7 @@
         T_DBL_LESS,
         T_REDIR,
         T_ASS_WORD,
+        T_IO_NUMB,
         T_OP_CMD,
         T_OP_CURLY,
         T_CL_CURLY,

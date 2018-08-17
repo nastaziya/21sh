@@ -45,11 +45,13 @@ void      add_token_to_lexer(t_lexer* lexer, const char* text, int text_size, e_
 
 t_oplist  type_of_token(const char* s)
 {
-  const t_oplist* ex_tok;
+  const t_oplist *ex_tok;
   t_oplist not_found;
+  int i = 0;
 
   ex_tok = existing_token;
   not_found = (t_oplist){0, 0, 0};
+ 
   while (ex_tok && ex_tok->op)
   {
     if (ft_strncmp(s, ex_tok->op, ex_tok->size) == 0)
@@ -64,7 +66,7 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
   t_oplist    current;
   const char* prev;
 
-  prev = s; 
+  prev = s;
   while (s && *s)
   {
     if (*s == '\\')
@@ -73,7 +75,12 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
       continue;
     }
     current = type_of_token(s);
-    if ((current.op != 0 || *s == '"' || *s == '\'') && prev != s)
+    if (*s == '>' && ft_isdigit(*(s - 1))) // ajoute d'IO number dans les tokens (ex : 2>)
+    {
+      add_token_to_lexer(lexer, prev, s - prev, T_IO_NUMB);
+      ++s;
+    }
+    else if ((current.op != 0 || *s == '"' || *s == '\'') && prev != s)
       add_token_to_lexer(lexer, prev, s - prev, T_WORD);
     if (current.op != 0)
     {
@@ -106,13 +113,13 @@ void      print(const t_lexer* lexer)
   int i = 0;
 
   for (i = 0; i < lexer->used_size; ++i)
-    printf("<%s (%i)> ", lexer->tokens[i].content, lexer->tokens[i].type);
+    printf("{ %s (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
   printf("\n");
 }
 
 t_lexer   final_tokens()
 {
-  const char* cmd = "&& ls a b ; echo hei && hhoo ; ; hoooo ;   opa";
+  const char* cmd = "ls a b ; hei  2>> ooop 7> go";
 
   t_lexer lexer;
   lexer_init(&lexer);
