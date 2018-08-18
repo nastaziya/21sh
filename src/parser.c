@@ -12,8 +12,8 @@ void    tab_red_init(t_red *redir)
 {
 	redir->used_space = 0;
 	redir->av_space = TAB_INITIAL_CAPACITY;
-	redir->red = malloc(sizeof(char) * redir->av_space);
-	redir->file = malloc(sizeof(char) * redir->av_space);
+	redir->red = malloc(sizeof(char*) * redir->av_space);
+	redir->file = malloc(sizeof(char*) * redir->av_space);
 	redir->fd = malloc(sizeof(int) * redir->av_space);	
 }
 
@@ -62,6 +62,7 @@ void    tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 		free(temp);
 		free(temp1);
 	}
+	
 	redir->red[redir->used_space] = lex.tokens[j].content;
 	redir->file[redir->used_space] = lex.tokens[k].content;
 	++redir->used_space;
@@ -107,12 +108,18 @@ void assign_tok(t_command *cmd, t_lexer lex, int *j, int val_tok)
 	tab_init(&cmd->command[*j]);
 	cmd->command[*j].tok = val_tok;
 }
-void create_redirections_array(t_command *cmd, t_lexer lex, int i)
+void create_redirections_array(t_command *cmd, t_lexer lex, int *i, int *j)
 {
-	tab_red_init(cmd->command->redirection);
-	tab_red_assign(cmd->command->redirection, lex, i, i + 1);
-	print_array(cmd->command->redirection->used_space, cmd->command->redirection->file);
-
+	//int k = i;
+	tab_red_init(&cmd->command[*j].redirection);
+	while (*i + 1 < lex.used_size && (lex.tokens[*i].type == 16 || lex.tokens[*i].type == 28))
+	{
+		tab_red_assign(&cmd->command[*j].redirection, lex, *i, (*i) + 1);
+		*i = (*i) + 2;
+	}
+	print_array(cmd->command[*j].redirection.used_space, cmd->command[*j].redirection.red);
+	print_array(cmd->command[*j].redirection.used_space, cmd->command[*j].redirection.file);
+		
 }
 void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 {
@@ -124,6 +131,8 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 	{
 		if (lex.tokens[i].type == 3)
 			assign_tok(cmd, lex, j, 3);
+		if (lex.tokens[i].type == 9)
+			assign_tok(cmd, lex, j, 9);
 		else if(lex.tokens[i].type == 7)
 			assign_tok(cmd, lex, j, 7);
 		else if(lex.tokens[i].type == 8)
@@ -132,8 +141,8 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 			assign_tok(cmd, lex, j, 11);
 		else if(lex.tokens[i].type == 16)
 		{
-			create_redirections_array(cmd, lex, i);
-			printf("gooooo\n");
+			assign_tok(cmd, lex,j,16);
+			create_redirections_array(cmd, lex, &i, j);
 		}
 		else if (i + 1 == lex.used_size)
 			assign_tok(cmd, lex, j, -1);
@@ -150,7 +159,7 @@ void    add_simple_command(t_command *cmd, t_lexer lex)
 	j = 0;
 	size_simple_cmd = 0;
 	add_token_val(cmd, lex, &size_simple_cmd);
-	while(++i < lex.used_size && j < size_simple_cmd)
+	while(++i < lex.used_size && j <= size_simple_cmd)
 	{
 		if (lex.tokens[i].type == 28)
 		{
@@ -164,11 +173,14 @@ void    add_simple_command(t_command *cmd, t_lexer lex)
 void print_struct(t_command cmd)
 {
 	int i = 0;
-	while (i < cmd.used_space)
+	int j = 0;
+	
+	while (j < cmd.used_space)
 	{
-		print_array(cmd.command[i].used_space,cmd.command[i].cmd_simple);
-		printf("tok : %d\n", cmd.command[i].tok);
-		i++;
+		printf("COMMAND : \n");
+		print_array(cmd.command[j].used_space,cmd.command[j].cmd_simple);
+		printf("tok : %d\n", cmd.command[j].tok);
+		j++;
 	}
 }
 

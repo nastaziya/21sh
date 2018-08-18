@@ -20,7 +20,7 @@ typedef struct s_simp_com
     int   used_space; //
     int   tok;
    // e_token_type tok;
-    t_red *redirection; // dynamic array of redirections
+    t_red redirection; // dynamic array of redirections
 }       t_simp_com;
 
 typedef struct  s_command
