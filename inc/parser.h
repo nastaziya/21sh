@@ -6,7 +6,7 @@
 
 typedef struct  s_red
 {
-    int  **fd; //io numb
+    int  *fd; //io numb
     char **red;  
     char **file;
     int  used_space;
@@ -36,5 +36,7 @@ void    tab_red_init(t_red *redir);
 void    tab_assign(t_simp_com *simple_cmd, t_lexer lex, int j);
 void    tab_red_assign(t_red *redir, t_lexer lex, int j, int k);
 void    simple_cmd_assign(t_command *cmd, t_simp_com simple_cmd);
+void    command_init(t_command *cmd);
+void    add_simple_command(t_command *cmd, t_lexer lex);
 
 #endif

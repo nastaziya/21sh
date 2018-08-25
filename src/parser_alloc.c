@@ -14,7 +14,7 @@ void    tab_red_init(t_red *redir)
 	redir->av_space = TAB_INITIAL_CAPACITY;
 	redir->red = malloc(sizeof(char*) * redir->av_space);
 	redir->file = malloc(sizeof(char*) * redir->av_space);
-	redir->fd = malloc(sizeof(int) * redir->av_space);
+	redir->fd = (int *)malloc(sizeof(int) * redir->av_space);
 }
 
 void    tab_assign(t_simp_com *simple_cmd, t_lexer lex, int j)

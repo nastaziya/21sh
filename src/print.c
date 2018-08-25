@@ -12,6 +12,17 @@ void print_array(int size, char **cmd)
 		i++;
 	}
 }
+void print_array_int(int size, int *cmd)
+{
+	int i;
+
+	i = 0;
+	while(i < size)
+	{
+		printf("%d\n",cmd[i]);
+		i++;
+	}
+}
 
 void print_struct(t_command cmd)
 {
@@ -27,7 +38,8 @@ void print_struct(t_command cmd)
 		{
 			printf("REDIRECTIONS: \n");
 			print_array(cmd.command[j].redirection.used_space, cmd.command[j].redirection.red);
-			print_array(cmd.command[j].redirection.used_space, cmd.command[j].redirection.file);	
+			print_array(cmd.command[j].redirection.used_space, cmd.command[j].redirection.file);
+			print_array_int(cmd.command[j].redirection.used_space, cmd.command[j].redirection.fd);	
 		}
 		j++;
 	}

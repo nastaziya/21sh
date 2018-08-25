@@ -17,6 +17,25 @@ void assign_tok(t_command *cmd, t_lexer lex, int *j, int val_tok)
 	cmd->command[*j].tok = val_tok;
 }
 
+void    tab_io_assign(t_red *redir, t_lexer lex, int j)
+{
+	int *temp;
+	int i;
+
+	i = -1;	
+		temp = redir->fd;
+		redir->fd = (int *)malloc(sizeof(int) * redir->av_space + 1);
+		if (redir->fd == NULL)
+			exit(EXIT_FAILURE);
+		while(++i < redir->used_space)
+			redir->fd[i] = temp[i];
+		free(temp);
+	if (lex.tokens[j].type == 22)
+		redir->fd[redir->used_space] =  ft_atoi(lex.tokens[j].content);
+	else
+		redir->fd[redir->used_space] = 1;
+}
+
 void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 {
 	int i;
@@ -41,6 +60,7 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 
 }
 
+//28 linii
 void    add_simple_command(t_command *cmd, t_lexer lex)
 {
 	int size_simple_cmd;
@@ -55,30 +75,21 @@ void    add_simple_command(t_command *cmd, t_lexer lex)
 	{
 		if (i == 0 && lex.tokens[i].type == 28)
 			tab_assign(&cmd->command[j], lex, i);
-		else if (lex.tokens[i].type == 28 && (lex.tokens[i - 1].type != 16 &&
+		else if (lex.tokens[i].type == 28 && (lex.tokens[i - 1].type != 16 && lex.tokens[i - 1].type != 22 &&
 				lex.tokens[i - 1].type != 18 && lex.tokens[i - 1].type != 19 &&
 				lex.tokens[i - 1].type != 17))
 			tab_assign(&cmd->command[j], lex, i);
 		else if ((lex.tokens[i].type == 16 || lex.tokens[i].type == 18 ||
 				lex.tokens[i].type == 19 || lex.tokens[i].type == 17) &&
 				lex.tokens[i + 1].type == 28)
-			tab_red_assign(&cmd->command[j].redirection, lex, i, i + 1);
-		else if ((lex.tokens[i].type != 16 && lex.tokens[i].type != 18 &&
+				{
+					tab_io_assign(&cmd->command[j].redirection, lex, i - 1);
+					tab_red_assign(&cmd->command[j].redirection, lex, i, i + 1);
+				}
+		else if ((lex.tokens[i].type != 16 && lex.tokens[i].type != 22 && lex.tokens[i].type != 18 &&
 				lex.tokens[i].type != 19 && lex.tokens[i].type != 17) &&
 				lex.tokens[i].type != 28)
 			j++;
 	}
 }
 
-int main()
-{
-	t_lexer lex;
-	t_command cmd;
-
-	lex = final_tokens();
-	print(&lex);
-	command_init(&cmd);
-	add_simple_command(&cmd, lex);
-	print_struct(cmd);
-	free_the_content_array_token(&lex);
-}

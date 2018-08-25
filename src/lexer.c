@@ -75,7 +75,7 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
       continue;
     }
     current = type_of_token(s);
-    if (*s == '>' && ft_isdigit(*(s - 1))) // ajoute d'IO number dans les tokens (ex : 2>)
+    if ((*s == '>' || *s == '<') && ft_isdigit(*(s - 1))) // ajoute d'IO number dans les tokens (ex : 2>)
     {
       add_token_to_lexer(lexer, prev, s - prev, T_IO_NUMB);
       ++s;
@@ -119,8 +119,7 @@ void      print(const t_lexer* lexer)
 
 t_lexer   final_tokens()
 {
-  //ls > hoho a.out > popo jojo
-  const char* cmd = " ls > hoho a.out >> io ; lolo";
+  const char* cmd = " ls 10> hoho a.out 2>> io ; lolo 9> gogo 5<< popo 7>> yoyoooo";
 
   t_lexer lexer;
   lexer_init(&lexer);
