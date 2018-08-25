@@ -78,7 +78,7 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
     if ((*s == '>' || *s == '<') && ft_isdigit(*(s - 1))) // ajoute d'IO number dans les tokens (ex : 2>)
     {
       add_token_to_lexer(lexer, prev, s - prev, T_IO_NUMB);
-      ++s;
+     // ++s;
     }
     else if ((current.op != 0 || *s == '"' || *s == '\'') && prev != s)
       add_token_to_lexer(lexer, prev, s - prev, T_WORD);
@@ -119,7 +119,7 @@ void      print(const t_lexer* lexer)
 
 t_lexer   final_tokens()
 {
-  const char* cmd = " ls 10> hoho a.out 2>> io ; lolo 9> gogo 5<< popo 7>> yoyoooo";
+  char* cmd = " ls 10> hoho a.out 2>> io && hei & uo";
 
   t_lexer lexer;
   lexer_init(&lexer);
@@ -127,7 +127,7 @@ t_lexer   final_tokens()
   if (!string_to_lexer(cmd, &lexer))
     printf("error !\n");
 
- // print(&lexer);
+  //print(&lexer);
   //free_the_content_array_token(&lexer); free lexer 
   return lexer;
 }

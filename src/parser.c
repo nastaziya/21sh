@@ -44,16 +44,16 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 	*j = -1;
 	while (++i < lex.used_size)
 	{
-		if (lex.tokens[i].type == 3)
-			assign_tok(cmd, lex, j, 3);
-		if (lex.tokens[i].type == 9)
-			assign_tok(cmd, lex, j, 9);
-		else if(lex.tokens[i].type == 7)
-			assign_tok(cmd, lex, j, 7);
-		else if(lex.tokens[i].type == 8)
-			assign_tok(cmd, lex, j, 8);
-		else if(lex.tokens[i].type == 11)
-			assign_tok(cmd, lex, j, 11);
+		if (lex.tokens[i].type == T_SEMI)
+			assign_tok(cmd, lex, j, T_SEMI);
+		if (lex.tokens[i].type == T_PIPE)
+			assign_tok(cmd, lex, j, T_PIPE);
+		else if(lex.tokens[i].type == T_DBLAND)
+			assign_tok(cmd, lex, j, T_DBLAND);
+		else if(lex.tokens[i].type == T_DBLOR)
+			assign_tok(cmd, lex, j, T_DBLOR);
+		else if(lex.tokens[i].type == T_AND)
+			assign_tok(cmd, lex, j, T_AND);
 		else if (i + 1 == lex.used_size)
 			assign_tok(cmd, lex, j, -1);
 	}
@@ -61,6 +61,32 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 }
 
 //28 linii
+
+int	is_red(t_lexer lex, int i)
+{
+	if ((lex.tokens[i].type == 16 || lex.tokens[i].type == 18 ||
+		lex.tokens[i].type == 19 || lex.tokens[i].type == 17))
+	{
+		return (1); 
+	}
+	return (0);
+}
+void	parse_errors(t_lexer lex, int i)
+{
+	if (is_red(lex, i) &&
+			(lex.tokens[i + 1].type == 16 || lex.tokens[i + 1].type == 18 ||
+			lex.tokens[i + 1].type == 19 || lex.tokens[i + 1].type == 17))
+		{
+			ft_putstr_fd("bash: syntax error near unexpected token ", 2);
+			ft_putendl_fd(lex.tokens[i + 1].content, 2);
+			exit(0);
+		}
+	if (is_red(lex, i) && lex.tokens[i + 1].type != 28)
+		{
+			ft_putendl_fd("bash: syntax error near unexpected token `newline'", 2);
+			exit(0);
+		}
+}
 void    add_simple_command(t_command *cmd, t_lexer lex)
 {
 	int size_simple_cmd;
@@ -73,22 +99,17 @@ void    add_simple_command(t_command *cmd, t_lexer lex)
 	add_token_val(cmd, lex, &size_simple_cmd);
 	while(++i < lex.used_size && j <= size_simple_cmd)
 	{
+		parse_errors(lex, i);	
 		if (i == 0 && lex.tokens[i].type == 28)
 			tab_assign(&cmd->command[j], lex, i);
-		else if (lex.tokens[i].type == 28 && (lex.tokens[i - 1].type != 16 && lex.tokens[i - 1].type != 22 &&
-				lex.tokens[i - 1].type != 18 && lex.tokens[i - 1].type != 19 &&
-				lex.tokens[i - 1].type != 17))
+		else if (lex.tokens[i].type == 28 && !is_red(lex, i - 1) && lex.tokens[i - 1].type != 22)
 			tab_assign(&cmd->command[j], lex, i);
-		else if ((lex.tokens[i].type == 16 || lex.tokens[i].type == 18 ||
-				lex.tokens[i].type == 19 || lex.tokens[i].type == 17) &&
-				lex.tokens[i + 1].type == 28)
-				{
-					tab_io_assign(&cmd->command[j].redirection, lex, i - 1);
-					tab_red_assign(&cmd->command[j].redirection, lex, i, i + 1);
-				}
-		else if ((lex.tokens[i].type != 16 && lex.tokens[i].type != 22 && lex.tokens[i].type != 18 &&
-				lex.tokens[i].type != 19 && lex.tokens[i].type != 17) &&
-				lex.tokens[i].type != 28)
+		else if (is_red(lex, i) && lex.tokens[i + 1].type == 28)
+		{
+			tab_io_assign(&cmd->command[j].redirection, lex, i - 1);
+			tab_red_assign(&cmd->command[j].redirection, lex, i, i + 1);
+		}
+		else if (!is_red(lex, i) && lex.tokens[i].type != 22 && lex.tokens[i].type != 28)
 			j++;
 	}
 }
