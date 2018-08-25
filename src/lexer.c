@@ -119,7 +119,8 @@ void      print(const t_lexer* lexer)
 
 t_lexer   final_tokens()
 {
-  const char* cmd = "ls ;  hop 2> ooop  gooo  > baab";
+  //ls > hoho a.out > popo jojo
+  const char* cmd = " ls > hoho a.out >> io ; lolo";
 
   t_lexer lexer;
   lexer_init(&lexer);
