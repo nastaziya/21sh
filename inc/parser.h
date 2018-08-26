@@ -38,5 +38,8 @@ void    tab_red_assign(t_red *redir, t_lexer lex, int j, int k);
 void    simple_cmd_assign(t_command *cmd, t_simp_com simple_cmd);
 void    command_init(t_command *cmd);
 void    add_simple_command(t_command *cmd, t_lexer lex);
+int		is_red(t_lexer lex, int i);
+int		is_op(t_lexer lex, int i);
+void	parse_errors(t_lexer lex, int i);
 
 #endif

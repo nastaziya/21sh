@@ -7,22 +7,24 @@
 
     typedef enum
       {
+        //space etc
         T_EAT,
-        T_DQ,
-        T_SQ,
-        T_SEMI,
+        //T_DQ,
+        //T_SQ,
         T_DBL_SEMI,
-        T_OPERATOR,
+        // separator
         T_NEG,
         T_DBLAND,
         T_DBLOR,
         T_PIPE,
-        T_OP_ARITHM,
+        T_SEMI,
         T_AND,
+        T_OP_ARITHM,
         T_OP_BRA,
         T_CL_BRA,
         T_OP_PAR,
         T_CL_PAR,
+        //redirections
         T_GREAT,
         T_DBL_GREAT,
         T_LESS,

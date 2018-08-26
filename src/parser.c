@@ -1,6 +1,5 @@
 #include "../inc/sh.h"
 
-
 void    command_init(t_command *cmd)
 {
 	cmd->used_space = 0;
@@ -30,7 +29,7 @@ void    tab_io_assign(t_red *redir, t_lexer lex, int j)
 		while(++i < redir->used_space)
 			redir->fd[i] = temp[i];
 		free(temp);
-	if (lex.tokens[j].type == 22)
+	if (lex.tokens[j].type == T_IO_NUMB)
 		redir->fd[redir->used_space] =  ft_atoi(lex.tokens[j].content);
 	else
 		redir->fd[redir->used_space] = 1;
@@ -60,33 +59,6 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 
 }
 
-//28 linii
-
-int	is_red(t_lexer lex, int i)
-{
-	if ((lex.tokens[i].type == 16 || lex.tokens[i].type == 18 ||
-		lex.tokens[i].type == 19 || lex.tokens[i].type == 17))
-	{
-		return (1); 
-	}
-	return (0);
-}
-void	parse_errors(t_lexer lex, int i)
-{
-	if (is_red(lex, i) &&
-			(lex.tokens[i + 1].type == 16 || lex.tokens[i + 1].type == 18 ||
-			lex.tokens[i + 1].type == 19 || lex.tokens[i + 1].type == 17))
-		{
-			ft_putstr_fd("bash: syntax error near unexpected token ", 2);
-			ft_putendl_fd(lex.tokens[i + 1].content, 2);
-			exit(0);
-		}
-	if (is_red(lex, i) && lex.tokens[i + 1].type != 28)
-		{
-			ft_putendl_fd("bash: syntax error near unexpected token `newline'", 2);
-			exit(0);
-		}
-}
 void    add_simple_command(t_command *cmd, t_lexer lex)
 {
 	int size_simple_cmd;
@@ -100,17 +72,18 @@ void    add_simple_command(t_command *cmd, t_lexer lex)
 	while(++i < lex.used_size && j <= size_simple_cmd)
 	{
 		parse_errors(lex, i);	
-		if (i == 0 && lex.tokens[i].type == 28)
+		if (i == 0 && lex.tokens[i].type == T_WORD)
 			tab_assign(&cmd->command[j], lex, i);
-		else if (lex.tokens[i].type == 28 && !is_red(lex, i - 1) && lex.tokens[i - 1].type != 22)
+		else if (lex.tokens[i].type == T_WORD && !is_red(lex, i - 1) &&
+			lex.tokens[i - 1].type != T_IO_NUMB)
 			tab_assign(&cmd->command[j], lex, i);
-		else if (is_red(lex, i) && lex.tokens[i + 1].type == 28)
+		else if (is_red(lex, i) && lex.tokens[i + 1].type == T_WORD)
 		{
 			tab_io_assign(&cmd->command[j].redirection, lex, i - 1);
 			tab_red_assign(&cmd->command[j].redirection, lex, i, i + 1);
 		}
-		else if (!is_red(lex, i) && lex.tokens[i].type != 22 && lex.tokens[i].type != 28)
+		else if (!is_red(lex, i) && lex.tokens[i].type != T_IO_NUMB &&
+			lex.tokens[i].type != T_WORD)
 			j++;
 	}
 }
-
