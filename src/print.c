@@ -8,6 +8,8 @@ void print_array(int size, char **cmd)
 	i = 0;
 	while(i < size)
 	{
+		if (cmd[i] == NULL)
+			printf("je suis null\n");
 		printf("%s\n",cmd[i]);
 		i++;
 	}

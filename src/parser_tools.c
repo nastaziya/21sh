@@ -17,7 +17,7 @@ int		is_op(t_lexer lex, int i)
 
 void	parse_errors(t_lexer lex, int i)
 {
-	if ((is_red(lex, i) && is_red(lex, i + 1) && is_op(lex, i + 1)) ||
+	if ((is_red(lex, i) && (is_red(lex, i + 1) || is_op(lex, i + 1))) ||
 	(is_op(lex, i) && is_op(lex, i + 1)))
 	{
 		ft_putstr_fd("bash: syntax error near unexpected token ", 2);

@@ -93,6 +93,7 @@ int		exec(char *path, char **str, char **env)
 	}
 	else
 	{
+		print_array(size_str(str), str);
 		execve(path, str, env);
 		exit(EXIT_FAILURE);
 	}

@@ -119,14 +119,14 @@ void      print(const t_lexer* lexer)
 
 t_lexer   final_tokens()
 {
-  char* cmd = "ls || lks";
+  //ls -a -l > | blabla (a reparer)
+  char* cmd = "ls -a -l | uouo"; 
 
   t_lexer lexer;
   lexer_init(&lexer);
 
   if (!string_to_lexer(cmd, &lexer))
     printf("error !\n");
-
   //print(&lexer);
   //free_the_content_array_token(&lexer); free lexer 
   return lexer;

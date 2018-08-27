@@ -2,7 +2,7 @@
 # define PARSER_H
 # include "lexer.h"
 
-#define TAB_INITIAL_CAPACITY 3
+#define TAB_INITIAL_CAPACITY 4
 
 typedef struct  s_red
 {
@@ -24,7 +24,9 @@ typedef struct s_simp_com
 
 typedef struct  s_command
 {
-    t_simp_com *command; 
+    /////TEST A SUPPRIMER : ls -a -l > | blabla
+    /////TEST A SUPPRIMER : ls -a -l > ls -a > bla
+    t_simp_com *command;
     int av_space;
     int used_space;
 }       t_command;
