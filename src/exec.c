@@ -76,8 +76,8 @@ int		check_path(char **path_env, char **path, char **str)
 
 void	error_command(char **str)
 {
-	ft_putstr_fd("minishell : command not found : ", 2);
 	ft_putstr_fd(*str, 2);
+	ft_putstr_fd(": command not found", 2);
 	ft_putchar('\n');
 }
 
@@ -120,7 +120,6 @@ void	error_exec_or_exec(char **paths, char *path, char **str,
 		ft_putendl_fd("minishell : permission denied.", 2);
 	else
 	{
-        print_array(size_str(str), str);
 	//	g_sig_check = 1;
 		exec(path, str, env);
 	}

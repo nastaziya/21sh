@@ -119,7 +119,7 @@ void      print(const t_lexer* lexer)
 
 t_lexer   final_tokens()
 {
-  char* cmd = "ls";
+  char* cmd = "ls || lks";
 
   t_lexer lexer;
   lexer_init(&lexer);
