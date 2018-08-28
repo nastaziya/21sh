@@ -1,6 +1,5 @@
 #include "../inc/sh.h"
 
-
 void      free_the_content_array_token(t_lexer* lexer)
 {
   int i;
@@ -120,7 +119,7 @@ void      print(const t_lexer* lexer)
 t_lexer   final_tokens()
 {
   //ls -a -l > | blabla (a reparer)
-  char* cmd = "ls -a -l | uouo"; 
+  char* cmd = "diff caca ||  ls"; 
 
   t_lexer lexer;
   lexer_init(&lexer);

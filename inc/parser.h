@@ -2,7 +2,7 @@
 # define PARSER_H
 # include "lexer.h"
 
-#define TAB_INITIAL_CAPACITY 4
+#define TAB_INITIAL_CAPACITY 60
 
 typedef struct  s_red
 {
@@ -43,5 +43,6 @@ void    add_simple_command(t_command *cmd, t_lexer lex);
 int		is_red(t_lexer lex, int i);
 int		is_op(t_lexer lex, int i);
 void	parse_errors(t_lexer lex, int i);
+int		check_path(char **path_env, char **path, char **str);
 
 #endif

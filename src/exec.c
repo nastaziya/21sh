@@ -84,29 +84,36 @@ void	error_command(char **str)
 int		exec(char *path, char **str, char **env)
 {
 	pid_t	pid;
+	int 	status;
+	int		res;
 
+	res = 0;
 	if ((pid = fork()))
 	{
 		if (pid == -1)
 			return (-1);
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &status, 0);
+		res = WEXITSTATUS(status);	
+		//if (res > 0)
+		//	exit(EXIT_FAILURE);	
 	}
 	else
 	{
-		print_array(size_str(str), str);
 		execve(path, str, env);
 		exit(EXIT_FAILURE);
 	}
-	return (0);
+	return (res);
 }
-void	error_exec_or_exec(char **paths, char *path, char **str,
+int		error_exec_or_exec(char **paths, char *path, char **str,
 		char **env)
 {
 	int		res;
 	int		i;
+	//int 	verif;
 
 	i = 0;
-	res = 1;
+	//verif = 0;
+	res = 0;
 	if (ft_strchr(str[0], '/'))
 	{
 		path = ft_strdup(str[0]);
@@ -122,10 +129,11 @@ void	error_exec_or_exec(char **paths, char *path, char **str,
 	else
 	{
 	//	g_sig_check = 1;
-		exec(path, str, env);
+		res = exec(path, str, env);
 	}
 	//g_sig_check = 0;
 	if (path != NULL)
 		free(path);
+	return (res);
 }
 

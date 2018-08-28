@@ -36,7 +36,7 @@ void    tab_assign(t_simp_com *simple_cmd, t_lexer lex, int j)
 	}
 	simple_cmd->cmd_simple[simple_cmd->used_space] = lex.tokens[j].content;
 	++simple_cmd->used_space;
-	simple_cmd->cmd_simple[simple_cmd->av_space] =  NULL;
+	simple_cmd->cmd_simple[simple_cmd->used_space] =  NULL;
 }
 
 void    tab_red_assign(t_red *redir, t_lexer lex, int j, int k)

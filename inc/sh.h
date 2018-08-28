@@ -26,7 +26,8 @@ char	**copy_env(char **environ, int size);
 void	set_path(char *str, char ***paths);
 void	path_str(char **envs, char ***paths);
 int		exec(char *path, char **str, char **env);
-void	error_exec_or_exec(char **paths, char *path, char **str, char **env);
+int		error_exec_or_exec(char **paths, char *path, char **str, char **env);
 void	free_str(char **str);
+//int		exec(char *path, char **str, char **env, int *stat);
 
 #endif
