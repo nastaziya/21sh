@@ -16,10 +16,14 @@ void check_op(t_command cmd, t_env_tools *env)
 			if (check_path(env->paths, &path,  cmd.command[i].cmd_simple) == 0 || res > 0)
 				res = error_exec_or_exec(env->paths, path, cmd.command[i + 1].cmd_simple, env->env_cpy);
 		}
-		else if (cmd.command[i].tok == -1 && cmd.used_space == 1)
+		if (cmd.command[i].tok == T_DBLAND)
 		{
-			error_exec_or_exec(env->paths, path, cmd.command[i].cmd_simple, env->env_cpy);
+			if (check_path(env->paths, &path,  cmd.command[i].cmd_simple) > 0 && res == 0)
+				res = error_exec_or_exec(env->paths, path, cmd.command[i + 1].cmd_simple, env->env_cpy);
 		}
+		if (cmd.command[i].tok == T_SEMI)
+			res = error_exec_or_exec(env->paths, path, cmd.command[i + 1].cmd_simple, env->env_cpy);
+		
 		i++;
 
 	}
