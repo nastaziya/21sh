@@ -94,16 +94,17 @@ int		exec(char *path, char **str, char **env)
 			return (-1);
 		waitpid(pid, &status, 0);
 		res = WEXITSTATUS(status);	
-		//if (res > 0)
-		//	exit(EXIT_FAILURE);	
+		if (res > 0)
+			return(res);	
 	}
 	else
 	{
 		execve(path, str, env);
 		exit(EXIT_FAILURE);
 	}
-	return (res);
+	return (0);
 }
+
 int		error_exec_or_exec(char **paths, char *path, char **str,
 		char **env)
 {
