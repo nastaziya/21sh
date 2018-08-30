@@ -11,10 +11,10 @@
         T_EAT,
         //T_DQ,
         //T_SQ,
-        T_DBL_SEMI,
         // separator
         T_NEG,
         T_DBLAND,
+        T_DBL_SEMI,
         T_DBLOR,
         T_PIPE,
         T_SEMI,

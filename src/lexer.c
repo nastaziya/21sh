@@ -119,7 +119,7 @@ void      print(const t_lexer* lexer)
 t_lexer   final_tokens()
 {
   //ls -a -l > | blabla (a reparer)
-  char* cmd = "echo salut && ls -z || echo hehie && diff caca ; gjjkjkjkjkjjk || echo am terminat && ls -a ; sal"; 
+  char* cmd = "echo sault ; echo hei"; 
 
   t_lexer lexer;
   lexer_init(&lexer);
