@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 # define PARSER_H
 # include "lexer.h"
+# include  	"../libft/libft.h"
 
 #define TAB_INITIAL_CAPACITY 60
 

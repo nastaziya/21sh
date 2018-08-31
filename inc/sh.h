@@ -3,14 +3,13 @@
 
 # include   "lexer.h"
 # include   "parser.h"
+# include	"termcap.h"
 # include	<unistd.h>
 # include	<sys/wait.h>
 # include	<sys/types.h>
-# include  	"../libft/libft.h"
 # include	<stdlib.h>
 # include	<stdio.h>
 # include	<string.h>
-# include	<term.h>
 
 typedef struct		s_env_tools
 {
