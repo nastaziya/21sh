@@ -1,4 +1,4 @@
-#include "../inc/sh.h"
+#include "../../inc/sh.h"
 
 void	set_path(char *str, char ***paths)
 {

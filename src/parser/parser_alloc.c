@@ -1,4 +1,4 @@
-#include "../inc/sh.h"
+#include "../../inc/sh.h"
 
 void    tab_init(t_simp_com *simple_cmd)
 {

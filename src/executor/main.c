@@ -1,4 +1,4 @@
-#include "../inc/sh.h"
+#include "../../inc/sh.h"
 
 void check_op(t_command cmd, t_env_tools *env)
 {
@@ -12,7 +12,7 @@ void check_op(t_command cmd, t_env_tools *env)
 		res = error_exec_or_exec(env->paths, path, cmd.command[0].cmd_simple, env->env_cpy);
 	else if (is_built_in(cmd, 0))
 	{
-		printf("je suis builtin\n");
+		printf("builtin\n");
 	}
 	while(++i < cmd.used_space && cmd.command[i].tok != -1)
 	{
@@ -49,8 +49,8 @@ void	all_exec(char **environ)
 	print(&lex);
 	command_init(&cmd);
 	add_simple_command(&cmd, lex);
-	//print_struct(cmd);
-	check_op(cmd, &env);
+	print_struct(cmd);
+	//check_op(cmd, &env);
 	free_the_content_array_token(&lex);
 	if (env.env_cpy != NULL)
 		free_str(env.env_cpy);

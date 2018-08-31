@@ -30,18 +30,12 @@
         T_LESS,
         T_DBL_LESS,
         T_REDIR,
-        T_ASS_WORD,
         T_IO_NUMB,
         T_OP_CMD,
         T_OP_CURLY,
         T_CL_CURLY,
         T_EQUAL,
-        T_STRING,
         T_WORD,
-        T_FOR,
-        T_WHILE,
-        T_NULL,
-        T_T
       } e_token_type;
 
     typedef struct s_oplist
@@ -67,10 +61,7 @@
 
     static const t_oplist existing_token[] =
       {
-       // {"while", 5, T_WHILE},
         {"$((", 3, T_OP_ARITHM},
-        {">>-", 3, T_REDIR},
-       // {"for", 3, T_FOR},
         {"$(", 2, T_OP_CMD},
         {"${", 2, T_OP_CURLY},
         {">>", 2, T_DBL_GREAT},
@@ -81,19 +72,6 @@
         {"<&", 2, T_REDIR},
         {">&", 2, T_REDIR},
         {"&&", 2, T_DBLAND},
-        {"{ ", 2, T_OP_BRA},
-        {"{\n", 2, T_OP_BRA},
-        {"{\v", 2, T_OP_BRA},
-        {"{\t", 2, T_OP_BRA},
-        {"{\r", 2, T_OP_BRA},
-        {"{\f", 2, T_OP_BRA},
-        {" {", 2, T_CL_BRA},
-        {"\n{", 2, T_CL_BRA},
-        {"\v{", 2, T_CL_BRA},
-        {"\t{", 2, T_CL_BRA},
-        {"\r{", 2, T_CL_BRA},
-        {"\f{", 2, T_CL_BRA},
-        {"))", 2, T_T},
         {";;", 2, T_DBL_SEMI},
         {"! ", 2, T_NEG},
         {"}", 1, T_CL_BRA},

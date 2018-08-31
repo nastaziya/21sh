@@ -1,4 +1,4 @@
-#include "../inc/sh.h"
+#include "../../inc/sh.h"
 
 int		is_red(t_lexer lex, int i)
 {
