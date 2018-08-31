@@ -24,8 +24,6 @@ typedef struct s_simp_com
 
 typedef struct  s_command
 {
-    /////TEST A SUPPRIMER : ls -a -l > | blabla
-    /////TEST A SUPPRIMER : ls -a -l > ls -a > bla
     t_simp_com *command;
     int av_space;
     int used_space;
@@ -44,5 +42,6 @@ int		is_red(t_lexer lex, int i);
 int		is_op(t_lexer lex, int i);
 void	parse_errors(t_lexer lex, int i);
 int		check_path(char **path_env, char **path, char **str);
+int     is_built_in(t_command cmd, int i);
 
 #endif

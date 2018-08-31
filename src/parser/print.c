@@ -1,4 +1,4 @@
-#include "../inc/sh.h"
+#include "../../inc/sh.h"
 
 
 void print_array(int size, char **cmd)

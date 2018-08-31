@@ -1,11 +1,12 @@
-#include "../inc/sh.h"
+#include "../../inc/sh.h"
 
 void    tab_init(t_simp_com *simple_cmd)
 {
 	simple_cmd->used_space = 0;
 	simple_cmd->tok = 0;
 	simple_cmd->av_space = TAB_INITIAL_CAPACITY;
-	simple_cmd->cmd_simple =(char**)malloc(sizeof(char*) * (simple_cmd->av_space + 1));
+	if (!(simple_cmd->cmd_simple =(char**)malloc(sizeof(char*) * (simple_cmd->av_space + 1))))
+		return;
 }
 
 void    tab_red_init(t_red *redir)

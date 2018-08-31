@@ -1,4 +1,4 @@
-#include "../inc/sh.h"
+#include "../../inc/sh.h"
 
 void      free_the_content_array_token(t_lexer* lexer)
 {
@@ -75,10 +75,7 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
     }
     current = type_of_token(s);
     if ((*s == '>' || *s == '<') && ft_isdigit(*(s - 1))) // ajoute d'IO number dans les tokens (ex : 2>)
-    {
       add_token_to_lexer(lexer, prev, s - prev, T_IO_NUMB);
-     // ++s;
-    }
     else if ((current.op != 0 || *s == '"' || *s == '\'') && prev != s)
       add_token_to_lexer(lexer, prev, s - prev, T_WORD);
     if (current.op != 0)
@@ -118,8 +115,7 @@ void      print(const t_lexer* lexer)
 
 t_lexer   final_tokens()
 {
-  //ls -a -l > | blabla (a reparer)
-  char* cmd = "echo salut && ls -z || echo hehie && diff caca ; gjjkjkjkjkjjk || echo am terminat && ls -a ; sal"; 
+  char* cmd = "ls -z || ls 2>> test.txt 1> test2.txt ls | cat -e < ls";//|| && ; 
 
   t_lexer lexer;
   lexer_init(&lexer);

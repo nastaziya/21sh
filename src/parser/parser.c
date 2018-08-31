@@ -1,4 +1,4 @@
-#include "../inc/sh.h"
+#include "../../inc/sh.h"
 
 void    command_init(t_command *cmd)
 {
@@ -44,7 +44,9 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 	while (++i < lex.used_size)
 	{
 		if (lex.tokens[i].type == T_SEMI)
+		{
 			assign_tok(cmd, lex, j, T_SEMI);
+		}
 		if (lex.tokens[i].type == T_PIPE)
 			assign_tok(cmd, lex, j, T_PIPE);
 		else if(lex.tokens[i].type == T_DBLAND)
@@ -58,6 +60,7 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 	}
 
 }
+//a mettre a la norme
 
 void    add_simple_command(t_command *cmd, t_lexer lex)
 {
@@ -71,7 +74,7 @@ void    add_simple_command(t_command *cmd, t_lexer lex)
 	add_token_val(cmd, lex, &size_simple_cmd);
 	while(++i < lex.used_size && j <= size_simple_cmd)
 	{
-		parse_errors(lex, i);	
+		parse_errors(lex, i);
 		if (i == 0 && lex.tokens[i].type == T_WORD)
 			tab_assign(&cmd->command[j], lex, i);
 		else if (lex.tokens[i].type == T_WORD && !is_red(lex, i - 1) &&
@@ -82,6 +85,8 @@ void    add_simple_command(t_command *cmd, t_lexer lex)
 			tab_io_assign(&cmd->command[j].redirection, lex, i - 1);
 			tab_red_assign(&cmd->command[j].redirection, lex, i, i + 1);
 		}
+		else if(lex.tokens[i + 1].type != T_WORD && is_op(lex,i))
+			*cmd->command[j + 1].cmd_simple = NULL;
 		else if (!is_red(lex, i) && lex.tokens[i].type != T_IO_NUMB &&
 			lex.tokens[i].type != T_WORD)
 			j++;

@@ -1,4 +1,4 @@
-#include "../inc/sh.h"
+#include "../../inc/sh.h"
 
 void	set_path(char *str, char ***paths)
 {
@@ -76,6 +76,7 @@ int		check_path(char **path_env, char **path, char **str)
 
 void	error_command(char **str)
 {
+	ft_putstr_fd("bash: ", 2);
 	ft_putstr_fd(*str, 2);
 	ft_putstr_fd(": command not found", 2);
 	ft_putchar('\n');
@@ -99,7 +100,8 @@ int		exec(char *path, char **str, char **env)
 	}
 	else
 	{
-		execve(path, str, env);
+		if (execve(path, str, env) == -1)
+			exit(EXIT_FAILURE);
 		exit(EXIT_FAILURE);
 	}
 	return (0);
@@ -110,10 +112,8 @@ int		error_exec_or_exec(char **paths, char *path, char **str,
 {
 	int		res;
 	int		i;
-	//int 	verif;
 
 	i = 0;
-	//verif = 0;
 	res = 0;
 	if (ft_strchr(str[0], '/'))
 	{
