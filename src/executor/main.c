@@ -45,16 +45,18 @@ void	all_exec(char **environ)
 	path = NULL;
 	env.env_cpy = copy_env(environ, size_str(environ));              
 	path_str(env.env_cpy, &env.paths);
-	lex = final_tokens();
-	print(&lex);
-	command_init(&cmd);
-	add_simple_command(&cmd, lex);
-	print_struct(cmd);
+	while (42)
+	{
+		lex = final_tokens();
+		print(&lex);
+		command_init(&cmd);
+		add_simple_command(&cmd, lex);
+		print_struct(cmd);
 	//check_op(cmd, &env);
-	free_the_content_array_token(&lex);
+		free_the_content_array_token(&lex);
+	}
 	if (env.env_cpy != NULL)
 		free_str(env.env_cpy);
-
 }
 int main(int argc, char **argv, char **environ)
 {
