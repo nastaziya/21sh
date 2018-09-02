@@ -77,23 +77,33 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
       add_token_to_lexer(lexer, prev, s - prev, T_IO_NUMB);
     else if ((*s == '"' || *s == '\'') && *(s - 1) != '\\')
     {
+      prev = s;
       type_quote = *s;
       while (*s && ++s)
         if ((*s == type_quote && *(s - 1) != '\\' && type_quote != '\'') || (type_quote == '\'' && *s == '\''))
               break;
+      //if there are words after the closing quote, continue
       if (!(*(s+1) >= 8 && *(s+1) <= 13) && *(s+1) != 32)
       {
         ++s;
-        while (!(*s >= 8 && *s <= 13) && *s != 32 && *s)
+        //loops until the end of the word, and if encounters \n after \, skip it => (*s == '\n' && *(s-1) == '\\' ? ++s : s) part
+        while ((*s == '\n' && *(s-1) == '\\' ? ++s : s) && !(*s >= 8 && *s <= 13) && *s != 32 && *s)//(s = (*s == '\\' ? s + 2 : s)) && 
           ++s;
-        add_token_to_lexer(lexer, prev, s - prev, T_WORD);
+        // add_token_to_lexer(lexer, prev, s - prev, T_WORD);
       }
-      else if ((((*s == '"') && *(s - 1) != '\\') || *s == '\'') && prev != s)
+      // else if ((((*s == '"') && *(s - 1) != '\\') || *s == '\'') && prev != s)
+      if (prev != s)
             add_token_to_lexer(lexer, prev, ++s - prev, T_WORD);
       quote_done = 1;
     }
+    else if (*s == '\n' && *(s-1) == '\\')
+    {
+      ++s;
+      continue ;
+    }
     else if (current.op != 0 && prev != s)
-      add_token_to_lexer(lexer, prev, s - prev, T_WORD);
+            add_token_to_lexer(lexer, prev, s - prev, T_WORD);
+    // Allows to advance and tokenize everything that is not a word, when quote ends, I use it to advance too because it won't lex
     if (current.op != 0 || quote_done == 1)
     {
       s += current.size;
@@ -148,6 +158,11 @@ char         ft_count_quote(char *str)
     else
       ++str;
   }
+  if (!*str && *(str - 1) == '\\')
+  // {
+    // printf("jepassededans");
+    return ('\\');
+  // }
   return (0);
 }
 
@@ -161,6 +176,8 @@ void   ft_manage_prompt(char type_quote)
     ft_putstr_fd("dquote > ", 1);
   else if (type_quote == '\'')
     ft_putstr_fd("squote > ", 1);
+  else if (type_quote == '\\')
+    ft_putstr_fd("> ", 1);
 }
 
 /*
@@ -181,6 +198,7 @@ void    ft_new_prompt(char **cmd, char type_quote)
   {
     ft_manage_prompt(type_quote);
     ret = get_next_line(0, &line);
+    // printf("\ndebug_line: %zu\n", ft_strlen(line));
     if (line && ft_strlen(line) > 0)
     {
       tmp = *cmd;
@@ -190,17 +208,25 @@ void    ft_new_prompt(char **cmd, char type_quote)
       *cmd = ft_strjoin(tmp, line);
       free(tmp);
     }
-    free(line);
-    if (!(type_quote = ft_count_quote(*cmd)))
+    // free(line);
+    // (!(type_quote = ft_count_quote(*cmd) && (type_quote == '\\' ? nb_backslah++ : nb_backslah)))
+    // => First part of the condition (if) checks if the quotes are closed this time
+    // => And also checks if the 
+    if (!(type_quote = ft_count_quote(*cmd))
+      || (ft_strlen(line) == 0 && type_quote == '\\'))
+      //  if (((!(type_quote = ft_count_quote(*cmd))) && (type_quote == '\\' && ft_strlen(line) == 0 ? nb_backslah++ : nb_backslah))
+      // || (nb_backslah == 2 || (ft_strlen(line) == 0 && nb_backslah == 1)))
       break;
+    free(line);
   }
 }
 
 /*
 *** - Aim of the function :
 *** - First GNL that collects the line on the standard entry
-*** - then checks if dquote is needed (ft_manage_dquote)
-*** - If so, then parse the quotes
+*** - then checks if dquote or squote is needed (ft_manage_dquote)
+*** - then checks if the line ends with \
+*** - If yes for any of the above, print the next then parse the quotes
 */
 void    ft_get_entire_line(char **cmd)
 {
@@ -215,8 +241,8 @@ void    ft_get_entire_line(char **cmd)
     exit(1);
   }
   else if (*cmd && ft_strlen(*cmd) > 0)
-    if ((type_quote = ft_count_quote(*cmd)))
-      ft_new_prompt(cmd, type_quote);
+      if ((type_quote = ft_count_quote(*cmd)))
+          ft_new_prompt(cmd, type_quote);
 }
 
 /*
