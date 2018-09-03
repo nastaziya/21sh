@@ -73,8 +73,10 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
   while (s && *s)
   {
     current = type_of_token(s);
+    // Lex the redirection
     if ((*s == '>' || *s == '<') && ft_isdigit(*(s - 1)))
       add_token_to_lexer(lexer, prev, s - prev, T_IO_NUMB);
+    // Tokenize properly the quotes
     else if ((*s == '"' || *s == '\'') && *(s - 1) != '\\')
     {
       prev = s;
@@ -86,24 +88,26 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
       if (!(*(s+1) >= 8 && *(s+1) <= 13) && *(s+1) != 32)
       {
         ++s;
-        //loops until the end of the word, and if encounters \n after \, skip it => (*s == '\n' && *(s-1) == '\\' ? ++s : s) part
-        while ((*s == '\n' && *(s-1) == '\\' ? ++s : s) && !(*s >= 8 && *s <= 13) && *s != 32 && *s)//(s = (*s == '\\' ? s + 2 : s)) && 
+        //loops until the end of the word, and if encounters '\n' after \, skip it => (*s == '\n' && *(s-1) == '\\' ? ++s : s) part
+        while ((*s == '\n' && *(s-1) == '\\' ? ++s : s) && !(*s >= 8 && *s <= 13) && *s != 32 && *s)
           ++s;
-        // add_token_to_lexer(lexer, prev, s - prev, T_WORD);
       }
-      // else if ((((*s == '"') && *(s - 1) != '\\') || *s == '\'') && prev != s)
+      // What is under, important to avoid tokenizing too far in the string (when i go too far)
       if (prev != s)
             add_token_to_lexer(lexer, prev, ++s - prev, T_WORD);
       quote_done = 1;
     }
+    // Management of the \ at the end of the string, when not inside the word sticking the quotes : " bla"oui\ <-
     else if (*s == '\n' && *(s-1) == '\\')
     {
       ++s;
       continue ;
     }
+    // Tokenize the normal word
     else if (current.op != 0 && prev != s)
             add_token_to_lexer(lexer, prev, s - prev, T_WORD);
-    // Allows to advance and tokenize everything that is not a word, when quote ends, I use it to advance too because it won't lex
+    // Allows to advance and tokenize everything that is not a word.
+    // when quotes are present, I use it to advance too because it won't lex
     if (current.op != 0 || quote_done == 1)
     {
       s += current.size;
@@ -113,11 +117,13 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
       quote_done = 0;
     }
     else
+    // If nothing has been found, advance to the next char
       ++s;
   }
+  // Last tokenization if there are things left
   if (prev != s)
     add_token_to_lexer(lexer, prev, s - prev, T_WORD);
-  return 1;
+  return (1);
 }
 
 void      print(const t_lexer* lexer)
@@ -132,10 +138,10 @@ void      print(const t_lexer* lexer)
 /*
 *** - Aim of the function :
 *** - The aim is to check if impair number of quotes :
-*** -  " ' ` or ` inside "" or " (impair or pair number of dquotes)
+*** -  " ' (impair or pair number of dquotes)
 *** - if everything's allright, returns 0
-*** - if there is an impair number of ` inside "", then returns -
 *** - Otherwise, returns the corresponding char
+*** - And checks if the string ends by \ -> if yes, returns \
 */
 char         ft_count_quote(char *str)
 {
@@ -148,7 +154,8 @@ char         ft_count_quote(char *str)
     {
       type_quote = *str;
       while (++str && *str)
-        if ((*str == type_quote && *(str - 1) != '\\' && type_quote != '\'') || (type_quote == '\'' && *str == '\''))
+        if ((*str == type_quote && *(str - 1) != '\\' && type_quote != '\'')
+          || (type_quote == '\'' && *str == '\''))
           break;
       if (!*str)
         return (type_quote);
@@ -159,10 +166,7 @@ char         ft_count_quote(char *str)
       ++str;
   }
   if (!*str && *(str - 1) == '\\')
-  // {
-    // printf("jepassededans");
     return ('\\');
-  // }
   return (0);
 }
 
@@ -198,7 +202,6 @@ void    ft_new_prompt(char **cmd, char type_quote)
   {
     ft_manage_prompt(type_quote);
     ret = get_next_line(0, &line);
-    // printf("\ndebug_line: %zu\n", ft_strlen(line));
     if (line && ft_strlen(line) > 0)
     {
       tmp = *cmd;
@@ -208,14 +211,9 @@ void    ft_new_prompt(char **cmd, char type_quote)
       *cmd = ft_strjoin(tmp, line);
       free(tmp);
     }
-    // free(line);
-    // (!(type_quote = ft_count_quote(*cmd) && (type_quote == '\\' ? nb_backslah++ : nb_backslah)))
-    // => First part of the condition (if) checks if the quotes are closed this time
-    // => And also checks if the 
-    if (!(type_quote = ft_count_quote(*cmd))
-      || (ft_strlen(line) == 0 && type_quote == '\\'))
-      //  if (((!(type_quote = ft_count_quote(*cmd))) && (type_quote == '\\' && ft_strlen(line) == 0 ? nb_backslah++ : nb_backslah))
-      // || (nb_backslah == 2 || (ft_strlen(line) == 0 && nb_backslah == 1)))
+    // => First part of the condition (if) checks if the quotes are closed
+    // => And also checks if the \ is present again at the end of the line
+    if (!(type_quote = ft_count_quote(*cmd)) || (ft_strlen(line) == 0 && type_quote == '\\'))
       break;
     free(line);
   }
@@ -264,7 +262,5 @@ t_lexer   final_tokens(void)
     if (!string_to_lexer(cmd, &lexer))
       printf("error !\n");
   free(cmd);
-  //print(&lexer);
-  //free_the_content_array_token(&lexer); free lexer 
   return lexer;
 }
