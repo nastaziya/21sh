@@ -88,7 +88,9 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
       if (!(*(s+1) >= 8 && *(s+1) <= 13) && *(s+1) != 32)
       {
         ++s;
-        //loops until the end of the word, and if encounters '\n' after \, skip it => (*s == '\n' && *(s-1) == '\\' ? ++s : s) part
+        //loops until the end of the word, and if encounters '\n' after \, skip it 
+        // which is only when the user presses enter and continues the string afterward
+        // => (*s == '\n' && *(s-1) == '\\' ? ++s : s) part
         while ((*s == '\n' && *(s-1) == '\\' ? ++s : s) && !(*s >= 8 && *s <= 13) && *s != 32 && *s)
           ++s;
       }
@@ -138,7 +140,7 @@ void      print(const t_lexer* lexer)
 /*
 *** - Aim of the function :
 *** - The aim is to check if impair number of quotes :
-*** -  " ' (impair or pair number of dquotes)
+*** -  " ' (impair or pair number of dquotes or squotes)
 *** - if everything's allright, returns 0
 *** - Otherwise, returns the corresponding char
 *** - And checks if the string ends by \ -> if yes, returns \
@@ -211,7 +213,7 @@ void    ft_new_prompt(char **cmd, char type_quote)
       *cmd = ft_strjoin(tmp, line);
       free(tmp);
     }
-    // => First part of the condition (if) checks if the quotes are closed
+    // => First part of the condition (if) checks if the quotes are now closed
     // => And also checks if the \ is present again at the end of the line
     if (!(type_quote = ft_count_quote(*cmd)) || (ft_strlen(line) == 0 && type_quote == '\\'))
       break;
