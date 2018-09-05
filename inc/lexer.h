@@ -1,8 +1,9 @@
 #ifndef LEXER_H
 # define LEXER_H
 
-# include <stdio.h>
-# include <string.h>
+
+# include  	"../libft/libft.h"
+
 #define LEXER_INITIAL_CAPACITY 100
 
     typedef enum
