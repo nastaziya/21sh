@@ -48,6 +48,7 @@ void	all_exec(char **environ)
 	while (42)
 	{
 		lex = final_tokens();
+		// final_tokens(&lex);
 		print(&lex);
 		command_init(&cmd);
 		add_simple_command(&cmd, lex);
