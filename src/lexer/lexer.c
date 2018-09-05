@@ -85,7 +85,7 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
         if ((*s == type_quote && *(s - 1) != '\\' && type_quote != '\'') || (type_quote == '\'' && *s == '\''))
               break;
       //if there are words after the closing quote, continue
-      printf("<char if qui bug : %c >", *s);
+      // printf("<char if qui bug : %c >", *s);
       if (!(*(s+1) >= 8 && *(s+1) <= 13) && *(s+1) != 32)
       {
         ++s;
@@ -102,7 +102,7 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
       if (prev != s)//&& *(s-1) != '"'
       {
             // printf("je suis passe |%s - %s|", prev, s);
-            printf("je suis passe |%s|", prev);
+            // printf("je suis passe |%s|", prev);
             ++s;
             add_token_to_lexer(lexer, prev, s - prev, T_WORD);
                   // prev = s;
@@ -113,14 +113,14 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
     // Management of the \ at the end of the string, when not inside the word sticking the quotes : " bla"oui\ <-
     else if (*s == '\n' && *(s-1) == '\\')
     {
-      printf(" oups la gaffe ");
+      // printf(" oups la gaffe ");
       ++s;
       continue ;
     }
     // Tokenize the normal word
     else if (current.op != 0 && prev != s)
     {
-            printf(" je suis passe merde");
+            // printf(" je suis passe merde");
 
         //  printf("je suis passe |%s - %s|", prev, s);
             add_token_to_lexer(lexer, prev, s - prev, T_WORD);
@@ -129,20 +129,20 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
     // when quotes are present, I use it to advance too because it won't lex
     if (current.op != 0 || quote_done == 1)
     {
-      printf(" je suis la-, current.size: %d", current.size);
+      // printf(" je suis la-, current.size: %d", current.size);
       s += current.size;
       if (current.type != T_EAT)
       {
-        printf("Fait chier");
+        // printf("Fait chier");
         add_token_to_lexer(lexer, current.op, current.size, current.type);
       }
       prev = s;
-      printf("youhou: |%s| ---", prev);
+      // printf("youhou: |%s| ---", prev);
       quote_done = 0;
     }
     else
     {
-      printf("++s final");
+      // printf("++s final");
     // If nothing has been found, advance to the next char
       ++s;
     }
@@ -150,7 +150,7 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
   // Last tokenization if there are things left
   if (prev != s && *(s-1) != '"')
   {
-    printf(" jamais ici");
+    // printf(" jamais ici");
     add_token_to_lexer(lexer, prev, s - prev, T_WORD);
   }
   return (1);
