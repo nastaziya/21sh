@@ -134,7 +134,7 @@ char         ft_count_quote(char *str)
   type_quote = 0;
   while (str && *str)
   {
-    if ((*str == '"' || *str == '\'' || *str == '`') && *(str - 1) != '\\')
+    if ((*str == '"' || *str == '\'' || *str == '`') &&  *(str - 1) != '\\')
     {
       type_quote = *str;
       while (++str && *str)

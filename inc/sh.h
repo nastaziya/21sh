@@ -25,5 +25,9 @@ void	path_str(char **envs, char ***paths);
 int		exec(char *path, char **str, char **env);
 int		error_exec_or_exec(char **paths, char *path, char **str, char **env);
 void	free_str(char **str);
+void	free_struct(t_command *cmd, t_lexer lex);
+void	free_str_2(char **str, int size);
+void      free_the_op_content_array_token(t_lexer *lexer);
+char	**expense_cmd(t_command cmd, t_env_tools env, int i);
 
 #endif

@@ -24,6 +24,21 @@ void	free_str(char **str)
 	str = NULL;
 }
 
+void	free_str_2(char **str, int size)
+{
+	int	i;
+
+	i = 0;
+	while (i < size)
+	{
+		if (str[i] != NULL)
+			free(str[i]);
+		i++;
+	}
+	free(str);
+	str = NULL;
+}
+
 char	**copy_env(char **environ, int size)
 {
 	char	**env;
