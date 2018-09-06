@@ -28,5 +28,8 @@ void	free_struct(t_command *cmd, t_lexer lex);
 void	free_str_2(char **str, int size);
 void      free_the_op_content_array_token(t_lexer *lexer);
 char	**expense_cmd(t_command cmd, t_env_tools env, int i);
+char	*env_var(t_env_tools env, char *str, int size);
+int		size_env_var(char *tmp, int i);
+
 
 #endif
