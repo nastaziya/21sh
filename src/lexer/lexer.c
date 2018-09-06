@@ -65,24 +65,26 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
 {
   t_oplist    current;
   int         quote_done;
-  const char* prev;
+  const char  *prev;
   char        type_quote;
+  const char  *start;
 
   quote_done = 0;
   prev = s;
+  start = s;
   while (s && *s)
   {
     current = type_of_token(s);
     // Lex the redirection
-    if ((*s == '>' || *s == '<') && ft_isdigit(*(s - 1)))
+    if ((*s == '>' || *s == '<') && (s - start > 0 ? ft_isdigit(*(s - 1)) : 0))
       add_token_to_lexer(lexer, prev, s - prev, T_IO_NUMB);
     // Tokenize properly the quotes
-    else if ((*s == '"' || *s == '\'') && *(s - 1) != '\\')
+    else if ((*s == '"' || *s == '\'') && (s - start > 0 ? *(s - 1) != '\\' : *s))
     {
       prev = s;
       type_quote = *s;
       while (*s && ++s)
-        if ((*s == type_quote && *(s - 1) != '\\' && type_quote != '\'') || (type_quote == '\'' && *s == '\''))
+        if ((*s == type_quote && type_quote != '\'' && (s - start > 0 ? *(s - 1) != '\\' : *s)) || (type_quote == '\'' && *s == '\''))
               break;
       //if there are words after the closing quote, continue
       // printf("<char if qui bug : %c >", *s);
@@ -148,11 +150,8 @@ int       string_to_lexer(const char* s, t_lexer* lexer)
     }
   }
   // Last tokenization if there are things left
-  if (prev != s && *(s-1) != '"')
-  {
-    // printf(" jamais ici");
+  if (prev != s)//&& *(s-1) != '"'
     add_token_to_lexer(lexer, prev, s - prev, T_WORD);
-  }
   return (1);
 }
 
@@ -176,11 +175,13 @@ void      print(const t_lexer* lexer)
 char         ft_count_quote(char *str)
 {
   char    type_quote;
+  char    *start;
 
   type_quote = 0;
+  start = str;
   while (str && *str)
-  {
-    if ((*str == '"' || *str == '\'' || *str == '`') && *(str - 1) != '\\')
+  {// a l'origine : && *(str - 1) != '\\'
+    if ((*str == '"' || *str == '\'') && (str - start > 0 ? *(str - 1) != '\\' : *str))// || *str == '`'
     {
       type_quote = *str;
       while (++str && *str)
