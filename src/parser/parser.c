@@ -43,7 +43,8 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 	*j = -1;
 	while (++i < lex.used_size)
 	{
-		if (lex.tokens[i].type == T_SEMI)
+		
+				if (lex.tokens[i].type == T_SEMI)
 		{
 			assign_tok(cmd, lex, j, T_SEMI);
 		}
@@ -58,8 +59,8 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 		else if (i + 1 == lex.used_size)
 			assign_tok(cmd, lex, j, -1);
 	}
-
 }
+
 //a mettre a la norme
 
 void    add_simple_command(t_command *cmd, t_lexer lex)
@@ -71,25 +72,27 @@ void    add_simple_command(t_command *cmd, t_lexer lex)
 	i = -1;
 	j = 0;
 	size_simple_cmd = 0;
-	add_token_val(cmd, lex, &size_simple_cmd);
-	while(++i < lex.used_size && j <= size_simple_cmd)
+	if (parse_errors(lex))
 	{
-		parse_errors(lex, i);
-		if (i == 0 && lex.tokens[i].type == T_WORD)
-			tab_assign(&cmd->command[j], lex, i);
-		else if (lex.tokens[i].type == T_WORD && !is_red(lex, i - 1) &&
-			lex.tokens[i - 1].type != T_IO_NUMB)
-			tab_assign(&cmd->command[j], lex, i);
-		else if (is_red(lex, i) && lex.tokens[i + 1].type == T_WORD)
+		add_token_val(cmd, lex, &size_simple_cmd);
+		while(++i < lex.used_size && j <= size_simple_cmd)
 		{
-			tab_io_assign(&cmd->command[j].redirection, lex, i - 1);//envoyer struct vide ?
-			tab_red_assign(&cmd->command[j].redirection, lex, i, i + 1);
+			
+			if (i == 0 && lex.tokens[i].type == T_WORD)
+				tab_assign(&cmd->command[j], lex, i);
+			else if (lex.tokens[i].type == T_WORD && !is_red(lex, i - 1) &&
+				lex.tokens[i - 1].type != T_IO_NUMB)
+				tab_assign(&cmd->command[j], lex, i);
+			else if (is_red(lex, i) && lex.tokens[i + 1].type == T_WORD)
+			{
+				tab_io_assign(&cmd->command[j].redirection, lex, i - 1);//envoyer struct vide ?
+				tab_red_assign(&cmd->command[j].redirection, lex, i, i + 1);
+			}
+			else if(lex.tokens[i + 1].type != T_WORD && is_op(lex,i))
+				*cmd->command[j + 1].cmd_simple = NULL;
+			else if (!is_red(lex, i) && lex.tokens[i].type != T_IO_NUMB &&
+				lex.tokens[i].type != T_WORD)
+				j++;
 		}
-		else if(lex.tokens[i + 1].type != T_WORD && is_op(lex,i))
-			*cmd->command[j + 1].cmd_simple = NULL;
-		else if (!is_red(lex, i) && lex.tokens[i].type != T_IO_NUMB &&
-			lex.tokens[i].type != T_WORD)
-			j++;
-		
 	}
 }
