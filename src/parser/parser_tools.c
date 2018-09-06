@@ -69,7 +69,10 @@ void	free_struct(t_command *cmd, t_lexer lex)
 	i = 0;
 	while(i < cmd->used_space)
 	{
-		free_str(cmd->command[i].cmd_simple);
+		if (cmd->command[i].used_space > 0)
+		{
+			free_str(cmd->command[i].cmd_simple);
+		}
 		free_str_2(cmd->command[i].redirection.red,
 		cmd->command[i].redirection.used_space);
 		free_str_2(cmd->command[i].redirection.file, 

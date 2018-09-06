@@ -9,7 +9,7 @@ void print_array(int size, char **cmd)
 	while(i < size)
 	{
 		
-		printf("commdanda : %s\n",cmd[i]);
+		printf("%s\n",cmd[i]);
 		i++;
 	}
 }
@@ -27,7 +27,6 @@ void print_array_int(int size, int *cmd)
 
 void print_struct(t_command cmd)
 {
-	// int i = 0;
 	int j = 0;
 	
 	while (j < cmd.used_space)

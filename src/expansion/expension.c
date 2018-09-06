@@ -26,7 +26,7 @@ char	*ft_strdup_without_char(char *str, char c)
 	dest[j] = '\0';
 	return (dest);
 }
-
+/*
 char	*ft_strdup_without_quotes(char *av, int len, int boolean)
 {
 	char	*ret;
@@ -49,7 +49,7 @@ char	*ft_strdup_without_quotes(char *av, int len, int boolean)
 		free(tmp);
 	}
 	return (ret);
-}
+}*/
 
 char	*env_var(t_env_tools env, char *str, int size)
 {
@@ -116,7 +116,7 @@ void treat_value_env(char **temp,  t_env_tools env)
             i = i + size_env_var(*temp, i);
             free(val_env);
             free(val_expended);
-             val_expended = ft_strsub(*temp, i, ft_strlen(*temp) - ft_strlen(tmp_var));
+            val_expended = ft_strsub(*temp, i, ft_strlen(*temp) - ft_strlen(tmp_var));
             val_env = ft_strjoin(tmp_var2, val_expended);
             free(*temp);
             free(tmp_var2);

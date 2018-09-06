@@ -29,7 +29,7 @@ void    tab_io_assign(t_red *redir, t_lexer lex, int j)
 		while(++i < redir->used_space)
 			redir->fd[i] = temp[i];
 		free(temp);
-	if (lex.tokens[j].type == T_IO_NUMB)
+	if (j >= 0 && lex.tokens[j].type == T_IO_NUMB)
 		redir->fd[redir->used_space] =  ft_atoi(lex.tokens[j].content);
 	else
 		redir->fd[redir->used_space] = 1;

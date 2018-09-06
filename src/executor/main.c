@@ -57,8 +57,8 @@ void	all_exec(char **environ)
 		print(&lex);
 		command_init(&cmd);
 		add_simple_command(&cmd, lex);
-		//print_struct(cmd);
-		check_op(cmd, &env);
+		print_struct(cmd);
+		//check_op(cmd, &env);
 		free_the_op_content_array_token(&lex);
 		free_struct(&cmd, lex);
 		//free(lex.tokens);
