@@ -82,7 +82,7 @@ void    add_simple_command(t_command *cmd, t_lexer lex)
 			tab_assign(&cmd->command[j], lex, i);
 		else if (is_red(lex, i) && lex.tokens[i + 1].type == T_WORD)
 		{
-			tab_io_assign(&cmd->command[j].redirection, lex, i - 1);
+			tab_io_assign(&cmd->command[j].redirection, lex, i - 1);//envoyer struct vide ?
 			tab_red_assign(&cmd->command[j].redirection, lex, i, i + 1);
 		}
 		else if(lex.tokens[i + 1].type != T_WORD && is_op(lex,i))
@@ -90,5 +90,6 @@ void    add_simple_command(t_command *cmd, t_lexer lex)
 		else if (!is_red(lex, i) && lex.tokens[i].type != T_IO_NUMB &&
 			lex.tokens[i].type != T_WORD)
 			j++;
+		
 	}
 }
