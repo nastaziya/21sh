@@ -6,14 +6,14 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/09/06 17:26:06 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2018/09/07 14:48:56 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "../../inc/sh.h"
 
-void		free_the_content_array_token(t_lexer* lexer)
+void		free_the_content_array_token(t_lexer *lexer)
 {
 	int	i;
 
@@ -30,7 +30,7 @@ void		lexer_init(t_lexer *lexer)
 	lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity);
 }
 
-void		add_token_to_lexer(t_lexer* lexer, const char* text,
+void		add_token_to_lexer(t_lexer *lexer, const char *text,
 				int text_size, e_token_type type)
 {
 	t_lexer_token	item;
@@ -49,7 +49,7 @@ void		add_token_to_lexer(t_lexer* lexer, const char* text,
 		lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity + 1);
 		if (lexer->tokens == NULL)
 			exit(EXIT_FAILURE);
-		while(++i < lexer->used_size)
+		while (++i < lexer->used_size)
 			lexer->tokens[i] = temp[i];
 		free(temp);
 	}
@@ -57,7 +57,7 @@ void		add_token_to_lexer(t_lexer* lexer, const char* text,
 	++lexer->used_size;
 }
 
-t_oplist		type_of_token(const char* s)
+t_oplist	type_of_token(const char *s)
 {
 	const t_oplist		*ex_tok;
 	t_oplist			not_found;
@@ -67,15 +67,19 @@ t_oplist		type_of_token(const char* s)
 	while (ex_tok && ex_tok->op)
 	{
 		if (ft_strncmp(s, ex_tok->op, ex_tok->size) == 0)
-			return *ex_tok;
+			return (*ex_tok);
 		++ex_tok;
 	}
 	return (not_found);
 }
 
-// void			ft_manage_quote_string_lexer(const char* s, t_lexer* lexer, int *quote, const char *prev, const char *start)
-// faire struct pour reduire taille
-int				string_to_lexer(const char* s, t_lexer* lexer)
+/*
+*** - void ft_manage_quote_string_lexer(const char* s, t_lexer* lexer,
+*** - int *quote, const char *prev, const char *start)
+*** -  faire struct pour reduire taille
+*/
+
+int			string_to_lexer(const char *s, t_lexer *lexer)
 {
 	t_oplist	current;
 	int			quote_done;
@@ -93,15 +97,14 @@ int				string_to_lexer(const char* s, t_lexer* lexer)
 			add_token_to_lexer(lexer, prev, s - prev, T_IO_NUMB);
 		else if ((*s == '"' || *s == '\'') && (s - start > 0 ? *(s - 1) != '\\' : *s))
 		{
-			// prev = s;
 			type_quote = *s;
 			while (*s && ++s)
 				if ((*s == type_quote && type_quote != '\'' && (s - start > 0 ? *(s - 1) != '\\' : *s)) || (type_quote == '\'' && *s == '\''))
-					break;
-      		if (*(s+1) && !(*(s+1) >= 8 && *(s+1) <= 13) && *(s+1) != 32 && *(s+1) != '"' && *(s+1) != '\'')
+					break ;
+			if (*(s + 1) && !(*(s + 1) >= 8 && *(s + 1) <= 13) && *(s + 1) != 32 && *(s + 1) != '"' && *(s + 1) != '\'')
 			{
 				++s;
-				while ((*s == '\n' && *(s-1) == '\\' ? ++s : s) && !(*s >= 8 && *s <= 13) && *s != 32 && *s)
+				while ((*s == '\n' && *(s - 1) == '\\' ? ++s : s) && !(*s >= 8 && *s <= 13) && *s != 32 && *s)
 					++s;
 				s = (!*s ? --s : s);
 			}
@@ -112,7 +115,7 @@ int				string_to_lexer(const char* s, t_lexer* lexer)
 			}
 			quote_done = 1;
 		}
-		else if (*s == '\n' && *(s-1) == '\\')
+		else if (*s == '\n' && *(s - 1) == '\\')
 		{
 			++s;
 			continue ;
@@ -135,24 +138,34 @@ int				string_to_lexer(const char* s, t_lexer* lexer)
 	return (1);
 }
 
-void			print(const t_lexer* lexer)
+/*
+*** - I replaced the for loop into a while one, need to check if it is
+*** - ++i inside the while or ++i after as I did, I think it's ok that way
+*** - Checked, it's ok now;
+*/
+
+void		print(const t_lexer *lexer)
 {
 	int	i;
 
 	i = 0;
-	for (i = 0; i < lexer->used_size; ++i)
+	while (i < lexer->used_size)
+	{
 		printf("{ %s (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
+		++i;
+	}
 	printf("\n");
 }
 
 /*
- *** - Aim of the function :
- *** - The aim is to check if impair number of quotes :
- *** -  " ' (impair or pair number of dquotes or squotes)
- *** - if everything's allright, returns 0
- *** - Otherwise, returns the corresponding char
- *** - And checks at the end if the string ends by \ -> if yes, returns \
- */
+*** - Aim of the function :
+*** - The aim is to check if impair number of quotes :
+*** -  " ' (impair or pair number of dquotes or squotes)
+*** - if everything's allright, returns 0
+*** - Otherwise, returns the corresponding char
+*** - And checks at the end if the string ends by \ -> if yes, returns \
+*/
+
 char		ft_count_quote(char *str)
 {
 	char	type_quote;
@@ -170,7 +183,7 @@ char		ft_count_quote(char *str)
 				if ((*str == type_quote && *(str - 1) != '\\'
 					&& type_quote != '\'')
 						|| (type_quote == '\'' && *str == '\''))
-					break;
+					break ;
 			if (!*str)
 				return (type_quote);
 			else
@@ -179,15 +192,14 @@ char		ft_count_quote(char *str)
 		else
 			++str;
 	}
-	if (!*str && *(str - 1) == '\\')
-		return ('\\');
-	return (0);
+	return (!*str && *(str - 1) == '\\' ? '\\' : 0);
 }
 
 /*
  *** - Aim of the function :
  *** - Print the corresponding prompt according the corresponding error
- */
+*/
+
 void		ft_manage_prompt(char type_quote)
 {
 	if (type_quote == '"')
@@ -199,12 +211,13 @@ void		ft_manage_prompt(char type_quote)
 }
 
 /*
- *** - Aim of the function :
- *** - Print new promt and collect from standard entry
- *** - Then reallocs everything to get the new finished string
- *** - And checks if the closing matching quote is found
- *** - if yes, end, otherwise, the loop continues
- */
+*** - Aim of the function :
+*** - Print new promt and collect from standard entry
+*** - Then reallocs everything to get the new finished string
+*** - And checks if the closing matching quote is found
+*** - if yes, end, otherwise, the loop continues
+*/
+
 void		ft_new_prompt(char **cmd, char type_quote)
 {
 	int		ret;
@@ -225,19 +238,21 @@ void		ft_new_prompt(char **cmd, char type_quote)
 			*cmd = ft_strjoin(tmp, line);
 			free(tmp);
 		}
-		if (!(type_quote = ft_count_quote(*cmd)) || (ft_strlen(line) == 0 && type_quote == '\\'))
-			break;
+		if (!(type_quote = ft_count_quote(*cmd))
+			|| (ft_strlen(line) == 0 && type_quote == '\\'))
+			break ;
 		free(line);
 	}
 }
 
 /*
- *** - Aim of the function :
- *** - First GNL that collects the line on the standard entry
- *** - then checks if dquote or squote is needed (ft_manage_dquote)
- *** - then checks if the line ends with \
- *** - If yes for any of the above, print the next then parse the quotes
- */
+*** - Aim of the function :
+*** - First GNL that collects the line on the standard entry
+*** - then checks if dquote or squote is needed (ft_manage_dquote)
+*** - then checks if the line ends with \
+*** - If yes for any of the above, print the next then parse the quotes
+*/
+
 void		ft_get_entire_line(char **cmd, char *str)
 {
 	int		ret;
@@ -255,14 +270,14 @@ void		ft_get_entire_line(char **cmd, char *str)
 			ft_new_prompt(cmd, type_quote);
 }
 
-
 /*
- *** - Aim of the function :
- *** - Function that manages if the lexing ends up with && || |
- *** - if that's the case, we need to show a new prompt, collect a new string
- *** -  and lex it
- */
-int			ft_manage_string_to_lexer(const char* s, t_lexer* lexer)
+*** - Aim of the function :
+*** - Function that manages if the lexing ends up with && || |
+*** - if that's the case, we need to show a new prompt, collect a new string
+*** -  and lex it
+*/
+
+int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer)
 {
 	char	*cmd;
 
@@ -270,34 +285,34 @@ int			ft_manage_string_to_lexer(const char* s, t_lexer* lexer)
 		return (0);
 	while (42)
 	{
-	    if (lexer->used_size > 0 && lexer->tokens[lexer->used_size - 1].content &&
-    	  (!ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "|")
-      	|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "&&")
-        	|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "||")))
+		if (lexer->used_size > 0 && lexer->tokens[lexer->used_size - 1].content
+		&& (!ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "|")
+			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "&&")
+			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "||")))
 		{
-			ft_get_entire_line(&cmd, "debug > ");
+			ft_get_entire_line(&cmd, "Missing arguments > ");
 			if (cmd && ft_strlen(cmd) > 0)
 				if (!string_to_lexer(cmd, lexer))
 					printf("error !\n");
 			free(cmd);
 		}
 		else
-			break;
+			break ;
 	}
 	return (1);
 }
 
-
 /*
- *** - Aim of the function :
- *** - Function that manages first the collect of the line : ft_get_entire_line
- *** - then initialize the lexer : lexer_init
- *** - and fills it : string_to_lexer
- */
-t_lexer   final_tokens(void)
+*** - Aim of the function :
+*** - Function that manages first the collect of the line : ft_get_entire_line
+*** - then initialize the lexer : lexer_init
+*** - and fills it : string_to_lexer
+*/
+
+t_lexer		final_tokens(void)
 {
-	char    *cmd;
-	t_lexer lexer;
+	char	*cmd;
+	t_lexer	lexer;
 
 	ft_get_entire_line(&cmd, "bash > ");
 	lexer_init(&lexer);
@@ -305,5 +320,5 @@ t_lexer   final_tokens(void)
 		if (!ft_manage_string_to_lexer(cmd, &lexer))
 			printf("error !\n");
 	free(cmd);
-	return lexer;
+	return (lexer);
 }
