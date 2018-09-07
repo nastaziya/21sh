@@ -39,26 +39,39 @@
         T_WORD,
       } e_token_type;
 
-    typedef struct s_oplist
+    typedef struct  s_oplist
     {
-      const char*   op;
+      const char    *op;
       int           size;
       e_token_type  type;
-    }              t_oplist;
+    }               t_oplist;
 
-    typedef struct s_lexer_token
+    typedef struct  s_lexer_token
     {
       char          *content;
       int           size;
       e_token_type  type;
-    }              t_lexer_token;
+    }               t_lexer_token;
 
-    typedef struct
+    typedef struct  s_lexer
     {
       t_lexer_token *tokens;
-      int used_size;
-      int capacity;
-    } t_lexer;
+      int           used_size;
+      int           capacity;
+    }               t_lexer;
+
+/*
+*** - struct only built for the norm
+*/
+
+    typedef struct  s_norm
+    {
+      t_oplist      current;
+	    int           quote_done;
+	    const char	  *prev;
+	    char          type_quote;
+	    const char	  *start;
+    }               t_norm;
 
     static const t_oplist existing_token[] =
       {
