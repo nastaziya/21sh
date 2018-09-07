@@ -3,7 +3,7 @@
 void check_op(t_command cmd, t_env_tools *env)
 {
 	int i;
-	int res;
+	// int res;
 	char	*path;
 	char **cmd_expended;
 
