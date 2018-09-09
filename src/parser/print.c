@@ -12,6 +12,7 @@ void print_array(int size, char **cmd)
 		i++;
 	}
 }
+
 void print_array_int(int size, int *cmd)
 {
 	int i;

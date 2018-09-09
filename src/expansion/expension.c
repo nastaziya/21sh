@@ -80,53 +80,7 @@ char	*ft_strdup_without_char_2(char *str, char c, int *j)
     (*j)++;
 	return (dest);
 }
-char	*ft_strdup_without_char_3(char *str, char c)
-{
-    char	*dest;
-	int		i;
-    int j;
 
-	i = 0;
-	j = 0;
-	while (str[++i] && str[i] != c)
-			j++;
-	if ((dest = (char*)malloc(sizeof(char) * (j + 1))) == NULL)
-		return (0);
-	i = 0;
-	j = 0;
-	while (str[++i] && str[i] != c)
-	{
-			dest[j] = str[i];
-			j++;
-	}
-	dest[j] = '\0';
-    j++;
-	return (dest);
-}
-
-/*
-char	*ft_strdup_without_char_3(char *str, char c,  int i)
-{
-    char	*dest;
-	int		i;
-
-	i = i - 1;
-	j = 0;
-	while (str[++i] && str[i] != c)
-			j++;
-	if ((dest = (char*)malloc(sizeof(char) * (j + 1))) == NULL)
-		return (0);
-	i = i - 1;
-	j = 0;
-	while (str[++i] && str[i] != c)
-	{
-			dest[*j] = str[i];
-			j++;
-	}
-	dest[j] = '\0';
-   // (*j)++;
-	return (dest);
-}*/
 void	treat_value_env(char **temp,  t_env_tools env)
 {
     int i;
@@ -160,67 +114,92 @@ int     last_ocurrence_of_char(char *str, char c)
     }
     return (index + 1);
 }
+void print_array_2(char **cmd)
+{
+	int i;
 
+	i = 0;
+	while(cmd[i])
+	{
+		printf("%s\n",cmd[i]);
+		i++;
+	}
+}
+
+int		count_char(char *str, char c)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	if (str)
+	{
+		while (str[i] != '\0')
+		{
+			if (str[i] == c)
+				count++;
+			i++;
+		}
+	}
+	return (count);
+}
 /*
 	exopension treatement
 */
+
+char *treatement_quotes_2(char **str, t_env_tools env)
+{
+    char *res = NULL;
+    int i;
+    char *temp;
+  
+    i = -1;
+    while (++i < size_str(str) - 1)
+    {
+        if (ft_strchr(str[i], '$'))
+            treat_value_env(&str[i], env);
+         if (ft_strchr(str[i + 1], '$'))
+            treat_value_env(&str[i + 1], env);
+        temp = ft_strjoin(str[i],str[i+1]);
+        res = ft_strjoin(res, temp);
+        free(temp);
+        i++;
+    }
+    if (size_str(str) % 2 != 0)
+    {
+        if (ft_strchr(str[size_str(str) - 1], '$'))
+            treat_value_env(&str[size_str(str) - 1], env);
+        res = ft_strjoin(res, str[size_str(str) - 1]);   
+    }
+    return (res);
+}
 char **expense_cmd(t_command cmd, t_env_tools env, int i)
 {
     int j;
     char **res;
     char *temp;
-    int index;
-    char   *temp2;
-    char *test;
-    int last_quote;
-    char *test2;
+    char **without_quotes;
+ 
 
-    index = 0;
     res = (char**)malloc(sizeof(char*) * (cmd.command[i].used_space));
     j = -1;
     while (++j < cmd.command[i].used_space)
     {
         temp = ft_strdup(cmd.command[i].cmd_simple[j]); 
-        last_quote = last_ocurrence_of_char(temp, '\"');
-        if (last_quote != -1)
-            test2 = ft_strsub(temp, last_quote, ft_strlen(temp) - last_quote);
-        while (ft_strchr(temp,'\"'))
+        if (ft_strchr(temp,'\"'))
         {
-            printf("temp : %s\n", temp);
-            if (temp[0] == '\"' && temp[ft_strlen(temp)] == '\"')
+            if (temp[0] == '\"' && temp[ft_strlen(temp) -1] == '\"' &&
+            count_char(temp, '\"') == 2)
             {
-                temp2 = ft_strdup_without_char(temp, '\"');
-                if (ft_strchr(temp,'$'))
-                    treat_value_env(&temp2, env);
-                temp = ft_strdup(temp2);
+               temp = ft_strdup_without_char(cmd.command[i].cmd_simple[j], '\"');
+               if (ft_strchr(temp,'$'))
+                treat_value_env(&temp, env);
             }
             else
             {
-                temp2 = ft_strdup_without_char_3(ft_strchr(temp,'\"'), '\"');
-                if (ft_strchr(temp2,'$'))
-                    treat_value_env(&temp2, env);
-                if ((int)(ft_strchr(temp,'\"') - temp) == 0)
-                {
-                    temp++;
-                    test =  ft_strchr(temp,'\"') + 1;
-                    //free(temp);
-                    temp = ft_strjoin(temp2,test);
-                    // free(test);
-                //free(temp2);
-                }
-                else
-                {
-                    test = ft_strsub(temp, 0 , (int)(ft_strchr(temp,'\"') - temp));
-                  //  free(temp);
-                    temp = ft_strjoin(test, temp2);
-                    printf("temp2 : %s\n", temp2);
-                    if (test2 != NULL)
-                    {
-                            temp = ft_strjoin(temp, test2);
-                    }
-                    free(test);                
-                    free(temp2);
-                    }
+                without_quotes = ft_strsplit(temp, '\"');
+                temp =  treatement_quotes_2(without_quotes, env);
             }
         }
         if (!ft_strchr(cmd.command[i].cmd_simple[j],'\"'))
