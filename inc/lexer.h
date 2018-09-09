@@ -71,6 +71,7 @@
 	    const char	  *prev;
 	    char          type_quote;
 	    const char	  *start;
+      const char    *end;
     }               t_norm;
 
     static const t_oplist existing_token[] =

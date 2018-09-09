@@ -94,20 +94,39 @@ t_oplist	type_of_token(const char *s)
 void		ft_string_to_lexer_quote_management(const char **s, t_lexer *lexer,
 				t_norm *nm)
 {
+	while (42)
+	{
 	nm->type_quote = **s;
 	while (**s && ++(*s))
 		if ((**s == nm->type_quote && nm->type_quote != '\'' &&
 					(*s - nm->start > 0 ? *(*s - 1) != '\\' : **s))
 				|| (nm->type_quote == '\'' && **s == '\''))
 			break ;
-	if (*(*s + 1) && !(*(*s + 1) >= 8 && *(*s + 1) <= 13) && *(*s + 1) != 32
-			&& *(*s + 1) != '"' && *(*s + 1) != '\'')
+	if (*s < nm-> end && (*(*s + 1) == '"' || *(*s + 1) == '\''))
+		break ;
+	else if (**s && *(*s + 1) && !(*(*s + 1) >= 8 && *(*s + 1) <= 13)
+		&& *(*s + 1) != 32)
 	{
 		++(*s);
-		while ((**s == '\n' && *(*s - 1) == '\\' ? ++(*s) : *s)
-				&& !(**s >= 8 && **s <= 13) && **s != 32 && **s)
+		while (**s && ((**s == '\n' && *(*s - 1) == '\\') ? ++(*s) : *s)
+				&& ft_isalnum(*(*s+1)) && *(*s+1) != '"' && *(*s+1) != '\'')
 			++(*s);
-		*s = (!**s ? --(*s) : *s);
+		if ((*(*s+1) == '"') || (*(*s+1) == '\''))
+		{
+			++(*s);
+			continue ;
+		}
+		else if ((*(*s + 1) == 32 || (*(*s+1) >= 8 && *(*s+1) <= 13)))
+			++(*s);			
+	}
+	else if (*s < nm-> end && (*(*s + 1) == 32 || (*(*s+1) >= 8 && *(*s+1) <= 13)))
+			++(*s);
+	if ((**s >= 8 && **s <= 13) || **s == 32 || !**s)
+	{
+		if ((**s >= 8 && **s <= 13) || **s == 32 || !**s)
+			--(*s);
+		break ;
+	}
 	}
 	if (nm->prev != *s)
 	{
@@ -130,9 +149,15 @@ void		ft_string_to_lexer_advance(const char **s, t_lexer *lexer,
 
 void		ft_initialize_nm(const char *s, t_norm *nm)
 {
+	const char *tmp;
+
 	nm->quote_done = 0;
 	nm->prev = s;
 	nm->start = s;
+	tmp = s;
+	while (*tmp)
+		++(tmp);
+	nm->end = tmp;
 }
 
 int			string_to_lexer(const char *s, t_lexer *lexer)
@@ -176,7 +201,7 @@ void		print(const t_lexer *lexer)
 	i = 0;
 	while (i < lexer->used_size)
 	{
-		printf("{ %s (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
+		printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
 		++i;
 	}
 	printf("\n");
