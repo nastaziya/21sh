@@ -6,12 +6,16 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/09/07 15:03:41 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2018/09/07 17:58:18 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "../../inc/sh.h"
+
+/*
+*** - Aim of the function : free the dynamic array for the leaks :-)
+*/
 
 void		free_the_content_array_token(t_lexer *lexer)
 {
@@ -23,12 +27,21 @@ void		free_the_content_array_token(t_lexer *lexer)
 	free(lexer->tokens);
 }
 
+/*
+*** - Aim of the function : initialize the struct
+*/
+
 void		lexer_init(t_lexer *lexer)
 {
 	lexer->used_size = 0;
 	lexer->capacity = LEXER_INITIAL_CAPACITY;
 	lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity);
 }
+
+/*
+*** - Aim of the function : tokeniwze the part of the string to the assigned
+*** - token, regarding the proper size
+*/
 
 void		add_token_to_lexer(t_lexer *lexer, const char *text,
 				int text_size, e_token_type type)
@@ -57,6 +70,11 @@ void		add_token_to_lexer(t_lexer *lexer, const char *text,
 	++lexer->used_size;
 }
 
+/*
+*** - Aim of the function : checks if the points and the next ones equals one
+*** - of the enum, if nothing is found, send an empty struct (not_found);
+*/
+
 t_oplist	type_of_token(const char *s)
 {
 	const t_oplist		*ex_tok;
@@ -73,68 +91,103 @@ t_oplist	type_of_token(const char *s)
 	return (not_found);
 }
 
-/*
-*** - void ft_manage_quote_string_lexer(const char* s, t_lexer* lexer,
-*** - int *quote, const char *prev, const char *start)
-*** -  faire struct pour reduire taille
-*/
+void		ft_string_to_lexer_quote_management(const char **s, t_lexer *lexer,
+				t_norm *nm)
+{
+	while (42)
+	{
+		nm->type_quote = **s;
+		while (**s && ++(*s))
+			if ((**s == nm->type_quote && nm->type_quote != '\'' &&
+						(*s - nm->start > 0 ? *(*s - 1) != '\\' : **s))
+					|| (nm->type_quote == '\'' && **s == '\''))
+				break ;
+		if (*s < nm-> end && (*(*s + 1) == '"' || *(*s + 1) == '\''))
+		{
+			++(*s);
+			continue ;
+		}
+		else if (**s && *(*s + 1) && !(*(*s + 1) >= 8 && *(*s + 1) <= 13)
+			&& *(*s + 1) != 32)
+		{
+			++(*s);
+			while (**s && ((**s == '\n' && *(*s - 1) == '\\') ? ++(*s) : *s)
+					&& ft_isalnum(*(*s+1)) && *(*s+1) != '"' && *(*s+1) != '\'')
+				++(*s);
+			if ((*(*s+1) == '"') || (*(*s+1) == '\''))
+			{
+				++(*s);
+				continue ;
+			}
+			else if ((*(*s + 1) == 32 || (*(*s+1) >= 8 && *(*s+1) <= 13)))
+				++(*s);			
+		}
+		else if (*s < nm-> end && (*(*s + 1) == 32 || (*(*s+1) >= 8 && *(*s+1) <= 13)))
+				++(*s);
+		if ((**s >= 8 && **s <= 13) || **s == 32 || !**s)
+		{
+			if ((**s >= 8 && **s <= 13) || **s == 32 || !**s)
+				--(*s);
+			break ;
+		}
+	}
+	if (nm->prev != *s)
+	{
+		++(*s);
+		add_token_to_lexer(lexer, nm->prev, *s - nm->prev, T_WORD);
+	}
+	nm->quote_done = 1;
+}
+
+void		ft_string_to_lexer_advance(const char **s, t_lexer *lexer,
+				t_norm *nm)
+{
+	*s += nm->current.size;
+	if (nm->current.type != T_EAT)
+		add_token_to_lexer(lexer, nm->current.op,
+				nm->current.size, nm->current.type);
+	nm->prev = *s;
+	nm->quote_done = 0;
+}
+
+void		ft_initialize_nm(const char *s, t_norm *nm)
+{
+	const char *tmp;
+
+	nm->quote_done = 0;
+	nm->prev = s;
+	nm->start = s;
+	tmp = s;
+	while (*tmp)
+		++(tmp);
+	nm->end = tmp;
+}
 
 int			string_to_lexer(const char *s, t_lexer *lexer)
 {
-	t_oplist	current;
-	int			quote_done;
-	const char	*prev;
-	char		type_quote;
-	const char	*start;
+	t_norm nm;
 
-	quote_done = 0;
-	prev = s;
-	start = s;
+	ft_initialize_nm(s, &nm);
 	while (s && *s)
 	{
-		current = type_of_token(s);
-		if ((*s == '>' || *s == '<') && (s - start > 0 ? ft_isdigit(*(s - 1)) : 0))
-			add_token_to_lexer(lexer, prev, s - prev, T_IO_NUMB);
-		else if ((*s == '"' || *s == '\'') && (s - start > 0 ? *(s - 1) != '\\' : *s))
-		{
-			type_quote = *s;
-			while (*s && ++s)
-				if ((*s == type_quote && type_quote != '\'' && (s - start > 0 ? *(s - 1) != '\\' : *s)) || (type_quote == '\'' && *s == '\''))
-					break ;
-			if (*(s + 1) && !(*(s + 1) >= 8 && *(s + 1) <= 13) && *(s + 1) != 32 && *(s + 1) != '"' && *(s + 1) != '\'')
-			{
-				++s;
-				while ((*s == '\n' && *(s - 1) == '\\' ? ++s : s) && !(*s >= 8 && *s <= 13) && *s != 32 && *s)
-					++s;
-				s = (!*s ? --s : s);
-			}
-			if (prev != s)
-			{
-				++s;
-				add_token_to_lexer(lexer, prev, s - prev, T_WORD);
-			}
-			quote_done = 1;
-		}
-		else if (*s == '\n' && *(s - 1) == '\\')
-		{
-			++s;
+		nm.current = type_of_token(s);
+		if ((*s == '>' || *s == '<') && (s - nm.start > 0 ?
+					ft_isdigit(*(s - 1)) : 0))
+			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_IO_NUMB);
+		else if ((*s == '"' || *s == '\'') && (s - nm.start > 0 ?
+					*(s - 1) != '\\' : *s))
+			ft_string_to_lexer_quote_management(&s, lexer, &nm);
+		else if (*s == '\n' && *(s - 1) == '\\' && ++s)
 			continue ;
-		}
-		else if (current.op != 0 && prev != s)
-			add_token_to_lexer(lexer, prev, s - prev, T_WORD);
-		if (current.op != 0 || quote_done == 1)
-		{
-			s += current.size;
-			if (current.type != T_EAT)
-				add_token_to_lexer(lexer, current.op, current.size, current.type);
-			prev = s;
-			quote_done = 0;
-		}
+		else if (nm.current.op != 0 && nm.prev != s)
+			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_WORD);
+		if (nm.current.op != 0 || nm.quote_done == 1)
+			ft_string_to_lexer_advance(&s, lexer, &nm);
 		else
 			++s;
 	}
-	if (prev != s)
-		add_token_to_lexer(lexer, prev, s - prev, T_WORD);
+	if (nm.prev != s)
+		add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_WORD);
 	return (1);
 }
 
@@ -151,7 +204,7 @@ void		print(const t_lexer *lexer)
 	i = 0;
 	while (i < lexer->used_size)
 	{
-		printf("{ %s (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
+		printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
 		++i;
 	}
 	printf("\n");
@@ -181,7 +234,7 @@ char		ft_count_quote(char *str)
 			type_quote = *str;
 			while (++str && *str)
 				if ((*str == type_quote && *(str - 1) != '\\'
-					&& type_quote != '\'')
+							&& type_quote != '\'')
 						|| (type_quote == '\'' && *str == '\''))
 					break ;
 			if (!*str)
@@ -196,8 +249,8 @@ char		ft_count_quote(char *str)
 }
 
 /*
- *** - Aim of the function :
- *** - Print the corresponding prompt according the corresponding error
+*** - Aim of the function :
+*** - Print the corresponding prompt according the corresponding error
 */
 
 void		ft_manage_prompt(char type_quote)
@@ -239,7 +292,7 @@ void		ft_new_prompt(char **cmd, char type_quote)
 			free(tmp);
 		}
 		if (!(type_quote = ft_count_quote(*cmd))
-			|| (ft_strlen(line) == 0 && type_quote == '\\'))
+				|| (ft_strlen(line) == 0 && type_quote == '\\'))
 			break ;
 		free(line);
 	}
