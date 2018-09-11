@@ -62,7 +62,7 @@ char	*ft_strdup_without_char_2(char *str, char c, int *j)
     char	*dest;
 	int		i;
 
-
+    printf("%c\n", c);
 	i = 0;
 	*j = 0;
 	while (str[++i] && str[i] != c)
@@ -155,12 +155,23 @@ char *treatement_quotes_2(char **str, t_env_tools env)
     char *temp;
   
     i = -1;
+    char temp2;
     while (++i < size_str(str) - 1)
     {
-        if (ft_strchr(str[i], '$'))
-            treat_value_env(&str[i], env);
-         if (ft_strchr(str[i + 1], '$'))
+        if (ft_strchr(str[i], '$') && !ft_strchr(str[i], '\'') &&
+        !(ft_strchr(str[i], '$') && ft_strlen(str[i]) == 1))
+        {
+               treat_value_env(&str[i], env);
+        }
+        if (ft_strchr(str[i + 1], '$')  && !ft_strchr(str[i], '\'') &&
+        !(ft_strchr(str[i + 1], '$') && ft_strlen(str[i + 1]) == 1))
             treat_value_env(&str[i + 1], env);
+        if (ft_strchr(str[i], '\'') )
+        {
+            str[i] = ft_strdup_without_char(str[i], '\'');
+        }
+        if (ft_strchr(str[i + 1], '\''))
+            str[i + 1] = ft_strdup_without_char(str[i + 1], '\'');
         temp = ft_strjoin(str[i],str[i+1]);
         res = ft_strjoin(res, temp);
         free(temp);
@@ -168,9 +179,17 @@ char *treatement_quotes_2(char **str, t_env_tools env)
     }
     if (size_str(str) % 2 != 0)
     {
-        if (ft_strchr(str[size_str(str) - 1], '$'))
+        if (ft_strchr(str[size_str(str) - 1], '$') && !ft_strchr(str[i], '\'') &&
+         !(ft_strchr(str[size_str(str) - 1], '$') &&
+         ft_strlen(str[size_str(str) - 1]) == 1))
             treat_value_env(&str[size_str(str) - 1], env);
-        res = ft_strjoin(res, str[size_str(str) - 1]);   
+         if (ft_strchr(str[size_str(str) - 1], '\''))
+         {
+            str[i] = ft_strdup_without_char(str[size_str(str) - 1], '\'');
+          //  temp2 = ft_strchr(str[i],'\'');
+            printf("hooo: %s\n", str[i]);
+         }
+                 res = ft_strjoin(res, str[size_str(str) - 1]);   
     }
     return (res);
 }
@@ -187,7 +206,7 @@ char **expense_cmd(t_command cmd, t_env_tools env, int i)
     while (++j < cmd.command[i].used_space)
     {
         temp = ft_strdup(cmd.command[i].cmd_simple[j]); 
-        if (ft_strchr(temp,'\"'))
+        if (ft_strchr(temp,'\"') || ft_strchr(temp,'\'') )
         {
             if (temp[0] == '\"' && temp[ft_strlen(temp) -1] == '\"' &&
             count_char(temp, '\"') == 2)
@@ -196,13 +215,21 @@ char **expense_cmd(t_command cmd, t_env_tools env, int i)
                if (ft_strchr(temp,'$'))
                 treat_value_env(&temp, env);
             }
+            if (temp[0] == '\'' && temp[ft_strlen(temp) -1] == '\'' &&
+            count_char(temp, '\'') == 2)
+            {
+                printf("hei\n");
+                temp = ft_strdup_without_char(cmd.command[i].cmd_simple[j], '\'');
+            }
             else
             {
                 without_quotes = ft_strsplit(temp, '\"');
+                print_array_2(without_quotes);
                 temp =  treatement_quotes_2(without_quotes, env);
             }
         }
-        if (!ft_strchr(cmd.command[i].cmd_simple[j],'\"'))
+        if (!ft_strchr(cmd.command[i].cmd_simple[j],'\"') &&
+        !ft_strchr(cmd.command[i].cmd_simple[j],'\''))
         {
             temp = ft_strdup(cmd.command[i].cmd_simple[j]);   
             if (ft_strchr(temp,'$'))
