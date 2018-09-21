@@ -1,30 +1,6 @@
 #include "../../inc/sh.h"
 // #include "../../inc/termcap.h"
 
-void	ft_putwchar(wchar_t c)
-{
-	if (c <= 0x7F)
-		ft_putchar(c);
-	else if (c <= 0x7FF)
-	{
-		ft_putchar((c >> 6) | 0xC0);
-		ft_putchar((c & 0x3F) | 0x80);
-	}
-	else if (c <= 0xFFFF)
-	{
-		ft_putchar((c >> 12) | 0xE0);
-		ft_putchar(((c >> 6) & 0x3F) | 0x80);
-		ft_putchar((c & 0x3F) | 0x80);
-	}
-	else if (c <= 0x10FFFF)
-	{
-		ft_putchar((c >> 18) | 0xF0);
-		ft_putchar(((c >> 12) & 0x3F) | 0xE0);
-		ft_putchar(((c >> 6) & 0x3F) | 0x80);
-		ft_putchar((c & 0x3F) | 0x80);
-	}
-}
-
 /*
 *** - Aim of the function :
 *** - Putstr from index i to j
@@ -97,56 +73,62 @@ void		initialize_caps(t_tcap *caps)
 		return ;
 }
 
-void		cursor_position(t_tcap *caps)
+/*
+*** - Aim of the function : Collect at a given moment the
+***	- position of the cursor - I use it to manage the size of 
+*** - the cursor at any given time + at the beginning to 
+*** - manage the history (after)
+*/
+
+void		cursor_position(char curs_pos[2])
 {
-	// wchar_t c;
-	char	ret[10];
-	(void)caps;
-	int y;
-	// int x;
-	char *str = "\033[6n";
-	int		i = 0;
-
-	// c = '\033[6n';
-		ft_bzero(ret, 10);
-	printf("%s", str);
-	// ft_putwchar(c);
-	read(0, ret, 10);
-	while (i < 10)
-	{
-		dprintf(1, "%d-", ret[i]);//+ 48
+	char	ret[9];
+	int		i;
+	
+	i = 0;
+	ft_bzero(ret, 9);
+	write(0, "\033[6n", 4);
+	read(0, ret, 9);
+	curs_pos[1] = ft_atoi(ret + 2) - 1;
+	while (ret[i] && ret[i] != 59)
 		i++;
-	}
-	y = atoi(ret + 2);
-	dprintf(1, "y: %d-", y);//+ 48
-	// dprintf(1, "|%s|\n", ret);
-	// y = ft_atoi(ret);
-	// while (ret[i] && ret[i] != 59)
-	// 	i++;
-	// x = ft_atoi(ret + i + 1);
-	// dprintf(1, "|x - y : %d - %d|", x, y);
-	// char	pos[20];
-	// char	*str;
-	// int		i;
+	curs_pos[0] = ft_atoi(ret + i + 1) - 1;
+}
 
-	// i = 0;
-	// str = "\033[6n";
-	// ft_bzero(pos, 20);
-	// ft_printf("%s", str);
-	// read(0, pos, 20);
-	// info->curs_y = ft_atoi(pos + 2);
-	// while (pos[i] && pos[i] != 59)
-	// 	i++;
-	// info->curs_x = ft_atoi(pos + i + 1);
+/*
+*** - Aim of the function : Collect the size of the
+***	- window when asked
+*/
+void		size_windows(t_tcap *caps)
+{
+	struct winsize *w;
+
+	if (!(w = (struct winsize *)malloc(sizeof(struct winsize))))
+		return ;
+	ioctl(STDOUT_FILENO,  TIOCGWINSZ, w);
+	caps->window_size[0] = w->ws_row - 1;
+	caps->window_size[1] = w->ws_col - 1;
+	free(w);
 }
 
 int 		left_key(t_tcap *caps)
 {
+	// dprintf(1, "cursor: %d", caps->cursor);
 	if (caps->cursor > 0)
 	{
-		if ((caps->res = tgetstr("le", NULL)) == NULL)
-			return (-1);
-		tputs(caps->res, 1, ft_outc);
+		cursor_position(caps->curs_pos);
+		size_windows(caps);
+		if (caps->curs_pos[0] == 0)
+		{
+			// tputs(tgetstr("sf", NULL), 1, ft_outc);
+			tputs(tgoto(tgetstr("cm", NULL), caps->window_size[1], caps->curs_pos[1] - 1), 1, ft_outc);
+		}
+		else
+		{
+			if ((caps->res = tgetstr("le", NULL)) == NULL)
+				return (-1);
+			tputs(caps->res, 1, ft_outc);
+		}
 		caps->cursor--;
 	}
 	return (0);
@@ -156,20 +138,34 @@ int 		right_key(t_tcap *caps)
 {
 	if (caps->cursor < caps->sz_str)
 	{
-		cursor_position(caps);
-		if ((caps->res = tgetstr("nd", NULL)) == NULL)
-			return (-1);
-		tputs(caps->res, 1, ft_outc);
+		cursor_position(caps->curs_pos);
+		size_windows(caps);
+		if (caps->curs_pos[0] == caps->window_size[1])
+		{
+			tputs(tgoto(tgetstr("cm", NULL), 0, caps->curs_pos[1] + 1), 1, ft_outc);
+		}
+		//TO DO : si cursor_position_X == size_window_col, alors monter d'une ligne
+		// + aller ligne du dessous à gauche
+		// sinon, aller à droite
+		else
+		{
+			if ((caps->res = tgetstr("nd", NULL)) == NULL)
+				return (-1);
+			tputs(caps->res, 1, ft_outc);
+		}
 		caps->cursor++;
 	}
 	return (0);
 }
+
 // a gerer, comportement quand print mais que pos curseur != fin
 int			print_normal_char(t_tcap *caps)
 {
 	char		*tmp;
+	char		*tmp2;
 	char		*string;
 	static int	i = 0;
+	char		cursxy[2];
 
 	if (caps->buf[0] >= 0 && caps->buf[0] <= 127 && caps->buf[1] == 0)
 	{
@@ -181,18 +177,85 @@ int			print_normal_char(t_tcap *caps)
 			++i;
 			caps->sz_str++;
 			caps->cursor++;
+			ft_putstr_i_to_j(caps->buf, 0, 3, 1);
+		}
+		else if (caps->cursor < caps->sz_str) // MANAGE CAPS-> cursor and size because gets mess up
+		{
+			// dprintf(1, "[debugdeb: %d - %d]", caps->sz_str, caps->cursor);
+			// saves cursor position
+			// if ((tmp = tgetstr("sc", NULL)) == NULL)
+			// 	return (-1);
+			// tputs(tmp, 1, ft_outc);
+			cursor_position(cursxy);
+			// manages substrings
+			tmp2 = ft_strdup(caps->str[0] + caps->cursor);
+			tmp = ft_strsub(caps->str[0], 0, caps->cursor);
+			free(caps->str[0]);
+			caps->str[0] = ft_strjoin(tmp, string);
+			free(tmp);
+			free(string);
+			tmp = caps->str[0];
+			caps->str[0] = ft_strjoin(tmp, tmp2);
+			free(tmp);
+			// free(tmp2);
+			// clears the terminal
+			if ((tmp = tgetstr("cd", NULL)) == NULL)
+				return (-1);
+			tputs(tmp, 1, ft_outc);
+			//prints the new characters
+			ft_putstr_i_to_j(caps->buf, 0, 3, 1);
+			//print the old part of the string - weird test
+			
+			char *tmp3 = tmp2 - 1;
+			char test[2];
+			int	curs = caps->cursor + 1;
+			while (++tmp3 && *tmp3)
+			{
+				size_windows(caps);
+				cursor_position(test);
+				if (test[0] == caps->window_size[1])
+				{
+					tputs(tgetstr("sf", NULL), 1, ft_outc);
+					tputs(tgoto(tgetstr("cm", NULL), 0, test[1] + 1), 1, ft_outc);
+				}
+				ft_putchar(*tmp3);
+				curs++;
+			}
+			// ft_putstr_fd(tmp2, 1);
+			free(tmp2);
+			// goes back to the old position + goes one right
+			// if ((tmp = tgetstr("rc", NULL)) == NULL)
+			// 	return (-1);
+			// tputs(tmp, 1, ft_outc);
+			tputs(tgoto(tgetstr("cm", NULL), cursxy[0], cursxy[1]), 1, ft_outc);
+			right_key(caps);
+			//
+			// dprintf(1, "[debugfin: %d - %d]", caps->sz_str, caps->cursor);
+			
+			// NEED TO MANAGE PROPERLY THE ++ of the size of string
+			// && cursor for the <- arrow
+			caps->sz_str++;
+			// caps->cursor++;
 		}
 		// faire else if (les compteurs sont differents)
 		else // all the next times
 		{
+			cursor_position(caps->curs_pos);
+			size_windows(caps);
+			if (caps->curs_pos[0] == caps->window_size[1])
+			{
+				tputs(tgetstr("sf", NULL), 1, ft_outc);
+				tputs(tgoto(tgetstr("cm", NULL), 0, caps->curs_pos[1] + 1), 1, ft_outc);
+			}
 			tmp = caps->str[0];
 			caps->str[0] = ft_strjoin(tmp, string);
 			free(tmp);
 			free(string);
 			caps->sz_str++;
 			caps->cursor++;
+			ft_putstr_i_to_j(caps->buf, 0, 3, 1);
 		}
-		ft_putstr_i_to_j(caps->buf, 0, 3, 1);
+		// ft_putstr_i_to_j(caps->buf, 0, 3, 1);
 		// printf(1, "debug: |%s|", caps->str[0]);
 	}
 	// dprintf(1, "came jere - %s\n", caps->str[0]);
