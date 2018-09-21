@@ -213,7 +213,11 @@ int			print_normal_char(t_tcap *caps)
 			{
 				size_windows(caps);
 				cursor_position(test);
-				if (test[0] == caps->window_size[1])
+				
+				//faire bonne condition de mise a la ligne -> quand le bout de la ligne touche la fin de la fenêtre, ajouter une ligne yiha
+				// REGLER PROBLEME FLECHE GAUCHE -> peut pas remonter jusqu'au prompt quand passage de ligne
+
+				if (test[0] + (curs - caps->cursor + 1) == caps->window_size[1])//test[0] == caps->window_size[1]
 				{
 					tputs(tgetstr("sf", NULL), 1, ft_outc);
 					tputs(tgoto(tgetstr("cm", NULL), 0, test[1] + 1), 1, ft_outc);
