@@ -67,9 +67,13 @@ int		reset_termios(t_term *term)
 
 void		initialize_caps(t_tcap *caps, char *prompt)
 {
+	int 	tmp[2];
 	caps->size_prompt = ft_strlen(prompt);
 	caps->sz_str = caps->size_prompt;
 	caps->cursor =  caps->size_prompt;
+	cursor_position(tmp);
+	caps->y_prompt = tmp[1];
+	// dprintf(2, "YEEEEAAAH - %d\n", caps->y_prompt);
 	if (!(caps->str = (char**)malloc(sizeof(char*))))
 		return ;
 }
@@ -228,7 +232,7 @@ int			print_normal_char(t_tcap *caps)
 
 			// gère la ligne en plus en fin, quand la string touche le bas de la fenêtre, au bon moment
 			// et replace le curseur au bon endroit
-			if (((caps->sz_str ) % (caps->window_size[1])) == 0) 
+			if (((caps->sz_str ) % (caps->window_size[1])) == 0 && ((caps->y_prompt + ((caps->sz_str ) / (caps->window_size[1])) - 1) == caps->window_size[0])) 
 			/////////// AJOUTER CONDITION --> NE FAIRE que quand string est en bas de fenêtre
 			{
 				int tst[2];
@@ -239,6 +243,8 @@ int			print_normal_char(t_tcap *caps)
 					tputs(tgoto(tgetstr("cm", NULL), tst[0] - 1, caps->window_size[0]), 1, ft_outc);
 				// scroll up one time
 				tputs(tgetstr("sf", NULL), 1, ft_outc);
+				//diminues the value of the y_prompt, to keep correct track of the y.position of the origin
+				caps->y_prompt--;
 				// replace the cursor at the previous position
 				tputs(tgoto(tgetstr("cm", NULL), tst[0] - 1, tst[1] - 2), 1, ft_outc);
 			}
@@ -261,9 +267,15 @@ int			print_normal_char(t_tcap *caps)
 			if (caps->curs_pos[0] == caps->window_size[1])
 			/////////// AJOUTER CONDITION --> NE FAIRE que quand string est en bas de fenêtre
 			{
-				dprintf(2, "oh non pas la\n");
-				tputs(tgetstr("sf", NULL), 1, ft_outc);
-				tputs(tgoto(tgetstr("cm", NULL), 0, caps->curs_pos[1] + 1), 1, ft_outc);
+				dprintf(2, "DEBUGGY: | %d - %d - %d - %d |", caps->y_prompt, caps->sz_str, (caps->window_size[1]), caps->window_size[0]);
+				if ((caps->y_prompt + ((caps->sz_str ) / (caps->window_size[1])) - 1) == caps->window_size[0])
+				{
+					dprintf(2, "oh non pas la\n");
+					tputs(tgetstr("sf", NULL), 1, ft_outc);
+					//diminues the value of the y_prompt, to keep correct track of the y.position of the origin
+					caps->y_prompt--;
+				}
+				tputs(tgoto(tgetstr("cm", NULL), 0, caps->curs_pos[1]), 1, ft_outc);
 			}
 		}
 	}
