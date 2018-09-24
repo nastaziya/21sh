@@ -18,11 +18,12 @@ typedef struct          s_tcap
 {
     int             sz_str; // size of the str
     int             cursor;//position cursor regarding the string
-    char            window_size[2]; // row in [0], col in [1]
+    int            window_size[2]; // row in [0], col in [1]
     char            buf[3]; // String that contains the return of the read
     char            **str; // string that gets constantly realloc'd    
     char            *res; // return the tgetstr function
-    char            curs_pos[2]; //Cursor position, X in [0], Y in [1]
+    int            curs_pos[2]; //Cursor position, X in [0], Y in [1]
+    int             size_prompt;// size of the prompt
 }                       t_tcap;
 
 /*
