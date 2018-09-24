@@ -87,7 +87,6 @@ void		cursor_position(int curs_pos[2])
 	int		i;
 	
 	i = 0;
-	// tputs(tgetstr("sc", NULL), 1, ft_outc);
 	ft_bzero(ret, 9);
 	write(0, "\033[6n", 4);
 	//ip
@@ -97,29 +96,27 @@ void		cursor_position(int curs_pos[2])
 	while (ret[i] && ret[i] != 59)
 		i++;
 	curs_pos[0] = ft_atoi(ret + i + 1);
-	// tputs(tgetstr("rc", NULL), 1, ft_outc);
 }
 
 /*
 *** - Aim of the function : Collect the size of the
 ***	- window when asked
 */
-void		size_windows(t_tcap *caps) // commence à 0, il y a 82 cases, quand écrit 81
+void		size_windows(t_tcap *caps)
 {
 	struct winsize *w;
 
 	if (!(w = (struct winsize *)malloc(sizeof(struct winsize))))
 		return ;
 	ioctl(STDOUT_FILENO,  TIOCGWINSZ, w);
-	caps->window_size[0] = w->ws_row;// + 1
-	caps->window_size[1] = w->ws_col;// + 1
+	caps->window_size[0] = w->ws_row;
+	caps->window_size[1] = w->ws_col;
 	free(w);
 }
 
 int 		left_key(t_tcap *caps)
 {
 	int  curs_pos[2];
-	// dprintf(1, "cursor: %d", caps->cursor);
 	if (caps->cursor > caps->size_prompt)
 	{
 		cursor_position(curs_pos);
@@ -159,9 +156,6 @@ int 		right_key(t_tcap *caps)
 			dprintf(2, "passe par la porte\n");
 			tputs(tgoto(tgetstr("cm", NULL), 0, curs_pos[1]), 1, ft_outc);
 		}
-		//TO DO : si cursor_position_X == size_window_col, alors monter d'une ligne
-		// + aller ligne du dessous à gauche
-		// sinon, aller à droite
 		else
 		{
 			tputs(tgetstr("nd", NULL), 1, ft_outc);
@@ -174,35 +168,9 @@ int 		right_key(t_tcap *caps)
 	return (0);
 }
 
-// int			right_key_print(t_tcap *caps)
-// {
-// 	char test[2];
-
-// 	if (caps->cursor < (caps->sz_str - caps->size_prompt))
-// 	{
-// 		cursor_position(test);
-// 		size_windows(caps);
-// 		if (caps->curs_pos[0] == caps->window_size[1] && caps->curs_pos[1] == caps->window_size[0] && caps->curs_pos[1] == test[1])
-// 		{
-// 			// dprintf(1, "infos: [%d - %d - %d]", test[1], caps->window_size[0], test[1]);
-// 			tputs(tgetstr("sf", NULL), 1, ft_outc);
-// 			tputs(tgoto(tgetstr("cm", NULL), caps->curs_pos[0] + 1, caps->curs_pos[1] + 1), 1, ft_outc);
-// 			// tputs(tgetstr("up", NULL), 1, ft_outc);
-
-// 		}
-// 		//TO DO : si cursor_position_X == size_window_col, alors monter d'une ligne
-// 		// + aller ligne du dessous à gauche
-// 		// sinon, aller à droite
-// 		else
-// 		{
-// 			if ((caps->res = tgetstr("nd", NULL)) == NULL)
-// 				return (-1);
-// 			tputs(caps->res, 1, ft_outc);
-// 		}
-// 		caps->cursor++;
-// 	}
-// 	return (0);
-// }
+		//TO DO : si cursor_position_X == size_window_col, alors monter d'une ligne
+		// + aller ligne du dessous à gauche
+		// sinon, aller à droite
 
 // a gerer, comportement quand print mais que pos curseur != fin
 int			print_normal_char(t_tcap *caps)
@@ -245,40 +213,18 @@ int			print_normal_char(t_tcap *caps)
 			tputs(tgetstr("cd", NULL), 1, ft_outc);
 			
 			// usleep(50000);
+			//saves cursor position again, but not in the system tmp
 			cursor_position(caps->curs_pos);
-		// 	if (caps->curs_pos[0] == caps->window_size[1] - 1)
-		// 	// Affiche le char
-		// {	
-		// 		write(1, caps->buf, 3);
-		// 		tputs(tgoto(tgetstr("cm", NULL), 0, caps->curs_pos[1] + 1), 1, ft_outc);
-		// }
-		// 	else
-				write(1, caps->buf, 3);
-
-			// char *tmp3 = tmp2 - 1;
-			// int down_count = 0;
-			// while (++tmp3 && *tmp3)
-			// {
-			// 	cursor_position(caps->curs_pos);
-			// 	write(1, tmp3, 1);
-			// 	if (caps->curs_pos[0] == caps->window_size[1])
-			// 	{
-			// 		tputs(tgetstr("sf", NULL), 1, ft_outc);
-			// 		tputs(tgoto(tgetstr("cm", NULL), 0, caps->curs_pos[1] + 1), 1, ft_outc);
-			// 		down_count++;
-			// 	}
-			// }
-			// Affiche le reste
+			// write the new char
+			write(1, caps->buf, 3);
+			// prints the rest (the tmp)
 			write(1, tmp2, caps->sz_str - caps->cursor);
-
+			
 			// Incrémente le compteur
 			caps->sz_str++;
-
+			
 			//replace le curseur
 			tputs(tgetstr("rc", NULL), 1, ft_outc);
-			
-			// dprintf(2, "av/apr [larg : %d - sz_str : %d -  haut: %d - curs_pos: %d]\n", caps->window_size[1], caps->sz_str, caps->window_size[0], caps->curs_pos[1]);
-			// dprintf(2, "debug: %d - calcul %d", (caps->sz_str / caps->window_size[1]), (caps->sz_str - (caps->sz_str / caps->window_size[1])) % (caps->window_size[1]));
 
 			// gère la ligne en plus en fin, quand la string touche le bas de la fenêtre, au bon moment
 			// et replace le curseur au bon endroit
@@ -286,28 +232,19 @@ int			print_normal_char(t_tcap *caps)
 			/////////// AJOUTER CONDITION --> NE FAIRE que quand string est en bas de fenêtre
 			{
 				int tst[2];
-				dprintf(2, "passe par acqui");
+				// saves position
 				cursor_position(tst);
+				// if cursor.y is not at the end of the window.y, go to the line at the bottom
 				if (tst[1] != caps->window_size[0])
 					tputs(tgoto(tgetstr("cm", NULL), tst[0] - 1, caps->window_size[0]), 1, ft_outc);
+				// scroll up one time
 				tputs(tgetstr("sf", NULL), 1, ft_outc);
+				// replace the cursor at the previous position
 				tputs(tgoto(tgetstr("cm", NULL), tst[0] - 1, tst[1] - 2), 1, ft_outc);
-				// caps->cursor++;
-				// tputs(tgetstr("up", NULL), 1, ft_outc)
 			}
-			// down_count++;
-			// while (--down_count > 0)
-			// 	tputs(tgetstr("up", NULL), 1, ft_outc);
-			// DEBUG -> peut être utile
- 		// else if (((caps->sz_str - 1 ) % (caps->window_size[1])) == 0)
-		// {
-		// 	dprintf(2, "\n passé \n ");
-		// 	tputs(tgetstr("up", NULL), 1, ft_outc);
-		// }
 
 			// Déplacer le curseur à droite, et incrémente en même temps
 			right_key(caps);
-			// caps->cursor++;
 			free(tmp2);
 		}
 		else // prints and manages when end of string
