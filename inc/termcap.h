@@ -17,13 +17,14 @@ static char term_buffer[2048];
 typedef struct          s_tcap
 {
     int             sz_str; // size of the str
+    int             size_prompt;// size of the prompt
     int             cursor;//position cursor regarding the string
-    int            window_size[2]; // row in [0], col in [1]
+    int             window_size[2]; // row in [0], col in [1]
     char            buf[3]; // String that contains the return of the read
     char            **str; // string that gets constantly realloc'd    
     char            *res; // return the tgetstr function
-    int            curs_pos[2]; //Cursor position, X in [0], Y in [1]
-    int             size_prompt;// size of the prompt
+    int             curs_pos[2]; //Cursor position, X in [0], Y in [1]
+    int             y_prompt;
 }                       t_tcap;
 
 /*
@@ -39,5 +40,7 @@ typedef struct          s_tab
     char            key2; // char that contains value of buf[2] to be compared
     char            *cmd; // string that contains the cmd for tgetstr
 }                       t_tab;
+
+void            cursor_position(int curs_pos[2]);
 
 #endif
