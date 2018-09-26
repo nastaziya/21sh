@@ -272,7 +272,7 @@ char		ft_count_quote(char *str)
 		else
 			++str;
 	}
-	return (!*str && *(str - 1) == '\\' ? '\\' : 0);
+	return (!*str && manage_back_quote(str, start) ? '\\' : 0);
 }
 
 /*
