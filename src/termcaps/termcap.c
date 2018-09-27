@@ -126,6 +126,7 @@ int 		left_key(t_tcap *caps)
 		cursor_position(curs_pos);
 		size_windows(caps);
 		//
+		// tputs(tgetstr("vi", NULL), 1, ft_outc);
 		dprintf(2, "gauche fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
 
 		if (curs_pos[0] == 1)
@@ -139,6 +140,7 @@ int 		left_key(t_tcap *caps)
 			tputs(tgetstr("le", NULL), 1, ft_outc);
 		}
 		caps->cursor--;
+		// tputs(tgetstr("ve", NULL), 1, ft_outc);
 		//
 		// cursor_position(caps->curs_pos);
 		dprintf(2, "gauche fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
@@ -154,6 +156,7 @@ int 		right_key(t_tcap *caps)
 		cursor_position(curs_pos);
 		size_windows(caps);
 		//
+		// tputs(tgetstr("vi", NULL), 1, ft_outc);
 		dprintf(2, "droite fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
 		if (curs_pos[0] == caps->window_size[1])
 		{
@@ -165,6 +168,7 @@ int 		right_key(t_tcap *caps)
 			tputs(tgetstr("nd", NULL), 1, ft_outc);
 		}
 		caps->cursor++;
+		// tputs(tgetstr("ve", NULL), 1, ft_outc);
 		//
 		// cursor_position(caps->curs_pos);
 		dprintf(2, "droite fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, caps->curs_pos[0], caps->curs_pos[1], caps->window_size[1], caps->sz_str);
@@ -172,11 +176,10 @@ int 		right_key(t_tcap *caps)
 	return (0);
 }
 
-		//TO DO : si cursor_position_X == size_window_col, alors monter d'une ligne
-		// + aller ligne du dessous à gauche
-		// sinon, aller à droite
+/*
+*** - NEED TO NORM THE FUNCTION, BUT WORKS PROPERLY
+*/
 
-// a gerer, comportement quand print mais que pos curseur != fin
 int			print_normal_char(t_tcap *caps)
 {
 	char		*tmp;
@@ -199,6 +202,7 @@ int			print_normal_char(t_tcap *caps)
 		}
 		else if (caps->cursor < caps->sz_str) // Manages when prints char in the middle of string
 		{
+			// tputs(tgetstr("vi", NULL), 1, ft_outc);
 			// saves cursor position
 			tputs(tgetstr("sc", NULL), 1, ft_outc);
 			// manages substrings
@@ -213,6 +217,7 @@ int			print_normal_char(t_tcap *caps)
 			caps->str[0] = ft_strjoin(tmp, tmp2);
 			free(tmp);
 			
+
 			// efface le reste
 			tputs(tgetstr("cd", NULL), 1, ft_outc);
 			
@@ -220,7 +225,7 @@ int			print_normal_char(t_tcap *caps)
 			//saves cursor position again, but not in the system tmp
 			cursor_position(caps->curs_pos);
 			// write the new char
-			write(1, caps->buf, 3);
+			write(1, caps->buf, 4);
 			// prints the rest (the tmp)
 			write(1, tmp2, caps->sz_str - caps->cursor);
 			
@@ -252,6 +257,7 @@ int			print_normal_char(t_tcap *caps)
 			// Déplacer le curseur à droite, et incrémente en même temps
 			right_key(caps);
 			free(tmp2);
+			// tputs(tgetstr("ve", NULL), 1, ft_outc);
 		}
 		else // prints and manages when end of string
 		{
@@ -262,7 +268,9 @@ int			print_normal_char(t_tcap *caps)
 			caps->sz_str++;
 			caps->cursor++;
 			cursor_position(caps->curs_pos);
-			ft_putstr_i_to_j(caps->buf, 0, 3, 1);
+			// tputs(tgetstr("vi", NULL), 1, ft_outc);
+			write(1, caps->buf, 4);
+			// ft_putstr_i_to_j(caps->buf, 0, 3, 1);
 			// dprintf(2, "fin ligne: [%d - %d]\n", caps->curs_pos[0], caps->window_size[1]);
 			if (caps->curs_pos[0] == caps->window_size[1])
 			/////////// AJOUTER CONDITION --> NE FAIRE que quand string est en bas de fenêtre
@@ -277,7 +285,111 @@ int			print_normal_char(t_tcap *caps)
 				}
 				tputs(tgoto(tgetstr("cm", NULL), 0, caps->curs_pos[1]), 1, ft_outc);
 			}
+			// tputs(tgetstr("ve", NULL), 1, ft_outc);
 		}
+	}
+	return (0);
+}
+
+/*
+*** - Aim of the function : Managing of the del key
+*** - Plus realloc properly the string
+*/
+
+int			del_key(t_tcap *caps)
+{
+		char *tmp2;
+		char *tmp;
+	if (caps->cursor > caps->size_prompt)
+	{
+		// tputs(tgetstr("vi", NULL), 1, ft_outc);
+		left_key(caps);
+		// saves cursor position
+		tputs(tgetstr("sc", NULL), 1, ft_outc);
+		// manages substrings
+		tmp2 = ft_strdup(caps->str[0] + (caps->cursor - caps->size_prompt + 1));
+		tmp = ft_strsub(caps->str[0], 0, (caps->cursor - caps->size_prompt));
+		free(caps->str[0]);
+		caps->str[0] = ft_strjoin(tmp, tmp2);
+		free(tmp);
+		// efface le reste
+		tputs(tgetstr("cd", NULL), 1, ft_outc);
+		// prints the rest (the tmp)
+		write(1, tmp2, caps->sz_str - caps->cursor);
+		//replace le curseur
+		tputs(tgetstr("rc", NULL), 1, ft_outc);
+		free(tmp2);
+		//keeps counter correct
+		caps->sz_str--;
+		// prints the cursor back
+		// tputs(tgetstr("ve", NULL), 1, ft_outc);
+	}
+	return (0);
+}
+
+int			home_key(t_tcap *caps)
+{
+	tputs(tgetstr("vi", NULL), 1, ft_outc);
+	while (caps->cursor > caps->size_prompt)
+		left_key(caps);
+	tputs(tgetstr("ve", NULL), 1, ft_outc);
+	return (0);
+}
+
+int			end_key(t_tcap *caps)
+{
+	tputs(tgetstr("vi", NULL), 1, ft_outc);
+	while (caps->cursor < caps->sz_str)
+		right_key(caps);
+	tputs(tgetstr("ve", NULL), 1, ft_outc);
+	return (0);
+}
+
+int			alt_up_key(t_tcap *caps)
+{
+	int		curs_pos[2];
+	
+	size_windows(caps);
+	cursor_position(curs_pos);
+	if (curs_pos[1] > caps->y_prompt) // && curs_pos[1] < ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1] - 1)))
+	{
+		if (curs_pos[0] <= caps->size_prompt && curs_pos[1] == caps->y_prompt + 1)
+			home_key(caps);
+		else
+		{
+			tputs(tgetstr("vi", NULL), 1, ft_outc);
+			tputs(tgetstr("up", NULL), 1, ft_outc);
+			caps->cursor = caps->cursor - caps->window_size[1];
+			tputs(tgetstr("ve", NULL), 1, ft_outc);
+		}
+	}
+	return (0);
+}
+
+
+int			alt_down_key(t_tcap *caps)
+{
+	int		curs_pos[2];
+	
+	size_windows(caps);
+	cursor_position(curs_pos);
+	if (curs_pos[1] < ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1])))) // && curs_pos[1] < ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1] - 1)))
+	{
+		dprintf(2, "curs_pos[1]: %d, calc_complet_y: [%d], calc_alt_down: [%d]\n", curs_pos[1], ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1] - 1))), (caps->sz_str % (caps->window_size[1])));
+		if (curs_pos[1] == ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1])) - 1) && curs_pos[0] > (caps->sz_str % (caps->window_size[1]))) //curs_pos[0] >= (caps->sz_str % (caps->window_size[1])) && 
+		{
+			dprintf(2, "ici mon char");
+			end_key(caps);
+		}
+		else
+		{
+			dprintf(2, "ici ma poule");
+			tputs(tgetstr("vi", NULL), 1, ft_outc);
+			tputs(tgoto(tgetstr("cm", NULL), curs_pos[0] - 1, curs_pos[1]), 1, ft_outc);
+			caps->cursor = caps->cursor + caps->window_size[1];
+			tputs(tgetstr("ve", NULL), 1, ft_outc);
+		}
+		// dprintf(2, "ma biche");
 	}
 	return (0);
 }
@@ -288,10 +400,17 @@ int			print_normal_char(t_tcap *caps)
 */
 t_tab		*tab_termcaps(void)
 {
-	static t_tab ttab[3] = {
-		{&left_key, 27, 91, 68, "le"},
-		{&right_key, 27, 91, 67, "nd"},
-		{NULL, 0, 0, 0, NULL}
+	static t_tab ttab[8] = {
+		{&left_key, 27, 91, 68, 0, "le"},
+		{&right_key, 27, 91, 67, 0, "nd"},
+		{&del_key, 127, 0, 0, 0, "del"},
+		{&home_key, 27, 91, 72, 0, "home"}, // verify if keyboard at school has the same numbers for home
+		{&end_key, 27, 91, 70, 0, "end"},// verify if keyboard at school has the same numbers for end
+		{&alt_up_key, 27, 27, 91, 65, "alt_up"},
+		{&alt_down_key, 27, 27, 91, 66, "alt_down"},
+		// {&alt_right_key, 27, 27, 91, 67, "alt_right"},
+		// {&alt_left_key, 27, 27, 91, 68, "alt_left_key"},
+		{NULL, 0, 0, 0, 0, NULL}
 	};
 
 	return ((t_tab*)ttab);
@@ -322,13 +441,14 @@ int			main(void)
 	while (42)
 	{
 		tmp_tab = (ttab - 1);
-		ft_bzero(caps.buf, 3);
+		ft_bzero(caps.buf, 4);
 		// tputs(tgetstr("ip", NULL), 1, ft_outc);
-		read(0, caps.buf, 3);
+		read(0, caps.buf, 4);
 		while ((++tmp_tab)->cmd)
 		{
 			if (caps.buf[0] == tmp_tab->key0 &&
-				caps.buf[1] == tmp_tab->key1 && caps.buf[2] == tmp_tab->key2)
+				caps.buf[1] == tmp_tab->key1
+				&& caps.buf[2] == tmp_tab->key2 && caps.buf[3] == tmp_tab->key3)
 			{
 				tmp_tab->ptr(&caps);
 				break;
@@ -338,7 +458,7 @@ int			main(void)
 		// if (!tmp_tab->cmd && (!(caps.buf[0] == 82 && caps.buf[1] == 0 && caps.buf[2] == 0 && ((buf_backup[0] == 53 && buf_backup[1] == 59 && buf_backup[2] == 56) || (buf_backup[0] == 53 && buf_backup[1] == 82 && buf_backup[2] == 0)))))
 		if (!tmp_tab->cmd)
 		{
-			dprintf(2, "why: caps.buf[0]: %d, 1: %d, 2: %d\n", caps.buf[0], caps.buf[1], caps.buf[2]);
+			// dprintf(2, "why: caps.buf[0]: %d, 1: %d, 2: %d\n", caps.buf[0], caps.buf[1], caps.buf[2]);
 			print_normal_char(&caps);
 		}
 		// buf_backup[0] = caps.buf[0];
