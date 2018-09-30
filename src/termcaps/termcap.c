@@ -5,12 +5,12 @@
 *** - Aim of the function :
 *** - Putstr from index i to j
 */
-void	ft_putstr_i_to_j(char *str, int i, int j, int fd)
-{
-	--i;
-	while (++i < j)
-		ft_putchar_fd(str[i], fd);
-}
+// void	ft_putstr_i_to_j(char *str, int i, int j, int fd)
+// {
+// 	--i;
+// 	while (++i < j)
+// 		ft_putchar_fd(str[i], fd);
+// }
 
 /*
 *** - Aim of the function :
@@ -87,19 +87,43 @@ void		initialize_caps(t_tcap *caps, char *prompt)
 
 void		cursor_position(int curs_pos[2])
 {
-	char	ret[9];
-	int		i;
+ 	char 	buf[32];
+ 	int		i;
+ 	int 	j;
 	
 	i = 0;
-	ft_bzero(ret, 9);
-	write(0, "\033[6n", 4);
-	//ip
-	// tputs(tgetstr("ip", NULL), 1, ft_outc);
-	read(0, ret, 9);
-	curs_pos[1] = ft_atoi(ret + 2);
-	while (ret[i] && ret[i] != 59)
-		i++;
-	curs_pos[0] = ft_atoi(ret + i + 1);
+	j = 2;
+	ft_bzero(buf, 32);
+	        // fflush(stdout);
+
+	if (write(0, "\x1b[6n", 4) != 4)
+		return ;
+  	while (i < sizeof(buf)-1)
+  	{
+        if (read(0,buf+i,1) != 1)
+        	break;
+        if (buf[i] == 'R')
+        	break;
+        i++;
+    }
+    buf[i] = '\0';
+	
+	// if (buf[0] != 27 || buf[1] != '[')
+	// 	return ;
+
+   // format : [21;64R
+
+	// write(0, "\033[6n", 4);
+	// //ip
+	// // tputs(tgetstr("ip", NULL), 1, ft_outc);
+	// read(0, ret, 9);
+	if (!ft_isdigit(*(buf + 2)))
+		return ;
+	curs_pos[1] = ft_atoi(buf + 2);
+	while (buf[j] && buf[j] != 59)
+		j++;
+	curs_pos[0] = ft_atoi(buf + j + 1);
+	dprintf(2, "DEBUG CURSOR: |%s|, [%d], [%d] -\n", buf + 2, curs_pos[1], curs_pos[0]);
 }
 
 /*
@@ -125,25 +149,38 @@ int 		left_key(t_tcap *caps)
 	{
 		cursor_position(curs_pos);
 		size_windows(caps);
-		//
+		//DEBUG//
+		// dprintf(2, "--[0: %c], [-1: %c], [deb: %c]--", caps->str[0][caps->cursor], caps->str[0][caps->cursor - 1], caps->str[0][caps->cursor - 3]);
+		dprintf(2, "SIZE : %d - %d - %c\n", caps->sz_str, caps->cursor, caps->str[0][caps->cursor- caps->size_prompt - 1]);
+		// int i = -1;
+		// while (++i < caps->cursor)
+		// 	dprintf(2, "|%c - %d|\n", caps->str[0][i], caps->str[0][i]);
+		
 		// tputs(tgetstr("vi", NULL), 1, ft_outc);
-		dprintf(2, "gauche fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
-
-		if (curs_pos[0] == 1)
+		// dprintf(2, "gauche fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
+		if (caps->str[0][caps->cursor] != '\n')
 		{
-			dprintf(2, "passe ici %d", curs_pos[1]);
-			// tputs(tgetstr("sf", NULL), 1, ft_outc);
-			tputs(tgoto(tgetstr("cm", NULL), caps->window_size[1] - 1, curs_pos[1] - 2), 1, ft_outc);
+			if (curs_pos[0] == 1)
+			{
+				// dprintf(2, "passe ici %d", curs_pos[1]);
+				// tputs(tgetstr("sf", NULL), 1, ft_outc);
+				tputs(tgoto(tgetstr("cm", NULL), caps->window_size[1] - 1, curs_pos[1] - 2), 1, ft_outc);
+			}
+			else
+			{
+				tputs(tgetstr("le", NULL), 1, ft_outc);
+			}
 		}
 		else
 		{
-			tputs(tgetstr("le", NULL), 1, ft_outc);
+			dprintf(2, "yiha\n");
+			tputs(tgoto(tgetstr("cm", NULL), (caps->cursor - 1 % caps->window_size[1]), curs_pos[1] - 2), 1, ft_outc);
 		}
 		caps->cursor--;
 		// tputs(tgetstr("ve", NULL), 1, ft_outc);
 		//
 		// cursor_position(caps->curs_pos);
-		dprintf(2, "gauche fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
+		// dprintf(2, "gauche fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
 	}
 	return (0);
 }
@@ -157,7 +194,7 @@ int 		right_key(t_tcap *caps)
 		size_windows(caps);
 		//
 		// tputs(tgetstr("vi", NULL), 1, ft_outc);
-		dprintf(2, "droite fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
+		// dprintf(2, "droite fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
 		if (curs_pos[0] == caps->window_size[1])
 		{
 			dprintf(2, "passe par la porte\n");
@@ -171,7 +208,7 @@ int 		right_key(t_tcap *caps)
 		// tputs(tgetstr("ve", NULL), 1, ft_outc);
 		//
 		// cursor_position(caps->curs_pos);
-		dprintf(2, "droite fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, caps->curs_pos[0], caps->curs_pos[1], caps->window_size[1], caps->sz_str);
+		// dprintf(2, "droite fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, caps->curs_pos[0], caps->curs_pos[1], caps->window_size[1], caps->sz_str);
 	}
 	return (0);
 }
@@ -198,7 +235,7 @@ int			print_normal_char(t_tcap *caps)
 			++i;
 			caps->sz_str++;
 			caps->cursor++;
-			ft_putstr_i_to_j(caps->buf, 0, 3, 1);
+			write(1, caps->buf, 3);
 		}
 		else if (caps->cursor < caps->sz_str) // Manages when prints char in the middle of string
 		{
@@ -225,7 +262,7 @@ int			print_normal_char(t_tcap *caps)
 			//saves cursor position again, but not in the system tmp
 			cursor_position(caps->curs_pos);
 			// write the new char
-			write(1, caps->buf, 4);
+			write(1, caps->buf, 3);// write(1, caps->buf, 4); ??
 			// prints the rest (the tmp)
 			write(1, tmp2, caps->sz_str - caps->cursor);
 			
@@ -383,10 +420,13 @@ int			alt_down_key(t_tcap *caps)
 		}
 		else
 		{
-			dprintf(2, "ici ma poule");
+			// dprintf(2, "ici ma poule");
 			tputs(tgetstr("vi", NULL), 1, ft_outc);
-			tputs(tgoto(tgetstr("cm", NULL), curs_pos[0] - 1, curs_pos[1]), 1, ft_outc);
-			caps->cursor = caps->cursor + caps->window_size[1];
+			// tputs(tgoto(tgetstr("cm", NULL), curs_pos[0] - 1, curs_pos[1]), 1, ft_outc);
+			int i = -1;
+			while (++i < caps->window_size[1])
+				right_key(caps);
+			// caps->cursor = caps->cursor + caps->window_size[1];
 			tputs(tgetstr("ve", NULL), 1, ft_outc);
 		}
 		// dprintf(2, "ma biche");
@@ -401,16 +441,16 @@ int			alt_down_key(t_tcap *caps)
 t_tab		*tab_termcaps(void)
 {
 	static t_tab ttab[8] = {
-		{&left_key, 27, 91, 68, 0, "le"},
-		{&right_key, 27, 91, 67, 0, "nd"},
-		{&del_key, 127, 0, 0, 0, "del"},
-		{&home_key, 27, 91, 72, 0, "home"}, // verify if keyboard at school has the same numbers for home
-		{&end_key, 27, 91, 70, 0, "end"},// verify if keyboard at school has the same numbers for end
-		{&alt_up_key, 27, 27, 91, 65, "alt_up"},
-		{&alt_down_key, 27, 27, 91, 66, "alt_down"},
+		{&left_key, 27, 91, 68, 0, 0, "le"},
+		{&right_key, 27, 91, 67, 0, 0, "nd"},
+		{&del_key, 127, 0, 0, 0, 0, "del"},
+		{&home_key, 27, 91, 72, 0, 0, "home"}, // verify if keyboard at school has the same numbers for home
+		{&end_key, 27, 91, 70, 0, 0, "end"},// verify if keyboard at school has the same numbers for end
+		{&alt_up_key, 27, 27, 91, 65, 0, "alt_up"},
+		{&alt_down_key, 27, 27, 91, 66, 0, "alt_down"},
 		// {&alt_right_key, 27, 27, 91, 67, "alt_right"},
 		// {&alt_left_key, 27, 27, 91, 68, "alt_left_key"},
-		{NULL, 0, 0, 0, 0, NULL}
+		{NULL, 0, 0, 0, 0, 0, NULL}
 	};
 
 	return ((t_tab*)ttab);
@@ -422,7 +462,8 @@ int			main(void)
 	t_tcap		caps;
 	t_tab		*ttab;
 	t_tab		*tmp_tab;
-
+	int			ret;
+	// static char test[5] ={0, 0, 0, 0, 0};
 	//TEST
 	// char		buf_backup[3];
 
@@ -441,26 +482,37 @@ int			main(void)
 	while (42)
 	{
 		tmp_tab = (ttab - 1);
-		ft_bzero(caps.buf, 4);
+		// fflush(stdout);
+		ft_bzero(caps.buf, 6);
 		// tputs(tgetstr("ip", NULL), 1, ft_outc);
-		read(0, caps.buf, 4);
+		int i = -1;
+		// while (++i < 5)
+		// 	read(0, caps.buf, 1);
+		if ((ret = read(0, caps.buf, 4) < 0))
+			return (1);
 		while ((++tmp_tab)->cmd)
 		{
 			if (caps.buf[0] == tmp_tab->key0 &&
 				caps.buf[1] == tmp_tab->key1
-				&& caps.buf[2] == tmp_tab->key2 && caps.buf[3] == tmp_tab->key3)
+				&& caps.buf[2] == tmp_tab->key2 && caps.buf[3] == tmp_tab->key3
+				&& caps.buf[4] == tmp_tab->key4)
 			{
 				tmp_tab->ptr(&caps);
 				break;
 			}
 		}
-		dprintf(2, "yo: caps.buf[0]: %d, 1: %d, 2: %d\n", caps.buf[0], caps.buf[1], caps.buf[2]);
+		dprintf(2, "yo: caps.buf[0]: %d, 1: %d, 2: %d, 3: %d, 4: %d -- pos_0(X): %d, pos_1(Y): %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4], caps.curs_pos[0], caps.curs_pos[1]);
 		// if (!tmp_tab->cmd && (!(caps.buf[0] == 82 && caps.buf[1] == 0 && caps.buf[2] == 0 && ((buf_backup[0] == 53 && buf_backup[1] == 59 && buf_backup[2] == 56) || (buf_backup[0] == 53 && buf_backup[1] == 82 && buf_backup[2] == 0)))))
-		if (!tmp_tab->cmd)
+		if (!tmp_tab->cmd)//&& caps.buf[1] == 0 && test[4] == 0
 		{
 			// dprintf(2, "why: caps.buf[0]: %d, 1: %d, 2: %d\n", caps.buf[0], caps.buf[1], caps.buf[2]);
 			print_normal_char(&caps);
 		}
+		// test[0] = caps.buf[0];
+		// test[1] = caps.buf[1];
+		// test[2] = caps.buf[2];
+		// test[3] = caps.buf[3];
+		// test[4] = caps.buf[4];
 		// buf_backup[0] = caps.buf[0];
 		// buf_backup[1] = caps.buf[1];
 		// buf_backup[2] = caps.buf[2];
