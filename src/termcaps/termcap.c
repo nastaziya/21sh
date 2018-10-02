@@ -485,7 +485,7 @@ int			main(void)
 		// fflush(stdout);
 		ft_bzero(caps.buf, 5);
 		// tputs(tgetstr("ip", NULL), 1, ft_outc);
-		int i = -1;
+		// int i = -1;
 		// while (++i < 5)
 		// 	read(0, caps.buf, 1);
 		if ((ret = read(0, caps.buf, 4) < 0))
