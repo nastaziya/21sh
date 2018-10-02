@@ -483,7 +483,7 @@ int			main(void)
 	{
 		tmp_tab = (ttab - 1);
 		// fflush(stdout);
-		ft_bzero(caps.buf, 6);
+		ft_bzero(caps.buf, 5);
 		// tputs(tgetstr("ip", NULL), 1, ft_outc);
 		int i = -1;
 		// while (++i < 5)
