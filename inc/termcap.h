@@ -20,7 +20,7 @@ typedef struct          s_tcap
     int             size_prompt;// size of the prompt
     int             cursor;//position cursor regarding the string
     int             window_size[2]; // row in [0], col in [1]
-    char            buf[4]; // String that contains the return of the read
+    char            buf[5]; // String that contains the return of the read
     char            **str; // string that gets constantly realloc'd    
     char            *res; // return the tgetstr function
     int             curs_pos[2]; //Cursor position, X in [0], Y in [1]
@@ -39,6 +39,7 @@ typedef struct          s_tab
     char            key1; // char that contains value of buf[1] to be compared
     char            key2; // char that contains value of buf[2] to be compared
     char            key3; // char that contains value of buf[2] to be compared
+    char            key4;
     char            *cmd; // string that contains the cmd for tgetstr
 }                       t_tab;
 
