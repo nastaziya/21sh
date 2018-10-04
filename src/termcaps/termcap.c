@@ -107,23 +107,13 @@ void		cursor_position(int curs_pos[2])
         i++;
     }
     buf[i] = '\0';
-	
-	// if (buf[0] != 27 || buf[1] != '[')
-	// 	return ;
-
-   // format : [21;64R
-
-	// write(0, "\033[6n", 4);
-	// //ip
-	// // tputs(tgetstr("ip", NULL), 1, ft_outc);
-	// read(0, ret, 9);
 	if (!ft_isdigit(*(buf + 2)))
 		return ;
 	curs_pos[1] = ft_atoi(buf + 2);
 	while (buf[j] && buf[j] != 59)
 		j++;
 	curs_pos[0] = ft_atoi(buf + j + 1);
-	dprintf(2, "DEBUG CURSOR: |%s|, [%d], [%d] -\n", buf + 2, curs_pos[1], curs_pos[0]);
+	// dprintf(2, "DEBUG CURSOR: |%s|, [%d], [%d] -\n", buf + 2, curs_pos[1], curs_pos[0]);
 }
 
 /*
@@ -151,31 +141,44 @@ int 		left_key(t_tcap *caps)
 		size_windows(caps);
 		//DEBUG//
 		// dprintf(2, "--[0: %c], [-1: %c], [deb: %c]--", caps->str[0][caps->cursor], caps->str[0][caps->cursor - 1], caps->str[0][caps->cursor - 3]);
-		dprintf(2, "SIZE : %d - %d - %c\n", caps->sz_str, caps->cursor, caps->str[0][caps->cursor- caps->size_prompt - 1]);
+		// dprintf(2, "SIZE : %d - %d - %c\n", caps->sz_str, caps->cursor, caps->str[0][caps->cursor- caps->size_prompt - 1]);
 		// int i = -1;
 		// while (++i < caps->cursor)
 		// 	dprintf(2, "|%c - %d|\n", caps->str[0][i], caps->str[0][i]);
 		
 		// tputs(tgetstr("vi", NULL), 1, ft_outc);
 		// dprintf(2, "gauche fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
-		if (caps->str[0][caps->cursor] != '\n')
-		{
+		// if (caps->str[0][caps->cursor - caps->size_prompt] != '\n')
+		// {
+			// if (curs_pos[0] == 1)
+			dprintf(2, "position: %d\n", curs_pos[0]);
 			if (curs_pos[0] == 1)
 			{
+				// if (caps->str[0][caps->cursor - caps->size_prompt - 1] == '\n')
 				// dprintf(2, "passe ici %d", curs_pos[1]);
 				// tputs(tgetstr("sf", NULL), 1, ft_outc);
-				tputs(tgoto(tgetstr("cm", NULL), caps->window_size[1] - 1, curs_pos[1] - 2), 1, ft_outc);
+				// {
+					dprintf(2, "coucouuuumabiche\n");
+					dprintf(2, "debug: cursor %d - curs_pos[0] %d - curs_pos[1] %d\n", caps->cursor, curs_pos[0], curs_pos[1]);
+					position_char_in_window_left_alt_keys(caps->cursor, caps, curs_pos);
+					// dprintf(2, "pos, end char : x:|%d| && y: |%d|\n", caps->char_pos[0], caps->char_pos[1]);
+					// dprintf(2, "win, end char : winx:|%d| && winy: |%d|\n", caps->window_size[1], caps->window_size[0]);				
+					// if (curs_pos[0] == 1)
+					tputs(tgoto(tgetstr("cm", NULL), caps->x_lines[0], curs_pos[1] - 2), 1, ft_outc);
+				// }
+				// else
+					// tputs(tgoto(tgetstr("cm", NULL), caps->window_size[1] - 1, curs_pos[1] - 2), 1, ft_outc);
 			}
 			else
 			{
 				tputs(tgetstr("le", NULL), 1, ft_outc);
 			}
-		}
-		else
-		{
-			dprintf(2, "yiha\n");
-			tputs(tgoto(tgetstr("cm", NULL), (caps->cursor - 1 % caps->window_size[1]), curs_pos[1] - 2), 1, ft_outc);
-		}
+		// }
+		// else
+		// {
+		// 	dprintf(2, "yiha\n");
+		// 	tputs(tgoto(tgetstr("cm", NULL), (caps->cursor - 1 % caps->window_size[1]), curs_pos[1] - 2), 1, ft_outc);
+		// }
 		caps->cursor--;
 		// tputs(tgetstr("ve", NULL), 1, ft_outc);
 		//
@@ -194,8 +197,8 @@ int 		right_key(t_tcap *caps)
 		size_windows(caps);
 		//
 		// tputs(tgetstr("vi", NULL), 1, ft_outc);
-		// dprintf(2, "droite fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
-		if (curs_pos[0] == caps->window_size[1])
+		dprintf(2, "droite fin ligne avant : [%d - %d - %d - %d - %d]\n",caps->cursor, curs_pos[0], curs_pos[1], caps->window_size[1], caps->sz_str);
+		if (curs_pos[0] == caps->window_size[1] || caps->str[0][caps->cursor - caps->size_prompt] == '\n')
 		{
 			dprintf(2, "passe par la porte\n");
 			tputs(tgoto(tgetstr("cm", NULL), 0, curs_pos[1]), 1, ft_outc);
@@ -272,9 +275,16 @@ int			print_normal_char(t_tcap *caps)
 			//replace le curseur
 			tputs(tgetstr("rc", NULL), 1, ft_outc);
 
+///////// DEBUG //////////
+			position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str);
+			// dprintf(2, "pos, end char : x:|%d| && y: |%d|\n", caps->char_pos[0], caps->char_pos[1]);
+			// dprintf(2, "win, end char : winx:|%d| && winy: |%d|\n", caps->window_size[1], caps->window_size[0]);
+
 			// gère la ligne en plus en fin, quand la string touche le bas de la fenêtre, au bon moment
 			// et replace le curseur au bon endroit
-			if (((caps->sz_str ) % (caps->window_size[1])) == 0 && ((caps->y_prompt + ((caps->sz_str ) / (caps->window_size[1])) - 1) == caps->window_size[0])) 
+			// Check if x char fin str et y fin str est a la fin, en bas de la fenetre, même quand \n milieu str
+			if (caps->char_pos[0] + 80 == (caps->window_size[1]) && caps->char_pos[1]-1 == caps->window_size[0])
+			// if (((caps->sz_str ) % (caps->window_size[1])) == 0 && ((caps->y_prompt + ((caps->sz_str ) / (caps->window_size[1])) - 1) == caps->window_size[0])) 
 			/////////// AJOUTER CONDITION --> NE FAIRE que quand string est en bas de fenêtre
 			{
 				int tst[2];
@@ -290,6 +300,9 @@ int			print_normal_char(t_tcap *caps)
 				// replace the cursor at the previous position
 				tputs(tgoto(tgetstr("cm", NULL), tst[0] - 1, tst[1] - 2), 1, ft_outc);
 			}
+			// Gère le y-- de la pos du prompt (pour la fonction de fleche gauche), quand on est en bas de la fenetre
+			else if (caps->buf[0] == '\n' && caps->char_pos[1]-1 == caps->window_size[0])
+				caps->y_prompt--;
 
 			// Déplacer le curseur à droite, et incrémente en même temps
 			right_key(caps);
@@ -306,7 +319,7 @@ int			print_normal_char(t_tcap *caps)
 			caps->cursor++;
 			cursor_position(caps->curs_pos);
 			// tputs(tgetstr("vi", NULL), 1, ft_outc);
-			write(1, caps->buf, 4);
+			write(1, caps->buf, 3);
 			// ft_putstr_i_to_j(caps->buf, 0, 3, 1);
 			// dprintf(2, "fin ligne: [%d - %d]\n", caps->curs_pos[0], caps->window_size[1]);
 			if (caps->curs_pos[0] == caps->window_size[1])
@@ -315,13 +328,24 @@ int			print_normal_char(t_tcap *caps)
 				dprintf(2, "DEBUGGY: | %d - %d - %d - %d |", caps->y_prompt, caps->sz_str, (caps->window_size[1]), caps->window_size[0]);
 				if ((caps->y_prompt + ((caps->sz_str ) / (caps->window_size[1])) - 1) == caps->window_size[0])
 				{
-					dprintf(2, "oh non pas la\n");
+					// dprintf(2, "oh non pas la\n");
 					tputs(tgetstr("sf", NULL), 1, ft_outc);
 					//diminues the value of the y_prompt, to keep correct track of the y.position of the origin
 					caps->y_prompt--;
 				}
 				tputs(tgoto(tgetstr("cm", NULL), 0, caps->curs_pos[1]), 1, ft_outc);
 			}
+			else if (caps->curs_pos[1] == caps->window_size[0] && caps->buf[0] == '\n')
+				caps->y_prompt--;
+			// DEBUG
+			// position_char_in_window(caps->cursor, caps);
+			// dprintf(2, "pos_char_str - cursor: x: %d y: %d\n", caps->char_pos[0], caps->char_pos[1]);
+			
+			
+			// position_char_in_window(caps->cursor - 1, caps);
+			// dprintf(2, "pos_char_str - cursor-1: x: %d y: %d\n", caps->char_pos[0], caps->char_pos[1]);
+			// position_char_in_window(caps->cursor - 2, caps);
+			// dprintf(2, "pos_char_str - cursor - 2: x: %d y: %d\n", caps->char_pos[0], caps->char_pos[1]);
 			// tputs(tgetstr("ve", NULL), 1, ft_outc);
 		}
 	}
@@ -412,7 +436,7 @@ int			alt_down_key(t_tcap *caps)
 	cursor_position(curs_pos);
 	if (curs_pos[1] < ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1])))) // && curs_pos[1] < ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1] - 1)))
 	{
-		dprintf(2, "curs_pos[1]: %d, calc_complet_y: [%d], calc_alt_down: [%d]\n", curs_pos[1], ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1] - 1))), (caps->sz_str % (caps->window_size[1])));
+		// dprintf(2, "curs_pos[1]: %d, calc_complet_y: [%d], calc_alt_down: [%d]\n", curs_pos[1], ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1] - 1))), (caps->sz_str % (caps->window_size[1])));
 		if (curs_pos[1] == ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1])) - 1) && curs_pos[0] > (caps->sz_str % (caps->window_size[1]))) //curs_pos[0] >= (caps->sz_str % (caps->window_size[1])) && 
 		{
 			dprintf(2, "ici mon char");
@@ -433,6 +457,80 @@ int			alt_down_key(t_tcap *caps)
 	}
 	return (0);
 }
+
+/*
+*** - Aim of the function :
+*** - Returns the position in the window, in the form of X (0) and Y (1)
+*** - For any char in the string
+*** - The function receives the global struct + the position of the char you
+*** - are looking to get info for
+*/
+void		position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[2])
+{
+	int 	x;
+	int 	y;
+	int		i;
+
+	i = -1;
+	x = caps->size_prompt; // - 1 
+	y = caps->y_prompt;
+	// pos = pos - caps->size_prompt;
+	caps->x_lines[0] = -1;
+	caps->x_lines[1] = -1;
+	caps->x_lines[2] = -1;
+	while (++i < caps->sz_str - caps->size_prompt)
+	{
+		// dprintf(2, "leftkey: %c\n", caps->str[0][i]);
+		if (caps->str[0][i] == '\n' || (x + 1 == caps->window_size[1]))
+		{
+			dprintf(2, "y: %d - caps->curs_pos[1]: %d\n", y, curs_pos[1]);
+			if (y == curs_pos[1] - 1)
+			{
+				dprintf(2, "âsse");
+				caps->x_lines[0] = x;
+			}
+			else if (y == curs_pos[1])
+				caps->x_lines[1] = x;
+			else if (y == curs_pos[1] + 1)
+				caps->x_lines[2] = x;
+			x = 0;
+			y++;
+		}
+		else
+			x++;
+	}
+	dprintf(2, "passe ici ");
+	dprintf(2, "1 %d - 2: %d - 3 %d\n", caps->x_lines[0], caps->x_lines[1], caps->x_lines[2]);
+}
+
+/*
+*** - Aim of the function :
+*** - Returns the position in the window of the cursor after the last char of the string
+*/
+void		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end)
+{
+	int x;
+	int y;
+
+	x = caps->curs_pos[0] - 1; // - 1 
+	y = caps->curs_pos[1];
+	pos = pos - caps->size_prompt - 1;
+			dprintf(2, "yep: char : %c - pos : %d\n", caps->str[0][pos], pos);
+	while (++pos < (end - caps->size_prompt))
+	{
+		dprintf(2, "yep: char : %c - pos : %d\n", caps->str[0][pos], pos);
+		if (caps->str[0][pos] == '\n' || (x + 1 == caps->window_size[1]))
+		{
+			x = 0;
+			y++;
+		}
+		else
+			x++;
+	}
+	caps->char_pos[0] = x;
+	caps->char_pos[1] = y;
+}
+
 
 /*
 *** - Aim of the function :
@@ -501,7 +599,7 @@ int			main(void)
 				break;
 			}
 		}
-		dprintf(2, "yo: caps.buf[0]: %d, 1: %d, 2: %d, 3: %d, 4: %d -- pos_0(X): %d, pos_1(Y): %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4], caps.curs_pos[0], caps.curs_pos[1]);
+		// dprintf(2, "yo: caps.buf[0]: %d, 1: %d, 2: %d, 3: %d, 4: %d -- pos_0(X): %d, pos_1(Y): %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4], caps.curs_pos[0], caps.curs_pos[1]);
 		// if (!tmp_tab->cmd && (!(caps.buf[0] == 82 && caps.buf[1] == 0 && caps.buf[2] == 0 && ((buf_backup[0] == 53 && buf_backup[1] == 59 && buf_backup[2] == 56) || (buf_backup[0] == 53 && buf_backup[1] == 82 && buf_backup[2] == 0)))))
 		if (!tmp_tab->cmd)//&& caps.buf[1] == 0 && test[4] == 0
 		{

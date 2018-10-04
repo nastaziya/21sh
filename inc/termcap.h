@@ -25,6 +25,8 @@ typedef struct          s_tcap
     char            *res; // return the tgetstr function
     int             curs_pos[2]; //Cursor position, X in [0], Y in [1]
     int             y_prompt; // y position of the prompt at all time
+    int             char_pos[2]; // X(0) and Y(1) position in the window of any char of the string
+    int             x_lines[3]; // (0) == x of line before cursor, (1) == x of line cursor, (2) x of line after
 }                       t_tcap;
 
 /*
@@ -46,5 +48,7 @@ typedef struct          s_tab
 void        cursor_position(int curs_pos[2]);
 int 		right_key(t_tcap *caps);
 int 		left_key(t_tcap *caps);
+void		position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[2]);
+void		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end);
 
 #endif
