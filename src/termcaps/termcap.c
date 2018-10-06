@@ -283,7 +283,9 @@ int			print_normal_char(t_tcap *caps)
 			// gère la ligne en plus en fin, quand la string touche le bas de la fenêtre, au bon moment
 			// et replace le curseur au bon endroit
 			// Check if x char fin str et y fin str est a la fin, en bas de la fenetre, même quand \n milieu str
-			if (caps->char_pos[0] + 80 == (caps->window_size[1]) && caps->char_pos[1]-1 == caps->window_size[0])
+			dprintf(2, "DEBUUUGGGG: |%c| - |%d| - |%d|\n", caps->last_char, caps->char_pos[1], caps->window_size[0]);
+			if ((caps->char_pos[0] + 80 == (caps->window_size[1]) && caps->char_pos[1]-1 == caps->window_size[0])
+				|| (caps->char_pos[1] == caps->window_size[0] && caps->last_char == '\n'))
 			// if (((caps->sz_str ) % (caps->window_size[1])) == 0 && ((caps->y_prompt + ((caps->sz_str ) / (caps->window_size[1])) - 1) == caps->window_size[0])) 
 			/////////// AJOUTER CONDITION --> NE FAIRE que quand string est en bas de fenêtre
 			{
@@ -326,7 +328,10 @@ int			print_normal_char(t_tcap *caps)
 			/////////// AJOUTER CONDITION --> NE FAIRE que quand string est en bas de fenêtre
 			{
 				dprintf(2, "DEBUGGY: | %d - %d - %d - %d |", caps->y_prompt, caps->sz_str, (caps->window_size[1]), caps->window_size[0]);
-				if ((caps->y_prompt + ((caps->sz_str ) / (caps->window_size[1])) - 1) == caps->window_size[0])
+				position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str);
+				// if ((caps->y_prompt + ((caps->sz_str ) / (caps->window_size[1])) - 1) == caps->window_size[0])
+				dprintf(2, "normal string: [%d], [%d], [%d], [%d]", caps->char_pos[0] + 1, caps->window_size[1], caps->char_pos[1], caps->window_size[0]);
+				if (caps->char_pos[0] + 1 == (caps->window_size[1]) && caps->char_pos[1] == caps->window_size[0])
 				{
 					// dprintf(2, "oh non pas la\n");
 					tputs(tgetstr("sf", NULL), 1, ft_outc);
@@ -506,6 +511,7 @@ void		position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[
 /*
 *** - Aim of the function :
 *** - Returns the position in the window of the cursor after the last char of the string
+*** - Function also returns the last_char of the string (on the same y that the cursor)
 */
 void		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end)
 {
@@ -514,6 +520,7 @@ void		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end
 
 	x = caps->curs_pos[0] - 1; // - 1 
 	y = caps->curs_pos[1];
+	caps->last_char = 0;
 	pos = pos - caps->size_prompt - 1;
 			dprintf(2, "yep: char : %c - pos : %d\n", caps->str[0][pos], pos);
 	while (++pos < (end - caps->size_prompt))
@@ -526,6 +533,13 @@ void		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end
 		}
 		else
 			x++;
+		// dprintf(2, "debug: |%d| - |%d| - |%d| - |%d| - |%c|", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);
+		if (x == caps->window_size[1] && y == caps->curs_pos[1])
+		{
+			dprintf(2, "debug: |%d| - |%d| - |%d| - |%d| - |%c|", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);
+			// dprintf(2, "debug: |%d| - |%d| - |%c|", y, caps->curs_pos[1], caps->str[0][pos]);
+				caps->last_char = caps->str[0][pos];
+		}
 	}
 	caps->char_pos[0] = x;
 	caps->char_pos[1] = y;

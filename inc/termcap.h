@@ -27,6 +27,7 @@ typedef struct          s_tcap
     int             y_prompt; // y position of the prompt at all time
     int             char_pos[2]; // X(0) and Y(1) position in the window of any char of the string
     int             x_lines[3]; // (0) == x of line before cursor, (1) == x of line cursor, (2) x of line after
+    char            last_char; // char for the return of the position char in window function. It's the char right before the passage to the next line
 }                       t_tcap;
 
 /*
