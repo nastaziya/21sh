@@ -284,11 +284,14 @@ int			print_normal_char(t_tcap *caps)
 			// et replace le curseur au bon endroit
 			// Check if x char fin str et y fin str est a la fin, en bas de la fenetre, même quand \n milieu str
 			dprintf(2, "DEBUUUGGGG: |%c| - |%d| - |%d|\n", caps->last_char, caps->char_pos[1], caps->window_size[0]);
-			if ((caps->char_pos[0] + 80 == (caps->window_size[1]) && caps->char_pos[1]-1 == caps->window_size[0])
+			// First manages the char at the end of the string when bottom right of the window, the second part manages when \n arrives at the end of line
+			if ((caps->char_pos[0] == (caps->window_size[1]) && caps->char_pos[1] == caps->window_size[0])
 				|| (caps->char_pos[1] == caps->window_size[0] && caps->last_char == '\n'))
 			// if (((caps->sz_str ) % (caps->window_size[1])) == 0 && ((caps->y_prompt + ((caps->sz_str ) / (caps->window_size[1])) - 1) == caps->window_size[0])) 
 			/////////// AJOUTER CONDITION --> NE FAIRE que quand string est en bas de fenêtre
 			{
+				// if (caps->char_pos[1] == caps->window_size[0] && caps->last_char == '\n')
+				// write(1, " ", 1);
 				int tst[2];
 				// saves position
 				cursor_position(tst);
@@ -297,6 +300,11 @@ int			print_normal_char(t_tcap *caps)
 					tputs(tgoto(tgetstr("cm", NULL), tst[0] - 1, caps->window_size[0]), 1, ft_outc);
 				// scroll up one time
 				tputs(tgetstr("sf", NULL), 1, ft_outc);
+				// if (caps->char_pos[1] == caps->window_size[0] && caps->last_char == '\n')
+				// {
+				// 	tputs(tgoto(tgetstr("cm", NULL), caps->window_size[1] - 1, caps->curs_pos[1] - 1), 1, ft_outc);
+				// 	write(1, " ", 1);
+				// }
 				//diminues the value of the y_prompt, to keep correct track of the y.position of the origin
 				caps->y_prompt--;
 				// replace the cursor at the previous position
@@ -417,15 +425,26 @@ int			alt_up_key(t_tcap *caps)
 	
 	size_windows(caps);
 	cursor_position(curs_pos);
+	position_char_in_window_left_alt_keys(caps->cursor, caps, curs_pos);
 	if (curs_pos[1] > caps->y_prompt) // && curs_pos[1] < ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1] - 1)))
 	{
 		if (curs_pos[0] <= caps->size_prompt && curs_pos[1] == caps->y_prompt + 1)
 			home_key(caps);
+		else if (curs_pos[0] > caps->x_lines[0])
+		{
+			tputs(tgetstr("vi", NULL), 1, ft_outc);
+			int i = -1;
+			while (++i < curs_pos[0])// + 1
+				left_key(caps);
+			// tputs(tgetstr("up", NULL), 1, ft_outc);
+			// caps->cursor = caps->cursor - caps->window_size[1];
+			tputs(tgetstr("ve", NULL), 1, ft_outc);
+		}
 		else
 		{
 			tputs(tgetstr("vi", NULL), 1, ft_outc);
 			tputs(tgetstr("up", NULL), 1, ft_outc);
-			caps->cursor = caps->cursor - caps->window_size[1];
+			caps->cursor = caps->cursor - (curs_pos[0] + (caps->x_lines[0] - curs_pos[0]) + 1);//caps->cursor - 
 			tputs(tgetstr("ve", NULL), 1, ft_outc);
 		}
 	}
@@ -480,9 +499,10 @@ void		position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[
 	x = caps->size_prompt; // - 1 
 	y = caps->y_prompt;
 	// pos = pos - caps->size_prompt;
-	caps->x_lines[0] = -1;
-	caps->x_lines[1] = -1;
-	caps->x_lines[2] = -1;
+	ft_memset(caps->x_lines, -1, 3);
+	// caps->x_lines[0] = -1;
+	// caps->x_lines[1] = -1;
+	// caps->x_lines[2] = -1;
 	while (++i < caps->sz_str - caps->size_prompt)
 	{
 		// dprintf(2, "leftkey: %c\n", caps->str[0][i]);
@@ -522,23 +542,24 @@ void		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end
 	y = caps->curs_pos[1];
 	caps->last_char = 0;
 	pos = pos - caps->size_prompt - 1;
-			dprintf(2, "yep: char : %c - pos : %d\n", caps->str[0][pos], pos);
+			// dprintf(2, "yep: char : %c - pos : %d\n", caps->str[0][pos], pos);
+	dprintf(2, "\n\n");
 	while (++pos < (end - caps->size_prompt))
 	{
-		dprintf(2, "yep: char : %c - pos : %d\n", caps->str[0][pos], pos);
-		if (caps->str[0][pos] == '\n' || (x + 1 == caps->window_size[1]))
+		// dprintf(2, "yep: char : %c - pos : %d\n", caps->str[0][pos], pos);
+		if (caps->str[0][pos] == '\n' || (x == caps->window_size[1]))
 		{
 			x = 0;
 			y++;
 		}
 		else
 			x++;
-		// dprintf(2, "debug: |%d| - |%d| - |%d| - |%d| - |%c|", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);
+		dprintf(2, "debug: x-|%d| - y-|%d| - |%d| - |%d| - |%c|\n", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);
 		if (x == caps->window_size[1] && y == caps->curs_pos[1])
 		{
-			dprintf(2, "debug: |%d| - |%d| - |%d| - |%d| - |%c|", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);
+			dprintf(2, "entre debug: |%d| - |%d| - |%d| - |%d| - |%c|\n", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);
 			// dprintf(2, "debug: |%d| - |%d| - |%c|", y, caps->curs_pos[1], caps->str[0][pos]);
-				caps->last_char = caps->str[0][pos];
+				caps->last_char = caps->str[0][pos + 1];
 		}
 	}
 	caps->char_pos[0] = x;
@@ -631,93 +652,5 @@ int			main(void)
 		// dprintf(2, "[pos_curs: %d, sz_str: %d]\n", caps.cursor, caps.sz_str);
 	}
 	reset_termios(&term);
-
-
-
-// tester prompt avec printf, puis clear screen pour voir ce qui apparaît
-// free mallocs non free
-
-
-
-
-
-
-
-
-// 	char *res; // dans fonction du poointeur sur fonction
-//   char buf[3];
-// 	// char test[1000];
-// 	// char *travail;
-// 	// travail = test;
- 
-//  // INITIALISATION DU TERMINAL ET DU TERMINOS
-//   terminal_data(&term);
-//   modify_terminos(&term);
-//   while(1)
-//   {
-//   	  ft_bzero(buf, 3);
-//   	  // ft_bzero(res, ft_strlen(res));
-//       read(0, buf, 3);
-//       // printf("%s", buf);
-//       if (buf[0] != 127 && buf[0] != 64 && buf[0] != 27 && buf[0] != 38)//buf[0] != 27 && 
-//       {
-// 				ft_putstr_i_to_j(buf, 0, 3, 1);
-// 				// *travail++ = buf[0];
-// 				// dprintf(1, "debug : %s", test);
-// 			}
-//       // ft_putstr_i_to_j(buf, 0, 3, 1);
-//       //left arrow
-//       if (buf[0] == 27 && buf[1] == 91 && buf[2] == 68)
-// 	  {
-// 	  		if ((res = tgetstr("le", NULL)) == NULL)
-// 				return (-1);
-// 			tputs(res, 1, ft_outc);
-// 			// ft_bzero(res, ft_strlen(res));
-// 	  }//saves cursor position - key : del -> code : sc
-// 	  else if (buf[0] == 127 && buf[1] == 0 && buf[2] == 0)
-// 	  {//sc
-// 	  		if ((res = tgetstr("cd", NULL)) == NULL)
-// 				return (-1);
-// 			tputs(res, 1, ft_outc);
-// 			// ft_bzero(res, ft_strlen(res));
-// 	  }//right arrow
-// 	  else if (buf[0] == 27 && buf[1] == 91 && buf[2] == 67)
-// 	  {
-// 	  		if ((res = tgetstr("nd", NULL)) == NULL)
-// 				return (-1);
-// 			tputs(res, 1, ft_outc);
-// 			// ft_bzero(res, ft_strlen(res));
-// 	  }//return to the saved cursor position key : @
-// 	  else if (buf[0] == 64 && buf[1] == 0 && buf[2] == 0)
-// 	  {
-// 	  		if ((res = tgetstr("rc", NULL)) == NULL)
-// 				return (-1);
-// 			// ft_putendl(res);
-// 			tputs(res, 1, ft_outc);
-// 	  }//launches insert mode, to add new things// key : &
-// 	  else if (buf[0] == 38 && buf[1] == 0 && buf[2] == 0)
-// 	  {
-// 	  		if ((res = tgetstr("im", NULL)) == NULL)
-// 				return (-1);
-// 			tputs(res, 1, ft_outc);
-// 	  }
-// 	  else if (buf[0] == 34 && buf[1] == 0 && buf[2] == 0)
-// 	  {
-// 	  		if ((res = tgetstr("ei", NULL)) == NULL)
-// 				return (-1);
-// 			tputs(res, 1, ft_outc);
-// 	  }
-
-
-// ///////////INFO REFERENCE : http://web.mit.edu/~jik/sipbsrc/sun4m_53/micrognu/tty.c
-//       //ft_putnstr(buf, 3);
-//       // printf("%s\n", buf);
-//       // printf(" %d %d %d \n", buf[0], buf[1], buf[2]);
-//   }
-//   //if (tcgetattr(0, &term) == -1)
-//     //return (-1);
-//   term.c_lflag = (ICANON | ECHO);
-//   if (tcsetattr(0, TCSADRAIN, &term) == -1)
-//     return (-1);
 return (0);
 }
