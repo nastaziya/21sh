@@ -373,7 +373,7 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer)
 			ft_get_entire_line(&cmd, "Missing arguments > ");
 			if (cmd && ft_strlen(cmd) > 0)
 				if (!string_to_lexer(cmd, lexer))
-					printf("error !\n");
+					ft_putendl_fd("error !", 1);
 			free(cmd);
 		}
 		else
@@ -398,7 +398,7 @@ t_lexer		final_tokens(void)
 	lexer_init(&lexer);
 	if (cmd && ft_strlen(cmd) > 0)
 		if (!ft_manage_string_to_lexer(cmd, &lexer))
-			printf("error !\n");
+			ft_putendl_fd("error !", 1);
 	free(cmd);
 	return (lexer);
 }

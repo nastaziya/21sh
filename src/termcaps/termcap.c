@@ -609,9 +609,6 @@ int			main(void)
 	t_tab		*ttab;
 	t_tab		*tmp_tab;
 	int			ret;
-	// static char test[5] ={0, 0, 0, 0, 0};
-	//TEST
-	// char		buf_backup[3];
 
 //Initialisation du termios
 	terminal_data(&term);
@@ -622,18 +619,12 @@ int			main(void)
 // Initialisation de la struct caps
 	initialize_caps(&caps, " bash >");
 //inclure un printf de prompt pour voir
-	dprintf(1, "bash > ");
+	ft_putstr_fd("bash > ", 1);
 // Itérer sur infini
-	// ft_bzero(buf_backup, 3);
 	while (42)
 	{
 		tmp_tab = (ttab - 1);
-		// fflush(stdout);
 		ft_bzero(caps.buf, 5);
-		// tputs(tgetstr("ip", NULL), 1, ft_outc);
-		// int i = -1;
-		// while (++i < 5)
-		// 	read(0, caps.buf, 1);
 		if ((ret = read(0, caps.buf, 4) < 0))
 			return (1);
 		while ((++tmp_tab)->cmd)
@@ -647,22 +638,8 @@ int			main(void)
 				break;
 			}
 		}
-		// dprintf(2, "yo: caps.buf[0]: %d, 1: %d, 2: %d, 3: %d, 4: %d -- pos_0(X): %d, pos_1(Y): %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4], caps.curs_pos[0], caps.curs_pos[1]);
-		// if (!tmp_tab->cmd && (!(caps.buf[0] == 82 && caps.buf[1] == 0 && caps.buf[2] == 0 && ((buf_backup[0] == 53 && buf_backup[1] == 59 && buf_backup[2] == 56) || (buf_backup[0] == 53 && buf_backup[1] == 82 && buf_backup[2] == 0)))))
-		if (!tmp_tab->cmd)//&& caps.buf[1] == 0 && test[4] == 0
-		{
-			// dprintf(2, "why: caps.buf[0]: %d, 1: %d, 2: %d\n", caps.buf[0], caps.buf[1], caps.buf[2]);
+		if (!tmp_tab->cmd)
 			print_normal_char(&caps);
-		}
-		// test[0] = caps.buf[0];
-		// test[1] = caps.buf[1];
-		// test[2] = caps.buf[2];
-		// test[3] = caps.buf[3];
-		// test[4] = caps.buf[4];
-		// buf_backup[0] = caps.buf[0];
-		// buf_backup[1] = caps.buf[1];
-		// buf_backup[2] = caps.buf[2];
-		// dprintf(2, "[pos_curs: %d, sz_str: %d]\n", caps.cursor, caps.sz_str);
 	}
 	reset_termios(&term);
 return (0);
