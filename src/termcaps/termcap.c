@@ -617,7 +617,7 @@ int 		get_line_term(char **res, char *str)
 //   	modify_terminos(&term);
 	
 	//compteur pour \n seul -> eviter segfault
-	i = 0;
+	// i = 0;
 // Initialisation du tableau de pointeurs sur fonction
 	ttab = tab_termcaps();
 // Initialisation de la struct caps
