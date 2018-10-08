@@ -70,5 +70,13 @@ void	all_exec(char **environ)
 }
 int main(int argc, char **argv, char **environ)
 {
+	 t_term		term;
+
+	// //Initialisation du termios
+	terminal_data(&term);
+  	modify_terminos(&term);
+
 	all_exec(environ);
+
+	reset_termios(&term);
 }

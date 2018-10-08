@@ -16,6 +16,7 @@ static char term_buffer[2048];
 
 typedef struct          s_tcap
 {
+    int             i;
     int             sz_str; // size of the str
     int             size_prompt;// size of the prompt
     int             cursor;//position cursor regarding the string
@@ -51,5 +52,9 @@ int 		right_key(t_tcap *caps);
 int 		left_key(t_tcap *caps);
 void		position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[2]);
 void		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end);
+int         get_line_term(char **cmd, char *str);
+int         terminal_data (t_term *term);
+int         modify_terminos(t_term *term);
+int         reset_termios(t_term *term);
 
 #endif

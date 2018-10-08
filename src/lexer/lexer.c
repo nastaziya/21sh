@@ -280,14 +280,24 @@ char		ft_count_quote(char *str)
 *** - Print the corresponding prompt according the corresponding error
 */
 
-void		ft_manage_prompt(char type_quote)
+char		*ft_manage_prompt(char type_quote)
 {
 	if (type_quote == '"')
-		ft_putstr_fd("dquote > ", 1);
+	{
+		ft_putstr_fd("\ndquote > ", 1);
+		return ("dquote > ");
+	}
 	else if (type_quote == '\'')
-		ft_putstr_fd("squote > ", 1);
+	{
+		ft_putstr_fd("\nsquote > ", 1);
+		return ("squote > ");
+	}
 	else if (type_quote == '\\')
-		ft_putstr_fd("> ", 1);
+	{
+		ft_putstr_fd("\n> ", 1);
+		return ("> ");
+	}
+	return (NULL);
 }
 
 /*
@@ -304,11 +314,10 @@ void		ft_new_prompt(char **cmd, char type_quote)
 	char	*line;
 	char	*tmp;
 
-	line = NULL;
+	// line = NULL;
 	while (42)
 	{
-		ft_manage_prompt(type_quote);
-		ret = get_next_line(0, &line);
+		ret = get_line_term(&line, ft_manage_prompt(type_quote));
 		if (line && ft_strlen(line) > 0)
 		{
 			tmp = *cmd;
@@ -339,8 +348,8 @@ void		ft_get_entire_line(char **cmd, char *str)
 	char	type_quote;
 
 	ft_putstr_fd(str, 1);
-	ret = get_next_line(0, cmd);
-	if (ret == 0)
+	ret = get_line_term(cmd, str[0] == '\n' ? str + 1 : str);
+	if (ret != 0)
 	{
 		free(*cmd);
 		exit(1);
@@ -370,7 +379,7 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer)
 			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "&&")
 			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "||")))
 		{
-			ft_get_entire_line(&cmd, "Missing arguments > ");
+			ft_get_entire_line(&cmd, "\nMissing arguments > ");
 			if (cmd && ft_strlen(cmd) > 0)
 				if (!string_to_lexer(cmd, lexer))
 					ft_putendl_fd("error !", 1);

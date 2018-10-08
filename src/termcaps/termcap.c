@@ -73,6 +73,7 @@ void		initialize_caps(t_tcap *caps, char *prompt)
 	caps->cursor =  caps->size_prompt;
 	cursor_position(tmp);
 	caps->y_prompt = tmp[1];
+	caps->i = 0;
 	// dprintf(2, "YEEEEAAAH - %d\n", caps->y_prompt);
 	if (!(caps->str = (char**)malloc(sizeof(char*))))
 		return ;
@@ -225,17 +226,18 @@ int			print_normal_char(t_tcap *caps)
 	char		*tmp;
 	char		*tmp2;
 	char		*string;
-	static int	i = 0;
+	// static int	i = 0;
 
 	if (caps->buf[0] >= 0 && caps->buf[0] <= 127 && caps->buf[1] == 0)
 	{
 		string = ft_strndup(caps->buf, 1);
 		size_windows(caps);
 
-		if (i == 0) // Initialization of the str, the first time
+		// dprintf(2, "i |%d|\n", i);
+		if (caps->i == 0) // Initialization of the str, the first time
 		{
 			caps->str[0] = string;
-			++i;
+			++(caps->i);
 			caps->sz_str++;
 			caps->cursor++;
 			write(1, caps->buf, 3);
@@ -602,24 +604,26 @@ t_tab		*tab_termcaps(void)
 	return ((t_tab*)ttab);
 }
 
-int			main(void)
+int 		get_line_term(char **res, char *str)
 {
-  	t_term		term;
+  	// t_term		term;
 	t_tcap		caps;
 	t_tab		*ttab;
 	t_tab		*tmp_tab;
 	int			ret;
-
-//Initialisation du termios
-	terminal_data(&term);
-  	modify_terminos(&term);
-
+	// int 		i;
+// //Initialisation du termios
+// 	terminal_data(&term);
+//   	modify_terminos(&term);
+	
+	//compteur pour \n seul -> eviter segfault
+	i = 0;
 // Initialisation du tableau de pointeurs sur fonction
 	ttab = tab_termcaps();
 // Initialisation de la struct caps
-	initialize_caps(&caps, " bash >");
+	initialize_caps(&caps, str);
 //inclure un printf de prompt pour voir
-	ft_putstr_fd("bash > ", 1);
+	// ft_putstr_fd(str, 1);
 // Itérer sur infini
 	while (42)
 	{
@@ -627,6 +631,16 @@ int			main(void)
 		ft_bzero(caps.buf, 5);
 		if ((ret = read(0, caps.buf, 4) < 0))
 			return (1);
+		if (caps.buf[0] == 10 &&
+				caps.buf[1] == 0
+				&& caps.buf[2] == 0 && caps.buf[3] == 0
+				&& caps.buf[4] == 0)
+		// {
+			// dprintf(2, "i: %d\n", i);
+			// if (i == 0)
+			// 	*res = ft_strdup(" ");
+			break ;
+		// }
 		while ((++tmp_tab)->cmd)
 		{
 			if (caps.buf[0] == tmp_tab->key0 &&
@@ -640,7 +654,9 @@ int			main(void)
 		}
 		if (!tmp_tab->cmd)
 			print_normal_char(&caps);
+		// i++;
 	}
-	reset_termios(&term);
+	*res = caps.str[0];
+	// reset_termios(&term);
 return (0);
 }
