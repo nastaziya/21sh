@@ -286,6 +286,7 @@ int			print_normal_char(t_tcap *caps)
 			// et replace le curseur au bon endroit
 			// Check if x char fin str et y fin str est a la fin, en bas de la fenetre, même quand \n milieu str
 			dprintf(2, "DEBUUUGGGG: |%c| - |%d| - |%d|\n", caps->last_char, caps->char_pos[1], caps->window_size[0]);
+			dprintf(2, "check juste: |%c| - |%d| - |%d|\n", caps->last_char, caps->char_pos[0], caps->window_size[1]);
 			// First manages the char at the end of the string when bottom right of the window, the second part manages when \n arrives at the end of line
 			if ((caps->char_pos[0] == (caps->window_size[1]) && caps->char_pos[1] == caps->window_size[0])
 				|| (caps->char_pos[1] == caps->window_size[0] && caps->last_char == '\n'))
@@ -611,13 +612,13 @@ int 		get_line_term(char **res, char *str)
 	t_tab		*ttab;
 	t_tab		*tmp_tab;
 	int			ret;
-	// int 		i;
+	int 		i;
 // //Initialisation du termios
 // 	terminal_data(&term);
 //   	modify_terminos(&term);
 	
 	//compteur pour \n seul -> eviter segfault
-	// i = 0;
+	i = 0;
 // Initialisation du tableau de pointeurs sur fonction
 	ttab = tab_termcaps();
 // Initialisation de la struct caps
@@ -635,12 +636,11 @@ int 		get_line_term(char **res, char *str)
 				caps.buf[1] == 0
 				&& caps.buf[2] == 0 && caps.buf[3] == 0
 				&& caps.buf[4] == 0)
-		// {
-			// dprintf(2, "i: %d\n", i);
-			// if (i == 0)
-			// 	*res = ft_strdup(" ");
+		{
+			if (i == 0 && (*res = ft_memalloc(2)))
+				return (2);
 			break ;
-		// }
+		}
 		while ((++tmp_tab)->cmd)
 		{
 			if (caps.buf[0] == tmp_tab->key0 &&
@@ -654,7 +654,7 @@ int 		get_line_term(char **res, char *str)
 		}
 		if (!tmp_tab->cmd)
 			print_normal_char(&caps);
-		// i++;
+		i++;
 	}
 	*res = caps.str[0];
 	// reset_termios(&term);

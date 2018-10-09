@@ -314,10 +314,16 @@ void		ft_new_prompt(char **cmd, char type_quote)
 	char	*line;
 	char	*tmp;
 
+			dprintf(2, "youhou test ici");
 	// line = NULL;
 	while (42)
 	{
 		ret = get_line_term(&line, ft_manage_prompt(type_quote));
+		// if (!line[0])
+		// {
+		// 	dprintf(2, "passe par la");
+		// 	continue ;
+		// }
 		if (line && ft_strlen(line) > 0)
 		{
 			tmp = *cmd;
@@ -340,6 +346,7 @@ void		ft_new_prompt(char **cmd, char type_quote)
 *** - then checks if dquote or squote is needed (ft_manage_dquote)
 *** - then checks if the line ends with \
 *** - If yes for any of the above, print the next then parse the quotes
+*** - return 2 is when user presses \n directly after prompt
 */
 
 void		ft_get_entire_line(char **cmd, char *str)
@@ -349,14 +356,17 @@ void		ft_get_entire_line(char **cmd, char *str)
 
 	ft_putstr_fd(str, 1);
 	ret = get_line_term(cmd, str[0] == '\n' ? str + 1 : str);
-	if (ret != 0)
+	if (ret != 2)
 	{
-		free(*cmd);
-		exit(1);
+		if (ret != 0)
+		{
+			free(*cmd);
+			exit(1);
+		}
+		else if (*cmd && ft_strlen(*cmd) > 0)
+			if ((type_quote = ft_count_quote(*cmd)))
+				ft_new_prompt(cmd, type_quote);
 	}
-	else if (*cmd && ft_strlen(*cmd) > 0)
-		if ((type_quote = ft_count_quote(*cmd)))
-			ft_new_prompt(cmd, type_quote);
 }
 
 /*
@@ -408,6 +418,8 @@ t_lexer		final_tokens(void)
 	if (cmd && ft_strlen(cmd) > 0)
 		if (!ft_manage_string_to_lexer(cmd, &lexer))
 			ft_putendl_fd("error !", 1);
+	// if (cmd[0])
+	// if (ft_strlen(cmd) > 0)
 	free(cmd);
 	return (lexer);
 }
