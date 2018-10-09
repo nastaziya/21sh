@@ -30,7 +30,7 @@ int size_env_var(char *tmp, int i)
     int size;
 
     size = 0;
-    while (tmp[i] != ' ' && i != ft_strlen(tmp))
+    while (tmp[i] != ' ' && tmp[i] != '\\' && tmp[i] != '\''  && tmp[i] != '"' && i != ft_strlen(tmp))
     {
         size++;
         i++;

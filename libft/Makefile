@@ -2,7 +2,7 @@
 
 CC = gcc
 NAME = libft.a
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall
 OBJECT_FILES = $(SRCS:.c=.o)
 SRCS = ft_atoi.c ft_isalnum.c ft_isalpha.c ft_isascii.c ft_toupper.c \
 			ft_isclear.c ft_isdigit.c ft_islower.c ft_isprint.c ft_isupper.c\

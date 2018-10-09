@@ -71,7 +71,7 @@ void		add_token_to_lexer(t_lexer *lexer, const char *text,
 }
 
 /*
-*** - Aim of the function : checks if the points and the next ones equals one
+*** - Aim of the function : checks if the pointer and the next ones equals one
 *** - of the enum, if nothing is found, send an empty struct (not_found);
 */
 
@@ -91,22 +91,60 @@ t_oplist	type_of_token(const char *s)
 	return (not_found);
 }
 
+/*
+*** - Aim of the function : checks if the number of backslash before a quote
+*** - is pair or impair. If pair, returns 0 ; otherwise, returns 1
+*/
+
+int 		manage_back_quote(const char *s, const char *begin)
+{
+	int 		i;
+	int 		diff;
+	int 		count;
+	const char	*dup;
+
+	i = -1;
+	count = 0;
+	dup = s;
+	diff = dup - begin;
+	while (++i < diff && --dup)
+	{
+		if (*dup == '\\')
+			count++;
+		else if (*dup != '\\')
+			break;
+	}
+	if (count % 2 != 0)
+		return (1);
+	return (0);
+}
+
+//part of the string_to_lexer_quote_function
+void		ft_find_closing_quote(const char **s, t_norm *nm)
+{
+	nm->type_quote = **s;
+	while (**s && ++(*s))
+		if ((**s == nm->type_quote && nm->type_quote != '\'' &&
+			!manage_back_quote(*s, nm->start))
+				|| (nm->type_quote == '\'' && **s == '\''))
+			break ;
+}
+
+void		ft_tokenize_quote_management(const char **s, t_lexer *lexer, t_norm *nm)
+{
+	if (nm->prev != *s && ++(*s))
+		add_token_to_lexer(lexer, nm->prev, *s - nm->prev, T_WORD);
+	nm->quote_done = 1;
+}
+
 void		ft_string_to_lexer_quote_management(const char **s, t_lexer *lexer,
 				t_norm *nm)
 {
 	while (42)
 	{
-		nm->type_quote = **s;
-		while (**s && ++(*s))
-			if ((**s == nm->type_quote && nm->type_quote != '\'' &&
-						(*s - nm->start > 0 ? *(*s - 1) != '\\' : **s))
-					|| (nm->type_quote == '\'' && **s == '\''))
-				break ;
-		if (*s < nm-> end && (*(*s + 1) == '"' || *(*s + 1) == '\''))
-		{
-			++(*s);
+		ft_find_closing_quote(s, nm);
+		if (*s < nm-> end && (*(*s + 1) == '"' || *(*s + 1) == '\'') && ++(*s))
 			continue ;
-		}
 		else if (**s && *(*s + 1) && !(*(*s + 1) >= 8 && *(*s + 1) <= 13)
 			&& *(*s + 1) != 32)
 		{
@@ -114,29 +152,18 @@ void		ft_string_to_lexer_quote_management(const char **s, t_lexer *lexer,
 			while (**s && ((**s == '\n' && *(*s - 1) == '\\') ? ++(*s) : *s)
 					&& ft_isalnum(*(*s+1)) && *(*s+1) != '"' && *(*s+1) != '\'')
 				++(*s);
-			if ((*(*s+1) == '"') || (*(*s+1) == '\''))
-			{
-				++(*s);
+			if (((*(*s+1) == '"') || (*(*s+1) == '\'')) && ++(*s))
 				continue ;
-			}
 			else if ((*(*s + 1) == 32 || (*(*s+1) >= 8 && *(*s+1) <= 13)))
 				++(*s);			
 		}
 		else if (*s < nm-> end && (*(*s + 1) == 32 || (*(*s+1) >= 8 && *(*s+1) <= 13)))
 				++(*s);
-		if ((**s >= 8 && **s <= 13) || **s == 32 || !**s)
-		{
-			if ((**s >= 8 && **s <= 13) || **s == 32 || !**s)
-				--(*s);
+		if (((**s >= 8 && **s <= 13) || **s == 32 || !**s) && 
+			(*s = ((**s >= 8 && **s <= 13) || **s == 32 || !**s) ? --(*s) : *s))
 			break ;
-		}
 	}
-	if (nm->prev != *s)
-	{
-		++(*s);
-		add_token_to_lexer(lexer, nm->prev, *s - nm->prev, T_WORD);
-	}
-	nm->quote_done = 1;
+	ft_tokenize_quote_management(s, lexer, nm);
 }
 
 void		ft_string_to_lexer_advance(const char **s, t_lexer *lexer,
@@ -174,8 +201,8 @@ int			string_to_lexer(const char *s, t_lexer *lexer)
 		if ((*s == '>' || *s == '<') && (s - nm.start > 0 ?
 					ft_isdigit(*(s - 1)) : 0))
 			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_IO_NUMB);
-		else if ((*s == '"' || *s == '\'') && (s - nm.start > 0 ?
-					*(s - 1) != '\\' : *s))
+		else if ((*s == '"' || *s == '\'') &&
+			!manage_back_quote(s, nm.start))
 			ft_string_to_lexer_quote_management(&s, lexer, &nm);
 		else if (*s == '\n' && *(s - 1) == '\\' && ++s)
 			continue ;
@@ -229,11 +256,11 @@ char		ft_count_quote(char *str)
 	while (str && *str)
 	{
 		if ((*str == '"' || *str == '\'')
-				&& (str - start > 0 ? *(str - 1) != '\\' : *str))
+				&& !manage_back_quote(str, start))
 		{
 			type_quote = *str;
 			while (++str && *str)
-				if ((*str == type_quote && *(str - 1) != '\\'
+				if ((*str == type_quote && !manage_back_quote(str, start)
 							&& type_quote != '\'')
 						|| (type_quote == '\'' && *str == '\''))
 					break ;
@@ -245,7 +272,7 @@ char		ft_count_quote(char *str)
 		else
 			++str;
 	}
-	return (!*str && *(str - 1) == '\\' ? '\\' : 0);
+	return (!*str && manage_back_quote(str, start) ? '\\' : 0);
 }
 
 /*
