@@ -16,7 +16,7 @@ static char term_buffer[2048];
 
 typedef struct          s_tcap
 {
-    int             i;
+    int             i; // i used for the print function - helps for the initialization
     int             sz_str; // size of the str
     int             size_prompt;// size of the prompt
     int             cursor;//position cursor regarding the string
@@ -47,14 +47,45 @@ typedef struct          s_tab
     char            *cmd; // string that contains the cmd for tgetstr
 }                       t_tab;
 
+// cursor_position.c
 void        cursor_position(int curs_pos[2]);
+
+// utils.c
+int			ft_outc(int c);
+void		initialize_caps(t_tcap *caps, char *prompt);
+void		size_windows(t_tcap *caps);
+
+//left_right_key.c
 int 		right_key(t_tcap *caps);
 int 		left_key(t_tcap *caps);
+
+// del_key.c
+int			del_key(t_tcap *caps);// -> Faire suppr key
+
+// pos_char.c
 void		position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[2]);
 void		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end);
-int         get_line_term(char **cmd, char *str);
+
+// home_end.c
+int			home_key(t_tcap *caps);
+int			end_key(t_tcap *caps);
+
+
+// termios.c
 int         terminal_data (t_term *term);
 int         modify_terminos(t_term *term);
 int         reset_termios(t_term *term);
+
+// alt_up_down_key.c
+int			alt_up_key(t_tcap *caps);
+int			alt_down_key(t_tcap *caps);
+
+//print.c
+int			     print_normal_char(t_tcap *caps);
+void            print_end_line(t_tcap *caps, char *string, char *tmp);
+
+
+// termcap.c - MAIN FILE
+int         get_line_term(char **cmd, char *str);
 
 #endif
