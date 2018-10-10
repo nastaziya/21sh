@@ -41,18 +41,19 @@ void check_op(t_command cmd, t_env_tools *env)
 }
 void	all_exec(char **environ)
 {
-
-	t_lexer lex;
-	t_command cmd;
+	t_dlist		*history;
+	t_lexer 	lex;
+	t_command 	cmd;
 	t_env_tools	env;
-	char	*path;
+	char		*path;
 
 	path = NULL;
 	env.env_cpy = copy_env(environ, size_str(environ));              
 	path_str(env.env_cpy, &env.paths);
+	history = ft_dlstnew(NULL);
 	while (42)
 	{
-		lex = final_tokens();
+		lex = final_tokens(&history);
 		// final_tokens(&lex);
 		print(&lex);
 		command_init(&cmd);
@@ -67,6 +68,8 @@ void	all_exec(char **environ)
 	}
 	if (env.env_cpy != NULL)
 		free_str(env.env_cpy);
+	// Je free ici, mais a voir si free plus tard (en fonction du exit)
+	ft_dlstdel(&history);
 }
 int main(int argc, char **argv, char **environ)
 {

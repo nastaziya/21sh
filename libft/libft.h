@@ -24,6 +24,13 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
+typedef struct		s_dlist
+{
+	void			*content;
+	struct s_dlist	*next;
+	struct s_dlist	*prev;
+}					t_dlist;
+
 int					ft_atoi(const char *str);
 void				ft_bzero(void *s, size_t n);
 int					ft_isalnum(int c);
@@ -96,5 +103,9 @@ char				**ft_strsplit_quote(char const *str, char delimitor,
 char				**ft_strsplit_quote_new(char const *str, char delimitor,
 							char replace);
 char				*ft_strndup(const char *s1, size_t len);
+void				ft_dlstdel(t_dlist **alst);
+void				ft_dlstdelone(t_dlist **alst);
+void				ft_dlstadd(t_dlist **alst, t_dlist *new);
+t_dlist				*ft_dlstnew(void const *content);
 
 #endif

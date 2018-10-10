@@ -376,12 +376,15 @@ void		ft_get_entire_line(char **cmd, char *str)
 *** -  and lex it
 */
 
-int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer)
+int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history)
 {
 	char	*cmd;
+	char	*tmp;
 
 	if (!string_to_lexer(s, lexer))
 		return (0);
+	// ajouter ici historique
+	ft_dlstadd(history, ft_dlstnew(s));
 	while (42)
 	{
 		if (lexer->used_size > 0 && lexer->tokens[lexer->used_size - 1].content
@@ -393,6 +396,13 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer)
 			if (cmd && ft_strlen(cmd) > 0)
 				if (!string_to_lexer(cmd, lexer))
 					ft_putendl_fd("error !", 1);
+			// History add, if arguments are missing (realloc)
+			tmp = (*history)->content;
+			(*history)->content = ft_strjoin(tmp, " ");
+			free(tmp);
+			tmp = (*history)->content;
+			(*history)->content = ft_strjoin(tmp, cmd);
+			free(tmp);
 			free(cmd);
 		}
 		else
@@ -408,7 +418,7 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer)
 *** - and fills it : string_to_lexer
 */
 
-t_lexer		final_tokens(void)
+t_lexer		final_tokens(t_dlist **history)
 {
 	char	*cmd;
 	t_lexer	lexer;
@@ -416,8 +426,9 @@ t_lexer		final_tokens(void)
 	ft_get_entire_line(&cmd, "bash > ");
 	lexer_init(&lexer);
 	if (cmd && ft_strlen(cmd) > 0)
-		if (!ft_manage_string_to_lexer(cmd, &lexer))
+		if (!ft_manage_string_to_lexer(cmd, &lexer, history))
 			ft_putendl_fd("error !", 1);
+	dprintf(2, "history: %s\n", (*history)->content);
 	// if (cmd[0])
 	// if (ft_strlen(cmd) > 0)
 	free(cmd);

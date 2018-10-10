@@ -19,6 +19,7 @@ SRCS = ft_atoi.c ft_isalnum.c ft_isalpha.c ft_isascii.c ft_toupper.c \
 			ft_lstiter.c ft_lstmap.c ft_lstnew.c ft_strrev.c \
 			ft_sort_integer_table.c get_next_line.c ft_replace_spaces_inside_quotes.c \
 			ft_strsplit_quote.c ft_strsplit_quote_new.c ft_strndup.c \
+			ft_dlstdel.c ft_dlstdelone.c ft_dlstadd.c ft_dlstnew.c
 
 all: $(NAME)
 

@@ -1,34 +1,22 @@
 /* ************************************************************************** */
 /*                                                          LE - /            */
 /*                                                              /             */
-/*   ft_strncpy.c                                     .::    .:/ .      .::   */
+/*   ft_tolower.c                                     .::    .:/ .      .::   */
 /*                                                 +:+:+   +:    +:  +:+:+    */
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2018/04/19 18:02:21 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:21 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Created: 2018/04/17 18:57:54 by gurival-     #+#   ##    ##    #+#       */
+/*   Updated: 2018/04/17 18:57:54 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdlib.h>
 
-char	*ft_strncpy(char *dst, const char *src, size_t len)
+void	ft_dlstdelone(t_dlist **alst)
 {
-	size_t	i;
-
-	i = 0;
-	while (src[i] && i < len)
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	if ((size_t)ft_strlen(src) < len)
-		dst[i] = '\0';
-	while (i < len)
-	{
-		dst[i] = '\0';
-		i++;
-	}
-	return (dst);
+	free((*alst)->content);
+	free(*alst);
+	*alst = NULL;
 }
