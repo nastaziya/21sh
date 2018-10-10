@@ -25,7 +25,7 @@ void            print_end_line(t_tcap *caps, char *string, char *tmp)
     write(1, caps->buf, 3);
     if (caps->curs_pos[0] == caps->window_size[1])
     {
-        position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str);
+        position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0);
         if (caps->char_pos[0] + 1 == (caps->window_size[1]) && caps->char_pos[1] == caps->window_size[0])
         {
             tputs(tgetstr("sf", NULL), 1, ft_outc);
@@ -43,11 +43,13 @@ static void     print_middle_line_manage_char_end_line(t_tcap *caps)
     int tst[2];
 
     // collects position in window of the last char
-    position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str);
+    position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0);
 
+    dprintf(2, "bien: cpos[0]: %d - cpos_1: %d - col_win: %d - line_win: %d\n", caps->char_pos[0], caps->char_pos[1], caps->window_size[1], caps->window_size[0]);
     // First manages the char at the end of the string when bottom right of the window, the second part manages when \n arrives at the end of line
-    if ((caps->char_pos[0] == (caps->window_size[1]) && caps->char_pos[1] == caps->window_size[0])
-        || (caps->char_pos[1] == caps->window_size[0] && caps->last_char == '\n'))
+    if ((caps->char_pos[0] == 0 && caps->char_pos[1] - 1 == caps->window_size[0])
+        || (position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0)
+            && (caps->char_pos[1] == caps->window_size[0] && caps->last_char == '\n')))
     {
         // saves position
         cursor_position(tst);

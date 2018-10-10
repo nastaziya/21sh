@@ -20,25 +20,23 @@ int			alt_up_key(t_tcap *caps)
 	size_windows(caps);
 	cursor_position(curs_pos);
 	position_char_in_window_left_alt_keys(caps->cursor, caps, curs_pos);
-	if (curs_pos[1] > caps->y_prompt) // && curs_pos[1] < ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1] - 1)))
+	if (curs_pos[1] > caps->y_prompt)
 	{
-		if (curs_pos[0] <= caps->size_prompt && curs_pos[1] == caps->y_prompt + 1)
+		if (curs_pos[0] <= caps->size_prompt && curs_pos[1] == caps->y_prompt + 1) // si x inférieur x prompt
 			home_key(caps);
-		else if (curs_pos[0] > caps->x_lines[0])
+		else if (curs_pos[0] > caps->x_lines[0]) // si x supérieur x char d'au dessus
 		{
 			tputs(tgetstr("vi", NULL), 1, ft_outc);
 			int i = -1;
-			while (++i < curs_pos[0])// + 1
+			while (++i < curs_pos[0])
 				left_key(caps);
-			// tputs(tgetstr("up", NULL), 1, ft_outc);
-			// caps->cursor = caps->cursor - caps->window_size[1];
 			tputs(tgetstr("ve", NULL), 1, ft_outc);
 		}
-		else
+		else // le reste
 		{
 			tputs(tgetstr("vi", NULL), 1, ft_outc);
 			tputs(tgetstr("up", NULL), 1, ft_outc);
-			caps->cursor = caps->cursor - (curs_pos[0] + (caps->x_lines[0] - curs_pos[0]) + 1);//caps->cursor - 
+			caps->cursor = caps->cursor - (curs_pos[0] + (caps->x_lines[0] - curs_pos[0]) + 1);
 			tputs(tgetstr("ve", NULL), 1, ft_outc);
 		}
 	}
@@ -49,42 +47,33 @@ int			alt_up_key(t_tcap *caps)
 int			alt_down_key(t_tcap *caps)
 {
 	int		curs_pos[2];
+    int     i;
 	
 	size_windows(caps);
 	cursor_position(curs_pos);
 	position_char_in_window_left_alt_keys(caps->cursor, caps, curs_pos);
-	if (caps->x_lines[2] != -1) // && curs_pos[1] < ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1] - 1)))
+	if (caps->x_lines[2] != -1)
 	{
-		dprintf(2, "miaouh");
-		position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str);
-		// dprintf(2, "curs_pos[1]: %d, calc_complet_y: [%d], calc_alt_down: [%d]\n", curs_pos[1], ((caps->y_prompt) + (caps->sz_str / (caps->window_size[1] - 1))), (caps->sz_str % (caps->window_size[1])));
-		if (curs_pos[1] == caps->char_pos[1] - 1 && curs_pos[0] > caps->x_lines[2]) //curs_pos[0] >= (caps->sz_str % (caps->window_size[1])) && 
-		{
-			dprintf(2, "ici mon char");
+		position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 1);
+		dprintf(2, "alt: %d\n", caps->char_pos[1]);
+		if (curs_pos[1] == caps->char_pos[1] - 1 && curs_pos[0] > caps->x_lines[2]) // si x curseur dépasse x ligne suivante et que derniere ligne
 			end_key(caps);
-		}
-		else if (curs_pos[0] > caps->x_lines[2])
+		else if (curs_pos[0] > caps->x_lines[2]) // si x curseur dépasse x ligne suivante en général
 		{
 			tputs(tgetstr("vi", NULL), 1, ft_outc);
-			int i = -1;
-			while (++i < (caps->x_lines[1] - curs_pos[0]) + caps->x_lines[2] + 2)// + 1
+			i = -1;
+			while (++i < (caps->x_lines[1] - curs_pos[0]) + caps->x_lines[2] + 2)
 				right_key(caps);
-			// tputs(tgetstr("up", NULL), 1, ft_outc);
-			// caps->cursor = caps->cursor - caps->window_size[1];
 			tputs(tgetstr("ve", NULL), 1, ft_outc);
 		}
-		else
-		{
-			// dprintf(2, "ici ma poule");
-			tputs(tgetstr("vi", NULL), 1, ft_outc);
-			// tputs(tgoto(tgetstr("cm", NULL), curs_pos[0] - 1, curs_pos[1]), 1, ft_outc);
-			int i = -1;
-			while (++i < (caps->x_lines[1] - curs_pos[0]) + curs_pos[0] + 1)
-				right_key(caps);
-			// caps->cursor = caps->cursor + caps->window_size[1];
-			tputs(tgetstr("ve", NULL), 1, ft_outc);
-		}
-		// dprintf(2, "ma biche");
+        else if (curs_pos[1] < caps->char_pos[1]) // si le curseur n'est pas sur la derniere ligne
+        {
+            tputs(tgetstr("vi", NULL), 1, ft_outc);
+            i = -1;
+            while (++i < (caps->x_lines[1] - curs_pos[0]) + curs_pos[0] + 1)
+                right_key(caps);
+            tputs(tgetstr("ve", NULL), 1, ft_outc);
+        }
 	}
 	return (0);
 }
