@@ -308,7 +308,7 @@ char		*ft_manage_prompt(char type_quote)
 *** - if yes, end, otherwise, the loop continues
 */
 
-void		ft_new_prompt(char **cmd, char type_quote)
+void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 {
 	int		ret;
 	char	*line;
@@ -318,7 +318,7 @@ void		ft_new_prompt(char **cmd, char type_quote)
 	// line = NULL;
 	while (42)
 	{
-		ret = get_line_term(&line, ft_manage_prompt(type_quote));
+		ret = get_line_term(&line, ft_manage_prompt(type_quote), history);
 		// if (!line[0])
 		// {
 		// 	dprintf(2, "passe par la");
@@ -349,13 +349,13 @@ void		ft_new_prompt(char **cmd, char type_quote)
 *** - return 2 is when user presses \n directly after prompt
 */
 
-void		ft_get_entire_line(char **cmd, char *str)
+void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 {
 	int		ret;
 	char	type_quote;
 
 	ft_putstr_fd(str, 1);
-	ret = get_line_term(cmd, str[0] == '\n' ? str + 1 : str);
+	ret = get_line_term(cmd, str[0] == '\n' ? str + 1 : str, history);
 	if (ret != 2)
 	{
 		if (ret != 0)
@@ -392,7 +392,7 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "&&")
 			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "||")))
 		{
-			ft_get_entire_line(&cmd, "\nMissing arguments > ");
+			ft_get_entire_line(&cmd, "\nMissing arguments > ", history);
 			if (cmd && ft_strlen(cmd) > 0)
 				if (!string_to_lexer(cmd, lexer))
 					ft_putendl_fd("error !", 1);
@@ -423,7 +423,7 @@ t_lexer		final_tokens(t_dlist **history)
 	char	*cmd;
 	t_lexer	lexer;
 
-	ft_get_entire_line(&cmd, "bash > ");
+	ft_get_entire_line(&cmd, "bash > ", history);
 	lexer_init(&lexer);
 	if (cmd && ft_strlen(cmd) > 0)
 		if (!ft_manage_string_to_lexer(cmd, &lexer, history))

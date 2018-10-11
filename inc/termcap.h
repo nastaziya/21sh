@@ -29,6 +29,7 @@ typedef struct          s_tcap
     int             char_pos[2]; // X(0) and Y(1) position in the window of any char of the string
     int             x_lines[3]; // (0) == x of line before cursor, (1) == x of line cursor, (2) x of line after
     char            last_char; // char for the return of the position char in window function. It's the char right before the passage to the next line
+    t_dlist         **history;// history - to be able to pass it to the pointer of functions
 }                       t_tcap;
 
 /*
@@ -87,6 +88,6 @@ void            print_end_line(t_tcap *caps, char *string, char *tmp);
 
 
 // termcap.c - MAIN FILE
-int         get_line_term(char **cmd, char *str);
+int         get_line_term(char **cmd, char *str, t_dlist **history);
 
 #endif

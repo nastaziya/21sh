@@ -57,11 +57,13 @@ void		position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[
 
 int		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end, int bulean)
 {
-	int x;
-	int y;
+	int 	x;
+	int 	y;
+	int 	curs[2];
 
-	x = caps->curs_pos[0] - 1;
-	y = caps->curs_pos[1];
+	cursor_position(curs);
+	x = curs[0] - 1;
+	y = curs[1];
 	caps->last_char = 0;
 	pos = pos - caps->size_prompt - 1;
 			// dprintf(2, "yep: char : %c - pos : %d\n", caps->str[0][pos], pos);

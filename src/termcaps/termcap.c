@@ -6,7 +6,7 @@
 */
 t_tab		*tab_termcaps(void)
 {
-	static t_tab ttab[8] = {
+	static t_tab ttab[10] = {
 		{&left_key, 27, 91, 68, 0, 0, "le"},
 		{&right_key, 27, 91, 67, 0, 0, "nd"},
 		{&del_key, 127, 0, 0, 0, 0, "del"},
@@ -14,6 +14,8 @@ t_tab		*tab_termcaps(void)
 		{&end_key, 27, 91, 70, 0, 0, "end"},// verify if keyboard at school has the same numbers for end
 		{&alt_up_key, 27, 27, 91, 65, 0, "alt_up"},
 		{&alt_down_key, 27, 27, 91, 66, 0, "alt_down"},
+		{&up_key, 27, 91, 65, 0, 0, "up"},
+		{&down_key, 27, 91, 66, 0, 0, "down"},
 		// {&alt_right_key, 27, 27, 91, 67, "alt_right"},
 		// {&alt_left_key, 27, 27, 91, 68, "alt_left_key"},
 		{NULL, 0, 0, 0, 0, 0, NULL}
@@ -22,7 +24,7 @@ t_tab		*tab_termcaps(void)
 	return ((t_tab*)ttab);
 }
 
-int 		get_line_term(char **res, char *str)
+int 		get_line_term(char **res, char *str, t_dlist **history)
 {
 	t_tcap		caps;
 	t_tab		*ttab;
@@ -38,6 +40,7 @@ int 		get_line_term(char **res, char *str)
 	initialize_caps(&caps, str);
 //inclure un printf de prompt pour voir
 	// ft_putstr_fd(str, 1);
+	caps.history = history;
 // Itérer sur infini
 	while (42)
 	{
