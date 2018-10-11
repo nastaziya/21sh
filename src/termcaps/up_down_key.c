@@ -15,7 +15,7 @@
 
 int			     up_key(t_tcap *caps)
 {
-    if (caps->size_prompt == 7) // size "bash > "
+    if (caps->size_prompt == 7) // 7 => size "bash > "
     {
         home_key();
         if ()// si c'est la premiere fois, stocker la str en cours
@@ -32,7 +32,7 @@ int			     up_key(t_tcap *caps)
 
 int			     down_key(t_tcap *caps)
 {
-    if (caps->size_prompt == 7) // size "bash > "
+    if (caps->size_prompt == 7) // 7 => size "bash > "
     {
         home_key();
     }
