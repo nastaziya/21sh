@@ -73,5 +73,7 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		i++;
 	}
 	*res = caps.str[0];
+	if (caps.tmp_str)
+		free(caps.tmp_str);
 return (0);
 }

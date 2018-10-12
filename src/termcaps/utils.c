@@ -39,6 +39,7 @@ void		initialize_caps(t_tcap *caps, char *prompt)
 	cursor_position(tmp);
 	caps->y_prompt = tmp[1];
 	caps->i = 0;
+	caps->tmp_str = NULL;
 	if (!(caps->str = (char**)malloc(sizeof(char*))))
 		return ;
 }

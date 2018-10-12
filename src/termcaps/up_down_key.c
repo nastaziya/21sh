@@ -25,8 +25,10 @@ int			     up_key(t_tcap *caps)
     {
         if (caps->history[0]->prev == NULL && !caps->tmp_str)// si c'est la premiere fois, stocker la str en cours
         {
+            dprintf(2, "entre dans le copy");
             // Première initialisation de l'historique -> faire une sauvegarde de la str
-            caps->tmp_str = ft_strdup(caps->str[0]);
+            caps->tmp_str = caps->sz_str > 0 ? ft_strdup(caps->str[0]) : ft_strnew();
+            // Gérer problème no malloc quand vide, et quand history up
         }
         // supprimer tous les chars
         while (caps->sz_str > caps->size_prompt)
