@@ -78,7 +78,7 @@ int		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end,
 		}
 		else
 			x++;
-		dprintf(2, "debug: x-|%d| - y-|%d| - |%d| - |%d| - |%c|\n", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);
+		// dprintf(2, "debug: x-|%d| - y-|%d| - |%d| - |%d| - |%c|\n", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);
 		if (x == caps->window_size[1] && y == caps->curs_pos[1])
 		{
 			dprintf(2, "entre debug: |%d| - |%d| - |%d| - |%d| - |%c|\n", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);

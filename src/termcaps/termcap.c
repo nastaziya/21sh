@@ -73,7 +73,8 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		i++;
 	}
 	*res = caps.str[0];
-	if (caps.tmp_str)
+	// dprintf(2, "tmp_str: %s\n", caps.tmp_str);
+	if (caps.tmp_str && caps.tmp_str[0])
 		free(caps.tmp_str);
 return (0);
 }

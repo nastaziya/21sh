@@ -20,6 +20,7 @@ int			     up_key(t_tcap *caps)
     
     i = -1;
     tmp = caps->history[0]->content;
+    dprintf(2, "upkey: %s - %p\n", tmp, caps->history[0]->next);
     // si je suis bien dans bash et non un sous-shell et que 
     if (caps->size_prompt == 7 && caps->history[0]->next) // 7 => size "bash > "
     {
@@ -27,15 +28,19 @@ int			     up_key(t_tcap *caps)
         {
             dprintf(2, "entre dans le copy");
             // Première initialisation de l'historique -> faire une sauvegarde de la str
-            caps->tmp_str = caps->sz_str > 0 ? ft_strdup(caps->str[0]) : ft_strnew();
+            // caps->tmp_str = caps->sz_str > 0 ? ft_strdup(caps->str[0]) : ft_strnew();
+            caps->tmp_str = caps->sz_str > caps->size_prompt ? ft_strdup(caps->str[0]) : ft_strnew(1);
             // Gérer problème no malloc quand vide, et quand history up
         }
+        dprintf(2, "sz_str: %d-sz_prompt: %d\n", caps->sz_str, caps->size_prompt);
         // supprimer tous les chars
+        end_key(caps);
         while (caps->sz_str > caps->size_prompt)
             del_key(caps);
         // transforme chaque caractère de l'history en buf, qu'on envoie dans la fonction de print
         while (tmp[++i])
         {
+            dprintf(2, "qcaui");
             ft_bzero(caps->buf, 5);
             caps->buf[0] = tmp[i];
             print_normal_char(caps);
