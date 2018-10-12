@@ -59,7 +59,7 @@ int			     down_key(t_tcap *caps)
     
     i = -1;
     dprintf(2, "je suis pqsse ici");
-    dprintf(2, "%s",  caps->history[0]->prev->content);
+    // dprintf(2, "%s",  caps->history[0]->prev->content);
     if (caps->size_prompt == 7 && caps->history[0]->prev) // 7 => size "bash > "
     {
         dprintf(2, "je suis pqsse a linteroeir");
@@ -87,11 +87,12 @@ int			     down_key(t_tcap *caps)
         while (caps->sz_str > caps->size_prompt)
             del_key(caps);
         // transforme chaque caractère de l'history en buf, qu'on envoie dans la fonction de print
-        while (++(caps->tmp_str))
+                dprintf(2, "jyoyoyo");
+        while (caps->tmp_str[++i])
         {
             // dprintf(2, "qcaui");
             ft_bzero(caps->buf, 5);
-            caps->buf[0] = *(caps->tmp_str);
+            caps->buf[0] = caps->tmp_str[i];
             print_normal_char(caps);
         }
     }
