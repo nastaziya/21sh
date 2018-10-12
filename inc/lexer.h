@@ -2,7 +2,7 @@
 # define LEXER_H
 
 
-# include  	"../libft/libft.h"
+// # include  	<stdlib.h>
 
 #define LEXER_INITIAL_CAPACITY 100
 

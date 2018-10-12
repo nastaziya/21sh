@@ -365,7 +365,7 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 		}
 		else if (*cmd && ft_strlen(*cmd) > 0)
 			if ((type_quote = ft_count_quote(*cmd)))
-				ft_new_prompt(cmd, type_quote);
+				ft_new_prompt(cmd, type_quote, history);
 	}
 }
 
@@ -383,6 +383,8 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 
 	if (!string_to_lexer(s, lexer))
 		return (0);
+	while (history[0]->prev)
+		history[0] = history[0]->prev;
 	// ajouter ici historique
 	ft_dlstadd(history, ft_dlstnew(s));
 	while (42)

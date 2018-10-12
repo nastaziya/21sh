@@ -2,9 +2,11 @@
 // # define TERMCAP_H
 #ifndef TERM_H
 # define TERM_H
+
 # include <term.h>
 # include <termios.h>
 # include <sys/ioctl.h>
+# include "../libft/libft.h"
 
 typedef struct termios t_term;
 static char term_buffer[2048];
@@ -29,8 +31,16 @@ typedef struct          s_tcap
     int             char_pos[2]; // X(0) and Y(1) position in the window of any char of the string
     int             x_lines[3]; // (0) == x of line before cursor, (1) == x of line cursor, (2) x of line after
     char            last_char; // char for the return of the position char in window function. It's the char right before the passage to the next line
+    char            *tmp_str; // str that is a copy of the current str when in history
     t_dlist         **history;// history - to be able to pass it to the pointer of functions
 }                       t_tcap;
+
+// typedef struct		s_dlist
+// {
+// 	void			*content;
+// 	struct s_dlist	*next;
+// 	struct s_dlist	*prev;
+// }					t_dlist;
 
 /*
 *** - Structure that will be the array 
@@ -89,5 +99,9 @@ void            print_end_line(t_tcap *caps, char *string, char *tmp);
 
 // termcap.c - MAIN FILE
 int         get_line_term(char **cmd, char *str, t_dlist **history);
+
+// up_down_key.c
+int			     up_key(t_tcap *caps);
+int			     down_key(t_tcap *caps);
 
 #endif

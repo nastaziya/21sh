@@ -35,6 +35,7 @@ int 		left_key(t_tcap *caps)
 int 		right_key(t_tcap *caps)
 {
 	int  curs_pos[2];
+	
 	if (caps->cursor < caps->sz_str)
 	{
 		cursor_position(curs_pos);
