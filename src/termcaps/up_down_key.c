@@ -24,7 +24,9 @@ int			     up_key(t_tcap *caps)
     // si je suis bien dans bash et non un sous-shell et que 
     if (caps->size_prompt == 7 && caps->history[0]->next) // 7 => size "bash > "
     {
-            tmp = caps->history[0]->content;
+        // if (caps->tmp_str && caps->tmp_str[0])
+		//     free(caps->tmp_str);
+        tmp = caps->history[0]->content;
         if (caps->history[0]->prev == NULL && !caps->tmp_str)// si c'est la premiere fois, stocker la str en cours
         {
             // dprintf(2, "entre dans le copy");
@@ -32,6 +34,11 @@ int			     up_key(t_tcap *caps)
             // caps->tmp_str = caps->sz_str > 0 ? ft_strdup(caps->str[0]) : ft_strnew();
             caps->tmp_str = caps->sz_str > caps->size_prompt ? ft_strdup(caps->str[0]) : ft_strnew(1);
             // Gérer problème no malloc quand vide, et quand history up
+        }
+        else if (caps->history[0]->prev == NULL && caps->tmp_str)
+        {
+            free(caps->tmp_str);
+            caps->tmp_str = caps->sz_str > caps->size_prompt ? ft_strdup(caps->str[0]) : ft_strnew(1);
         }
         // dprintf(2, "sz_str: %d-sz_prompt: %d\n", caps->sz_str, caps->size_prompt);
         // supprimer tous les chars
@@ -54,8 +61,8 @@ int			     up_key(t_tcap *caps)
 
 int			     down_key(t_tcap *caps)
 {
-        int i;
-    char *tmp;
+    int     i;
+    char    *tmp;
     
     i = -1;
     dprintf(2, "je suis pqsse ici");
@@ -80,7 +87,7 @@ int			     down_key(t_tcap *caps)
         }
         // avancer :-)
     }
-    else if (caps->tmp_str && caps->tmp_str[0])
+    else if (caps->size_prompt == 7 && caps->tmp_str && caps->tmp_str[0])
     {
         dprintf(2, "jyoyoyo");
         end_key(caps);
@@ -95,6 +102,12 @@ int			     down_key(t_tcap *caps)
             caps->buf[0] = caps->tmp_str[i];
             print_normal_char(caps);
         }
+    }
+    else if (caps->size_prompt == 7 && !caps->history[0]->prev && caps->tmp_str)
+    {
+        dprintf(2, "merde, passe par ici");
+        while (caps->sz_str > caps->size_prompt)
+            del_key(caps);
     }
     return (0);
 }
