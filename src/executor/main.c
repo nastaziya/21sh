@@ -3,7 +3,7 @@
 void check_op(t_command cmd, t_env_tools *env)
 {
 	int i;
-	// int res;
+	 int res;
 	char	*path;
 	char **cmd_expended;
 
@@ -33,10 +33,11 @@ void check_op(t_command cmd, t_env_tools *env)
 		{
 			if (check_path(env->paths, &path,  cmd.command[i].cmd_simple) > 0 && res == 0)
 				res = error_exec_or_exec(env->paths, path, cmd.command[i + 1].cmd_simple, env->env_cpy);
-		}
-		if (cmd.command[i].tok == T_SEMI && !is_built_in(cmd, i))
-			res = error_exec_or_exec(env->paths, path, cmd.command[i + 1].cmd_simple, env->env_cpy);
-		free(path);*/
+		}.*/
+		//if (cmd.command[i].tok == T_SEMI && !is_built_in(cmd, i))
+		//	printf("hei\n");
+			res = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
+		free(path);
 	}
 }
 void	all_exec(char **environ)

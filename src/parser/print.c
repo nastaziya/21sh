@@ -8,11 +8,11 @@ void print_array(int size, char **cmd)
 	i = 0;
 	while(i < size)
 	{
-		
 		printf("%s\n",cmd[i]);
 		i++;
 	}
 }
+
 void print_array_int(int size, int *cmd)
 {
 	int i;
