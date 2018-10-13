@@ -1,12 +1,11 @@
 #include "../../inc/expansion.h"
 
-
 /*
 expension treatement
 */
 
 		
-
+// echo $ USER / echo $\\$USER
 void treat_backslash(char **str, int i, t_dynamic_array *array_without_backslash, t_env_tools env)
 {
 	int j;
@@ -16,6 +15,7 @@ void treat_backslash(char **str, int i, t_dynamic_array *array_without_backslash
 	size = ft_strlen(str[i]);
 	while (j < size)
 	{
+		printf("%d\n", j);
 		if (str[i][j] == '\'')
 		{
 			j++;
@@ -34,6 +34,12 @@ void treat_backslash(char **str, int i, t_dynamic_array *array_without_backslash
 			add_char_to_array(array_without_backslash, str[i][j]);
 			j++;
 		}
+		/*else if (str[i][j] == '$' && (str[i][j + 1] == 0 || str[i][j + 1] == '\\'))
+		{
+			printf("hei\n");
+			add_char_to_array(array_without_backslash, str[i][j]);
+			j++;
+		}*/
 		else if (str[i][j] == '$')
 		{
 			treat_value_env(&str[i], env, j);
@@ -46,6 +52,7 @@ void treat_backslash(char **str, int i, t_dynamic_array *array_without_backslash
 		}
 			
 	}
+	
 }
 
 void modif_backslash_str(char **str,  t_env_tools env, int i)
