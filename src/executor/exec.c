@@ -94,7 +94,7 @@ int		exec(char *path, char **str, char **env)
 		if (pid == -1)
 			return (-1);
 		waitpid(pid, &status, 0);
-		res = WEXITSTATUS(status);	
+		res = WEXITSTATUS(status);
 		if (res > 0)
 			return(res);	
 	}
@@ -124,15 +124,14 @@ int		error_exec_or_exec(char **paths, char *path, char **str,
 	else
 		res = check_path(paths, &path, str);
 	if (res == 0 && i == 0)
+	{
+		res = 127;
 		error_command(str);
+	}
 	else if (res > 1)
 		ft_putendl_fd("minishell : permission denied.", 2);
 	else
-	{
-	//	g_sig_check = 1;
 		res = exec(path, str, env);
-	}
-	//g_sig_check = 0;
 	if (path != NULL)
 		free(path);
 	return (res);

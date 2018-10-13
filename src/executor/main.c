@@ -3,7 +3,7 @@
 void check_op(t_command cmd, t_env_tools *env)
 {
 	int i;
-	 int res;
+	// int res;
 	char	*path;
 	char **cmd_expended;
 
@@ -36,7 +36,9 @@ void check_op(t_command cmd, t_env_tools *env)
 		}.*/
 		//if (cmd.command[i].tok == T_SEMI && !is_built_in(cmd, i))
 		//	printf("hei\n");
-			res = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
+			//printf("0 : %s\n",cmd_expended[0]);
+			//			printf("1  : %s\n",cmd_expended[1]);
+		env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
 		free(path);
 	}
 }
