@@ -33,7 +33,7 @@ typedef struct          s_tcap
     char            last_char; // char for the return of the position char in window function. It's the char right before the passage to the next line
     char            *tmp_str; // str that is a copy of the current str when in history
     t_dlist         **history;// history - to be able to pass it to the pointer of functions
-    int             ct_arrow; // count the number of arrows that were used
+    int             ct_arrow; // count the number of arrows that were used, 1 == last arrow was down key ; 2 == last arrow was up key
 }                       t_tcap;
 
 // typedef struct		s_dlist

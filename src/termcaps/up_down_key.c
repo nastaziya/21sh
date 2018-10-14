@@ -70,20 +70,17 @@ int			     down_key(t_tcap *caps)
     
     i = -1;
     // dprintf(2, "je suis pqsse ici");
-    // dprintf(2, "%s",  caps->history[0]->prev->content);
+    // If previous key was up key, to avoid double down arrow, just go down again
     if (caps->size_prompt == 7 && caps->ct_arrow == 2 && caps->history[0]->prev)
-    {
-        // dprintf(2, "previous content: %s\n", caps->history[0]->prev->prev->content);
-        dprintf(2, "zut, je suis passe\n");
         caps->history[0] = caps->history[0]->prev;
-    }
     if (caps->size_prompt == 7 && caps->history[0]->prev) // 7 => size "bash > "
     {
         // dprintf(2, "previous content: %s\n", caps->history[0]->prev->prev->content);
 
         dprintf(2, "je suis pqsse a linteroeir");
+        // to avoid unexpected segfault, when we go from history to empty str
         if (caps->history[0]->prev)
-        caps->history[0] = caps->history[0]->prev;
+            caps->history[0] = caps->history[0]->prev;
         tmp = caps->history[0]->content;
         // dprintf(2, "sz_str: %d-sz_prompt: %d\n", caps->sz_str, caps->size_prompt);
         // supprimer tous les chars
@@ -98,6 +95,7 @@ int			     down_key(t_tcap *caps)
             caps->buf[0] = tmp[i];
             print_normal_char(caps);
         }
+        // Specify that the last key used is down key and that we still are in the history
         caps->ct_arrow = 1;
         // avancer :-)
     }
@@ -116,6 +114,7 @@ int			     down_key(t_tcap *caps)
             caps->buf[0] = caps->tmp_str[i];
             print_normal_char(caps);
         }
+        //specify that the last key used is down key, but that we are not anymore in the history
         caps->ct_arrow = 0;
     }
     else if (caps->size_prompt == 7 && !caps->history[0]->prev && caps->tmp_str)
@@ -123,7 +122,7 @@ int			     down_key(t_tcap *caps)
         dprintf(2, "merde, passe par ici");
         while (caps->sz_str > caps->size_prompt)
             del_key(caps);
-        // caps->ct_arrow = 3; // probleme 
+        //specify that the last key used is down key, but that we are not anymore in the history
         caps->ct_arrow = 0;
     }
     return (0);
