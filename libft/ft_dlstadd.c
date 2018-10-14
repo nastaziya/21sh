@@ -20,5 +20,6 @@ void	ft_dlstadd(t_dlist **alst, t_dlist *new)
 		new->next = *alst;
         (*alst)->prev = new;
 		*alst = new;
+		new->prev = NULL;
 	}
 }

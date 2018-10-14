@@ -24,6 +24,8 @@ int			     up_key(t_tcap *caps)
     // si je suis bien dans bash et non un sous-shell et que 
     if (caps->size_prompt == 7 && caps->history[0]->next) // 7 => size "bash > "
     {
+        if (caps->ct_arrow == 1 && caps->history[0]->next)
+            caps->history[0] = caps->history[0]->next;
         // if (caps->tmp_str && caps->tmp_str[0])
 		//     free(caps->tmp_str);
         tmp = caps->history[0]->content;
@@ -55,6 +57,8 @@ int			     up_key(t_tcap *caps)
         }
         // avancer :-)
         caps->history[0] = caps->history[0]->next;
+        // caps->ct_arrow = caps->ct_arrow == 3 ? 3 : 2;// probleme 
+        caps->ct_arrow = 2;
     }
     return (0);
 }
@@ -65,11 +69,20 @@ int			     down_key(t_tcap *caps)
     char    *tmp;
     
     i = -1;
-    dprintf(2, "je suis pqsse ici");
+    // dprintf(2, "je suis pqsse ici");
     // dprintf(2, "%s",  caps->history[0]->prev->content);
+    if (caps->size_prompt == 7 && caps->ct_arrow == 2 && caps->history[0]->prev)
+    {
+        // dprintf(2, "previous content: %s\n", caps->history[0]->prev->prev->content);
+        dprintf(2, "zut, je suis passe\n");
+        caps->history[0] = caps->history[0]->prev;
+    }
     if (caps->size_prompt == 7 && caps->history[0]->prev) // 7 => size "bash > "
     {
+        // dprintf(2, "previous content: %s\n", caps->history[0]->prev->prev->content);
+
         dprintf(2, "je suis pqsse a linteroeir");
+        if (caps->history[0]->prev)
         caps->history[0] = caps->history[0]->prev;
         tmp = caps->history[0]->content;
         // dprintf(2, "sz_str: %d-sz_prompt: %d\n", caps->sz_str, caps->size_prompt);
@@ -85,6 +98,7 @@ int			     down_key(t_tcap *caps)
             caps->buf[0] = tmp[i];
             print_normal_char(caps);
         }
+        caps->ct_arrow = 1;
         // avancer :-)
     }
     else if (caps->size_prompt == 7 && caps->tmp_str && caps->tmp_str[0])
@@ -102,12 +116,15 @@ int			     down_key(t_tcap *caps)
             caps->buf[0] = caps->tmp_str[i];
             print_normal_char(caps);
         }
+        caps->ct_arrow = 0;
     }
     else if (caps->size_prompt == 7 && !caps->history[0]->prev && caps->tmp_str)
     {
         dprintf(2, "merde, passe par ici");
         while (caps->sz_str > caps->size_prompt)
             del_key(caps);
+        // caps->ct_arrow = 3; // probleme 
+        caps->ct_arrow = 0;
     }
     return (0);
 }

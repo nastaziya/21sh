@@ -21,7 +21,7 @@ typedef struct          s_tcap
     int             i; // i used for the print function - helps for the initialization
     int             sz_str; // size of the str
     int             size_prompt;// size of the prompt
-    int             cursor;//position cursor regarding the string
+    int             cursor;//position of the cursor in the string
     int             window_size[2]; // row in [0], col in [1]
     char            buf[5]; // String that contains the return of the read
     char            **str; // string that gets constantly realloc'd    
@@ -33,6 +33,7 @@ typedef struct          s_tcap
     char            last_char; // char for the return of the position char in window function. It's the char right before the passage to the next line
     char            *tmp_str; // str that is a copy of the current str when in history
     t_dlist         **history;// history - to be able to pass it to the pointer of functions
+    int             ct_arrow; // count the number of arrows that were used
 }                       t_tcap;
 
 // typedef struct		s_dlist
