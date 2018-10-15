@@ -123,7 +123,7 @@ int			     print_normal_char(t_tcap *caps)
     dprintf(2, "y_prompt: %d - char_pos[0]: %d - caps_wndow_sz[1]: %d - char_pos[1]: %d - caps_wndow_sz[0]: %d\n", caps->y_prompt, caps->char_pos[0], caps->window_size[1], caps->char_pos[1], caps->window_size[0]);
 	if (caps->buf[0] >= 0 && caps->buf[0] <= 127 && caps->buf[1] == 0
         && !((caps->y_prompt - 1) == 0 && (caps->char_pos[0] + 1) == caps->window_size[1]
-            && caps->char_pos[1] == caps->window_size[0]))
+            && caps->char_pos[1] == caps->window_size[0]) && caps->buf[0] != 9)
 	{
 		string = ft_strndup(caps->buf, 1);
 		if (caps->i == 0) // Initialization of the str, the first time
@@ -139,7 +139,7 @@ int			     print_normal_char(t_tcap *caps)
 		else
             print_end_line(caps, string, tmp);
 	}
-    else
+    else if (caps->buf[0] != 9) // escape the tab char
         tputs(tgetstr("bl", NULL), 1, ft_outc);
 	return (0);
 }
