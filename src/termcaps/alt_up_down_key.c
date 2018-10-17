@@ -55,7 +55,7 @@ int			alt_down_key(t_tcap *caps)
 	if (caps->x_lines[2] != -1)
 	{
 		position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 1);
-		dprintf(2, "alt: %d\n", caps->char_pos[1]);
+		// dprintf(2, "alt: %d\n", caps->char_pos[1]);
 		if (curs_pos[1] == caps->char_pos[1] - 1 && curs_pos[0] > caps->x_lines[2]) // si x curseur dépasse x ligne suivante et que derniere ligne
 			end_key(caps);
 		else if (curs_pos[0] > caps->x_lines[2]) // si x curseur dépasse x ligne suivante en général

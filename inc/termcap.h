@@ -11,6 +11,11 @@
 typedef struct termios t_term;
 static char term_buffer[2048];
 
+# define ENTER_KEY (caps.buf[0] == 10 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
+# define CTRL_L_KEY (caps.buf[0] == 12 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
+# define CTRL_D_KEY (caps.buf[0] == 4 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
+
+# define BUF_EQUALS_ARRAY (caps.buf[0] == tmp_tab->key0 && caps.buf[1] == tmp_tab->key1 && caps.buf[2] == tmp_tab->key2 && caps.buf[3] == tmp_tab->key3 && caps.buf[4] == tmp_tab->key4)
 /*
 *** - Structure that contains all the required info
 *** - to manage the termcaps
@@ -34,6 +39,7 @@ typedef struct          s_tcap
     char            *tmp_str; // str that is a copy of the current str when in history
     t_dlist         **history;// history - to be able to pass it to the pointer of functions
     int             ct_arrow; // count the number of arrows that were used, 1 == last arrow was down key ; 2 == last arrow was up key
+    char            *copy_str; // copy of str when copy_paste
 }                       t_tcap;
 
 // typedef struct		s_dlist
@@ -104,5 +110,19 @@ int         get_line_term(char **cmd, char *str, t_dlist **history);
 // up_down_key.c
 int			     up_key(t_tcap *caps);
 int			     down_key(t_tcap *caps);
+
+// alt_right_left_key.c
+int 		alt_right_key(t_tcap *caps);
+int 		alt_left_key(t_tcap *caps);
+
+// alt_copy.c
+int 		alt_x(t_tcap *caps);
+int 		alt_s(t_tcap *caps);
+int 		alt_w(t_tcap *caps);
+int 		alt_s(t_tcap *caps);
+int 		alt_p(t_tcap *caps);
+
+// control_commands.c
+int			ctrl_l(t_tcap *caps);
 
 #endif

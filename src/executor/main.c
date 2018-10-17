@@ -68,7 +68,7 @@ void	all_exec(char **environ)
 	}
 	if (env.env_cpy != NULL)
 		free_str(env.env_cpy);
-	// Je free ici, mais a voir si free plus tard (en fonction du exit)
+	// Je free ici, mais a voir si free plus tard/ autre part (en fonction du exit)
 	ft_dlstdel(&history);
 }
 int main(int argc, char **argv, char **environ)

@@ -226,15 +226,15 @@ int			string_to_lexer(const char *s, t_lexer *lexer)
 
 void		print(const t_lexer *lexer)
 {
-	int	i;
+	// int	i;
 
-	i = 0;
-	while (i < lexer->used_size)
-	{
-		printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
-		++i;
-	}
-	printf("\n");
+	// i = 0;
+	// while (i < lexer->used_size)
+	// {
+	// 	printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
+	// 	++i;
+	// }
+	// // printf("\n");
 }
 
 /*
@@ -347,6 +347,8 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 *** - then checks if the line ends with \
 *** - If yes for any of the above, print the next then parse the quotes
 *** - return 2 is when user presses \n directly after prompt
+*** - returns 3 when ctrl_l key is being pressed, and doesn't print the 
+*** - \n in this case
 */
 
 void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
@@ -356,7 +358,7 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 
 	ft_putstr_fd(str, 1);
 	ret = get_line_term(cmd, str[0] == '\n' ? str + 1 : str, history);
-	if (ret != 2)
+	if (ret != 2 && ret != 3)
 	{
 		if (ret != 0)
 		{
@@ -367,6 +369,8 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 			if ((type_quote = ft_count_quote(*cmd)))
 				ft_new_prompt(cmd, type_quote, history);
 	}
+	if (ret != 3)
+		ft_putchar_fd('\n', 1);
 }
 
 /*
@@ -430,7 +434,7 @@ t_lexer		final_tokens(t_dlist **history)
 	if (cmd && ft_strlen(cmd) > 0)
 		if (!ft_manage_string_to_lexer(cmd, &lexer, history))
 			ft_putendl_fd("error !", 1);
-	dprintf(2, "history: %s\n", (*history)->content);
+	// dprintf(2, "history: %s\n", (*history)->content);
 	// if (cmd[0])
 	// if (ft_strlen(cmd) > 0)
 	free(cmd);

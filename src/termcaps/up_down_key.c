@@ -29,6 +29,7 @@ int			     up_key(t_tcap *caps)
         // if (caps->tmp_str && caps->tmp_str[0])
 		//     free(caps->tmp_str);
         tmp = caps->history[0]->content;
+        dprintf(2, "[%s]", tmp);
         if (caps->history[0]->prev == NULL && !caps->tmp_str)// si c'est la premiere fois, stocker la str en cours
         {
             // dprintf(2, "entre dans le copy");
@@ -48,11 +49,13 @@ int			     up_key(t_tcap *caps)
         while (caps->sz_str > caps->size_prompt)
             del_key(caps);
         // transforme chaque caractère de l'history en buf, qu'on envoie dans la fonction de print
+        // dprintf(2, "tmp: |%s|", tmp);
         while (tmp[++i])
         {
-            // dprintf(2, "qcaui");
+            // dprintf(2, "c: |%c|", tmp[i]);
             ft_bzero(caps->buf, 5);
             caps->buf[0] = tmp[i];
+            // dprintf(2, "||%c||", caps->buf[0]);
             print_normal_char(caps);
         }
         // avancer :-)

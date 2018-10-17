@@ -40,6 +40,7 @@ void		initialize_caps(t_tcap *caps, char *prompt)
 	caps->y_prompt = tmp[1];
 	caps->i = 0;
 	caps->tmp_str = NULL;
+	caps->copy_str = NULL;
 	caps->ct_arrow = 0;
 	if (!(caps->str = (char**)malloc(sizeof(char*))))
 		return ;
