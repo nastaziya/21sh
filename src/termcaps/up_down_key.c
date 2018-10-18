@@ -122,9 +122,13 @@ int			     down_key(t_tcap *caps)
     }
     else if (caps->size_prompt == 7 && !caps->history[0]->prev && caps->tmp_str)
     {
-        dprintf(2, "merde, passe par ici");
+        // dprintf(2, "merde, passe par ici");
+        end_key(caps);
         while (caps->sz_str > caps->size_prompt)
+        {
+            dprintf(2, "fait chier");
             del_key(caps);
+        }
         //specify that the last key used is down key, but that we are not anymore in the history
         caps->ct_arrow = 0;
     }
