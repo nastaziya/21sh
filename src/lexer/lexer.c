@@ -369,8 +369,8 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 			if ((type_quote = ft_count_quote(*cmd)))
 				ft_new_prompt(cmd, type_quote, history);
 	}
-	if (ret != 3)
-		ft_putchar_fd('\n', 1);
+	// if (ret != 3)
+	ft_putchar_fd('\n', 1);
 }
 
 /*

@@ -29,8 +29,11 @@ void		position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[
 
 	i = -1;
 	x = caps->size_prompt;
-	y = caps->y_prompt;
-	ft_memset(caps->x_lines, -1, 3);
+	// -> problem with indice solved by incrementing of 1
+	y = caps->y_prompt == 0 ? caps->y_prompt + 1 : caps->y_prompt;
+	caps->x_lines[0] = -1;
+	caps->x_lines[1] = -1;
+	caps->x_lines[2] = -1;
 	while (++i < caps->sz_str - caps->size_prompt)
 	{
 		if (caps->str[0][i] == '\n' || (x + 1 == caps->window_size[1]))
@@ -67,7 +70,7 @@ int		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end,
 	caps->last_char = 0;
 	pos = pos - caps->size_prompt - 1;
 			// dprintf(2, "yep: char : %c - pos : %d\n", caps->str[0][pos], pos);
-	dprintf(2, "\n\n");
+	// dprintf(2, "\n\n");
 	while (++pos < (end - caps->size_prompt))
 	{
 		// dprintf(2, "yep: char : %c - pos : %d\n", caps->str[0][pos], pos);
@@ -80,11 +83,11 @@ int		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end,
 			x++;
 		// dprintf(2, "debug: x-|%d| - y-|%d| - |%d| - |%d| - |%c|\n", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);
 		if (x == caps->window_size[1] && y == caps->curs_pos[1])
-		{
-			dprintf(2, "entre debug: |%d| - |%d| - |%d| - |%d| - |%c|\n", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);
+		// {
+			// dprintf(2, "entre debug: |%d| - |%d| - |%d| - |%d| - |%c|\n", x, caps->window_size[1], y, caps->curs_pos[1], caps->str[0][pos]);
 			// dprintf(2, "debug: |%d| - |%d| - |%c|", y, caps->curs_pos[1], caps->str[0][pos]);
 				caps->last_char = caps->str[0][pos + 1];
-		}
+		// }
 	}
 	caps->char_pos[0] = x;
 	caps->char_pos[1] = y;

@@ -19,7 +19,7 @@
 */
 t_tab		*tab_termcaps(void)
 {
-	static t_tab ttab[16] = {
+	static t_tab ttab[17] = {
 		{&left_key, 27, 91, 68, 0, 0, "le"},
 		{&right_key, 27, 91, 67, 0, 0, "nd"},
 		{&del_key, 127, 0, 0, 0, 0, "del"},
@@ -31,7 +31,7 @@ t_tab		*tab_termcaps(void)
 		{&down_key, 27, 91, 66, 0, 0, "down"},
 		{&alt_right_key, 27, 27, 91, 67, 0, "alt_right"},
 		{&alt_left_key, 27, 27, 91, 68, 0, "alt_left_key"},
-		// {&ctrl_l, 12, 0, 0, 0, 0, "ctrl_l"},
+		{&ctrl_l, 12, 0, 0, 0, 0, "ctrl_l"},
 		// {&ctrl_d, 4, 0, 0, 0, 0, "ctrl_d"},
 		{&alt_x, -30, -119, -120, 0, 0, "alt_x"},
 		{&alt_s, -61, -110, 0, 0, 0, "alt_s"},
@@ -68,14 +68,15 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		if ((ret = read(0, caps.buf, 4) < 0))
 			return (1);
 		dprintf(2, "LA: %d %d %d %d %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4]);
-		if (ENTER_KEY || CTRL_L_KEY) //|| CTRL_D_KEY
+		if (ENTER_KEY) //|| CTRL_D_KEY
 		{
-			if (CTRL_L_KEY)
-				ctrl_l(&caps);
+			// if (CTRL_L_KEY)
+			// 	ctrl_l(&caps);
 			// to avoid segfault when empty
+			end_key(&caps);
 			if (((caps.sz_str - caps.size_prompt) == 0) && (*res = ft_memalloc(2)))
 			// returns 3 when ctrl + L otherwise, 2 when normal \n but empty str
-				return (CTRL_L_KEY ? 3 : 2);
+				return (2);//CTRL_L_KEY ? 3 : 
 			break ;
 		}
 		while ((++tmp_tab)->cmd)
