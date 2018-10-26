@@ -18,7 +18,7 @@
 *** - Returns the position in the window, in the form of X (0) and Y (1)
 *** - For any char in the string
 *** - The function receives the global struct + the position of the char you
-*** - are looking to get info for
+*** - are looking to get info for (position of the cursor)
 */
 
 void		position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[2])

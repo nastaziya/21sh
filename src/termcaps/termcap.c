@@ -70,8 +70,6 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		dprintf(2, "LA: %d %d %d %d %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4]);
 		if (ENTER_KEY) //|| CTRL_D_KEY
 		{
-			// if (CTRL_L_KEY)
-			// 	ctrl_l(&caps);
 			// to avoid segfault when empty
 			end_key(&caps);
 			if (((caps.sz_str - caps.size_prompt) == 0) && (*res = ft_memalloc(2)))
