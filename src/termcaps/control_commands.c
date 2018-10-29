@@ -1,34 +1,32 @@
 /* ************************************************************************** */
 /*                                                          LE - /            */
 /*                                                              /             */
-/*   ft_strncpy.c                                     .::    .:/ .      .::   */
+/*   ft_strstr.c                                      .::    .:/ .      .::   */
 /*                                                 +:+:+   +:    +:  +:+:+    */
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2018/04/19 18:02:21 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:21 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
+/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../inc/sh.h"
 
-char	*ft_strncpy(char *dst, const char *src, size_t len)
+int			ctrl_l(t_tcap *caps)
 {
-	size_t	i;
+    int i;
 
-	i = 0;
-	while (src[i] && i < len)
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	if ((size_t)ft_strlen(src) < len)
-		dst[i] = '\0';
-	while (i < len)
-	{
-		dst[i] = '\0';
-		i++;
-	}
-	return (dst);
+    i = -1;
+    if (caps->y_prompt > 0)
+    {
+        size_windows(caps);
+        home_key(caps);
+        tputs(tgoto(tgetstr("cm", NULL), 0, caps->window_size[0]), 0, ft_outc);
+        while (--caps->y_prompt > 0)
+            tputs(tgetstr("sf", NULL), 1, ft_outc);
+        tputs(tgoto(tgetstr("cm", NULL), caps->size_prompt, 0), 0, ft_outc);
+        end_key(caps);
+    }
+    return (0);
 }

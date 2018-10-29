@@ -1,34 +1,24 @@
 /* ************************************************************************** */
 /*                                                          LE - /            */
 /*                                                              /             */
-/*   ft_strncpy.c                                     .::    .:/ .      .::   */
+/*   ft_memcmp.c                                      .::    .:/ .      .::   */
 /*                                                 +:+:+   +:    +:  +:+:+    */
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2018/04/19 18:02:21 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:21 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Created: 2018/04/19 18:02:17 by gurival-     #+#   ##    ##    #+#       */
+/*   Updated: 2018/04/19 18:02:17 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdlib.h>
 
-char	*ft_strncpy(char *dst, const char *src, size_t len)
+void	ft_dlstdel(t_dlist **alst)
 {
-	size_t	i;
-
-	i = 0;
-	while (src[i] && i < len)
+	while (*alst != NULL)
 	{
-		dst[i] = src[i];
-		i++;
+		ft_dlstdel(&(*alst)->next);
+		ft_dlstdelone(alst);
 	}
-	if ((size_t)ft_strlen(src) < len)
-		dst[i] = '\0';
-	while (i < len)
-	{
-		dst[i] = '\0';
-		i++;
-	}
-	return (dst);
 }

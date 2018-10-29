@@ -226,15 +226,15 @@ int			string_to_lexer(const char *s, t_lexer *lexer)
 
 void		print(const t_lexer *lexer)
 {
-	int	i;
+	// int	i;
 
-	i = 0;
-	while (i < lexer->used_size)
-	{
-		printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
-		++i;
-	}
-	printf("\n");
+	// i = 0;
+	// while (i < lexer->used_size)
+	// {
+	// 	printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
+	// 	++i;
+	// }
+	// // printf("\n");
 }
 
 /*
@@ -280,14 +280,24 @@ char		ft_count_quote(char *str)
 *** - Print the corresponding prompt according the corresponding error
 */
 
-void		ft_manage_prompt(char type_quote)
+char		*ft_manage_prompt(char type_quote)
 {
 	if (type_quote == '"')
-		ft_putstr_fd("dquote > ", 1);
+	{
+		ft_putstr_fd("\ndquote > ", 1);
+		return ("dquote > ");
+	}
 	else if (type_quote == '\'')
-		ft_putstr_fd("squote > ", 1);
+	{
+		ft_putstr_fd("\nsquote > ", 1);
+		return ("squote > ");
+	}
 	else if (type_quote == '\\')
-		ft_putstr_fd("> ", 1);
+	{
+		ft_putstr_fd("\n> ", 1);
+		return ("> ");
+	}
+	return (NULL);
 }
 
 /*
@@ -298,17 +308,22 @@ void		ft_manage_prompt(char type_quote)
 *** - if yes, end, otherwise, the loop continues
 */
 
-void		ft_new_prompt(char **cmd, char type_quote)
+void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 {
 	int		ret;
 	char	*line;
 	char	*tmp;
 
-	line = NULL;
+			dprintf(2, "youhou test ici");
+	// line = NULL;
 	while (42)
 	{
-		ft_manage_prompt(type_quote);
-		ret = get_next_line(0, &line);
+		ret = get_line_term(&line, ft_manage_prompt(type_quote), history);
+		// if (!line[0])
+		// {
+		// 	dprintf(2, "passe par la");
+		// 	continue ;
+		// }
 		if (line && ft_strlen(line) > 0)
 		{
 			tmp = *cmd;
@@ -331,23 +346,31 @@ void		ft_new_prompt(char **cmd, char type_quote)
 *** - then checks if dquote or squote is needed (ft_manage_dquote)
 *** - then checks if the line ends with \
 *** - If yes for any of the above, print the next then parse the quotes
+*** - return 2 is when user presses \n directly after prompt
+*** - returns 3 when ctrl_l key is being pressed, and doesn't print the 
+*** - \n in this case
 */
 
-void		ft_get_entire_line(char **cmd, char *str)
+void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 {
 	int		ret;
 	char	type_quote;
 
 	ft_putstr_fd(str, 1);
-	ret = get_next_line(0, cmd);
-	if (ret == 0)
+	ret = get_line_term(cmd, str[0] == '\n' ? str + 1 : str, history);
+	if (ret != 2 && ret != 3)
 	{
-		free(*cmd);
-		exit(1);
+		if (ret != 0)
+		{
+			free(*cmd);
+			exit(1);
+		}
+		else if (*cmd && ft_strlen(*cmd) > 0)
+			if ((type_quote = ft_count_quote(*cmd)))
+				ft_new_prompt(cmd, type_quote, history);
 	}
-	else if (*cmd && ft_strlen(*cmd) > 0)
-		if ((type_quote = ft_count_quote(*cmd)))
-			ft_new_prompt(cmd, type_quote);
+	// if (ret != 3)
+	ft_putchar_fd('\n', 1);
 }
 
 /*
@@ -357,12 +380,17 @@ void		ft_get_entire_line(char **cmd, char *str)
 *** -  and lex it
 */
 
-int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer)
+int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history)
 {
 	char	*cmd;
+	char	*tmp;
 
 	if (!string_to_lexer(s, lexer))
 		return (0);
+	while (history[0]->prev)
+		history[0] = history[0]->prev;
+	// ajouter ici historique
+	ft_dlstadd(history, ft_dlstnew(s));
 	while (42)
 	{
 		if (lexer->used_size > 0 && lexer->tokens[lexer->used_size - 1].content
@@ -370,10 +398,17 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer)
 			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "&&")
 			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "||")))
 		{
-			ft_get_entire_line(&cmd, "Missing arguments > ");
+			ft_get_entire_line(&cmd, "\nMissing arguments > ", history);
 			if (cmd && ft_strlen(cmd) > 0)
 				if (!string_to_lexer(cmd, lexer))
 					ft_putendl_fd("error !", 1);
+			// History add, if arguments are missing (realloc)
+			tmp = (*history)->content;
+			(*history)->content = ft_strjoin(tmp, " ");
+			free(tmp);
+			tmp = (*history)->content;
+			(*history)->content = ft_strjoin(tmp, cmd);
+			free(tmp);
 			free(cmd);
 		}
 		else
@@ -389,16 +424,19 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer)
 *** - and fills it : string_to_lexer
 */
 
-t_lexer		final_tokens(void)
+t_lexer		final_tokens(t_dlist **history)
 {
 	char	*cmd;
 	t_lexer	lexer;
 
-	ft_get_entire_line(&cmd, "bash > ");
+	ft_get_entire_line(&cmd, "bash > ", history);
 	lexer_init(&lexer);
 	if (cmd && ft_strlen(cmd) > 0)
-		if (!ft_manage_string_to_lexer(cmd, &lexer))
+		if (!ft_manage_string_to_lexer(cmd, &lexer, history))
 			ft_putendl_fd("error !", 1);
+	// dprintf(2, "history: %s\n", (*history)->content);
+	// if (cmd[0])
+	// if (ft_strlen(cmd) > 0)
 	free(cmd);
 	return (lexer);
 }
