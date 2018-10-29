@@ -16,6 +16,7 @@
 /*
 ** Handles the resizing of the terminal window.
 ** do not forget to free the copy of the prompt when exit termcaps
+** TO MANAGE -> when the process is running, or quit the canonical mode, do nothing (return)
 */
 
 void    win_resize(int sig)
