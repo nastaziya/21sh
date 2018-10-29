@@ -88,7 +88,7 @@ char **expense_cmd(t_command cmd, t_env_tools env, int i)
 	char **res;
 	char *temp;
 	char **without_quotes;
-	int *tab_index_backslash;
+	//int *tab_index_backslash;
 	
 	without_quotes = NULL;
 	res = (char**)malloc(sizeof(char*) * (cmd.command[i].used_space + 1));

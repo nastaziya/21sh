@@ -29,7 +29,7 @@ int			     up_key(t_tcap *caps)
         // if (caps->tmp_str && caps->tmp_str[0])
 		//     free(caps->tmp_str);
         tmp = caps->history[0]->content;
-        dprintf(2, "[%s]", tmp);
+        // dprintf(2, "[%s]", tmp);
         if (caps->history[0]->prev == NULL && !caps->tmp_str)// si c'est la premiere fois, stocker la str en cours
         {
             // dprintf(2, "entre dans le copy");
@@ -80,7 +80,7 @@ int			     down_key(t_tcap *caps)
     {
         // dprintf(2, "previous content: %s\n", caps->history[0]->prev->prev->content);
 
-        dprintf(2, "je suis pqsse a linteroeir");
+        // dprintf(2, "je suis pqsse a linteroeir");
         // to avoid unexpected segfault, when we go from history to empty str
         if (caps->history[0]->prev)
             caps->history[0] = caps->history[0]->prev;
@@ -104,12 +104,12 @@ int			     down_key(t_tcap *caps)
     }
     else if (caps->size_prompt == 7 && caps->tmp_str && caps->tmp_str[0])
     {
-        dprintf(2, "jyoyoyo");
+        // dprintf(2, "jyoyoyo");
         end_key(caps);
         while (caps->sz_str > caps->size_prompt)
             del_key(caps);
         // transforme chaque caractère de l'history en buf, qu'on envoie dans la fonction de print
-                dprintf(2, "jyoyoyo");
+                // dprintf(2, "jyoyoyo");
         while (caps->tmp_str[++i])
         {
             // dprintf(2, "qcaui");
@@ -126,7 +126,7 @@ int			     down_key(t_tcap *caps)
         end_key(caps);
         while (caps->sz_str > caps->size_prompt)
         {
-            dprintf(2, "fait chier");
+            // dprintf(2, "fait chier");
             del_key(caps);
         }
         //specify that the last key used is down key, but that we are not anymore in the history

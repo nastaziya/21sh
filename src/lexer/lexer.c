@@ -314,7 +314,7 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 	char	*line;
 	char	*tmp;
 
-			dprintf(2, "youhou test ici");
+			// dprintf(2, "youhou test ici");
 	// line = NULL;
 	while (42)
 	{
@@ -398,7 +398,7 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "&&")
 			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "||")))
 		{
-			ft_get_entire_line(&cmd, "\nMissing arguments > ", history);
+			ft_get_entire_line(&cmd, "Missing arguments > ", history);
 			if (cmd && ft_strlen(cmd) > 0)
 				if (!string_to_lexer(cmd, lexer))
 					ft_putendl_fd("error !", 1);

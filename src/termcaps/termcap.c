@@ -68,7 +68,7 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		ft_bzero(caps.buf, 5);
 		if ((ret = read(0, caps.buf, 4) < 0))
 			return (1);
-		dprintf(2, "LA: %d %d %d %d %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4]);
+		// dprintf(2, "LA: %d %d %d %d %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4]);
 		if (ENTER_KEY) //|| CTRL_D_KEY
 		{
 			// to avoid segfault when empty

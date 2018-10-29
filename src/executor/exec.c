@@ -79,7 +79,7 @@ void	error_command(char **str)
 	ft_putstr_fd("bash: ", 2);
 	ft_putstr_fd(*str, 2);
 	ft_putstr_fd(": command not found", 2);
-	ft_putchar('\n');
+	ft_putchar_fd('\n', 2);
 }
 
 int		exec(char *path, char **str, char **env)
