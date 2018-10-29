@@ -14,52 +14,39 @@
 #include "../../inc/sh.h"
 
 /*
-*** - Aim of the function :
-*** - Obligatory to use tputs, as ft_putchar is (void*) type
-*** - And tputs requires an int function (for the pointer function)
+** Handles the resizing of the terminal window.
+** do not forget to free the copy of the prompt when exit termcaps
 */
 
-int			ft_outc(int c)
+void    win_resize(int sig)
 {
-  ft_putchar(c);
-  return (0);
+    (void)sig;
+ 
+    end_key(&caps);
+    tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
+    tputs(tgetstr("cd", NULL), 1, ft_outc);
+    size_windows(&caps);
+    ft_putstr_fd(caps.prompt, 1);
+    caps.cursor = caps.size_prompt + 1;
+    position_char_in_window_print_inside_string(caps.cursor, &caps, caps.sz_str, 0);
+    if ((caps.char_pos[0] < caps.window_size[1] && caps.char_pos[1] < caps.window_size[0]) 
+        && caps.window_size[1] > caps.size_prompt)
+        ft_putstr_fd(caps.str[0],1);
+    else
+    {
+        tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
+        tputs(tgetstr("cd", NULL), 1, ft_outc);
+        ft_putstr_fd("make a larger screen",1);
+    }
+    caps.y_prompt = 0;
+    caps.cursor = caps.sz_str;
 }
 
 /*
-*** - Aim of the function :
-*** - Initialize the cap struct
+** Handles the resizing of the terminal window.
 */
 
-void		initialize_caps(t_tcap *caps, char *prompt)
+void     initialize_signals(void)
 {
-	int 	tmp[2];
-	caps->size_prompt = ft_strlen(prompt);
-	caps->prompt = ft_strdup(prompt);
-	caps->sz_str = caps->size_prompt;
-	caps->cursor =  caps->size_prompt;
-	cursor_position(tmp);
-	caps->y_prompt = tmp[1];
-	caps->i = 0;
-	caps->tmp_str = NULL;
-	caps->copy_str = NULL;
-	caps->ct_arrow = 0;
-	if (!(caps->str = (char**)malloc(sizeof(char*))))
-		return ;
-}
-
-/*
-*** - Aim of the function : Collect the size of the
-***	- window when asked
-*/
-
-void		size_windows(t_tcap *caps)
-{
-	struct winsize *w;
-
-	if (!(w = (struct winsize *)malloc(sizeof(struct winsize))))
-		return ;
-	ioctl(STDOUT_FILENO,  TIOCGWINSZ, w);
-	caps->window_size[0] = w->ws_row;
-	caps->window_size[1] = w->ws_col;
-	free(w);
+    signal(SIGWINCH, win_resize);   
 }

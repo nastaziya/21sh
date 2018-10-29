@@ -31,6 +31,7 @@ void		position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[
 	x = caps->size_prompt;
 	// -> problem with indice solved by incrementing of 1
 	y = caps->y_prompt == 0 ? caps->y_prompt + 1 : caps->y_prompt;
+	// y = caps->y_prompt;
 	caps->x_lines[0] = -1;
 	caps->x_lines[1] = -1;
 	caps->x_lines[2] = -1;

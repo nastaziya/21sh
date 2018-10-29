@@ -25,6 +25,7 @@ int 		left_key(t_tcap *caps)
 		{
 			// dprintf(2, "cursor: |%d| - sz_str: |%d|\n", caps->cursor, caps->sz_str);
 			position_char_in_window_left_alt_keys(caps->cursor, caps, curs_pos);
+			// dprintf(2, "return left_key_pos: |%d| |%d| |%d|\n", caps->x_lines[0], caps->x_lines[1], caps->x_lines[2]);
 			// dprintf(2, "x_line: |%d|\n", caps->x_lines[0]);
 			tputs(tgoto(tgetstr("cm", NULL), caps->x_lines[0], curs_pos[1] - 2), 1, ft_outc);
 		}

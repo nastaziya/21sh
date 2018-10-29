@@ -122,7 +122,7 @@ int			     print_normal_char(t_tcap *caps)
     position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0);
     // dprintf(2, "y_prompt: %d - char_pos[0]: %d - caps_wndow_sz[1]: %d - char_pos[1]: %d - caps_wndow_sz[0]: %d\n", caps->y_prompt, caps->char_pos[0], caps->window_size[1], caps->char_pos[1], caps->window_size[0]);
 	if (((caps->buf[0] >= 32 && caps->buf[0] <= 127) || caps->buf[0] == 10) && caps->buf[1] == 0
-        && !((caps->y_prompt - 1) == 0 && (caps->char_pos[0] + 1) == caps->window_size[1]
+        && !(((caps->y_prompt - 1) == 0 || (caps->y_prompt) == 0) && (caps->char_pos[0] + 1) == caps->window_size[1]
             && caps->char_pos[1] == caps->window_size[0]) && caps->buf[0] != 9)
 	{
 		string = ft_strndup(caps->buf, 1);

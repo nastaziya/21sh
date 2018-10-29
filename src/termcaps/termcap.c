@@ -43,9 +43,9 @@ t_tab		*tab_termcaps(void)
 	return ((t_tab*)ttab);
 }
 
+
 int 		get_line_term(char **res, char *str, t_dlist **history)
 {
-	t_tcap		caps;
 	t_tab		*ttab;
 	t_tab		*tmp_tab;
 	int			ret;
@@ -57,6 +57,7 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 	ttab = tab_termcaps();
 // Initialisation de la struct caps
 	initialize_caps(&caps, str);
+	initialize_signals();
 //inclure un printf de prompt pour voir
 	// ft_putstr_fd(str, 1);
 	caps.history = history;

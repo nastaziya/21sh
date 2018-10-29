@@ -40,6 +40,7 @@ typedef struct          s_tcap
     t_dlist         **history;// history - to be able to pass it to the pointer of functions
     int             ct_arrow; // count the number of arrows that were used, 1 == last arrow was down key ; 2 == last arrow was up key
     char            *copy_str; // copy of str when copy_paste
+    char            *prompt; // copy of the prompt str for the resize of the window management
 }                       t_tcap;
 
 // typedef struct		s_dlist
@@ -48,6 +49,8 @@ typedef struct          s_tcap
 // 	struct s_dlist	*next;
 // 	struct s_dlist	*prev;
 // }					t_dlist;
+
+t_tcap		caps;
 
 /*
 *** - Structure that will be the array 
@@ -124,5 +127,8 @@ int 		alt_p(t_tcap *caps);
 
 // control_commands.c
 int			ctrl_l(t_tcap *caps);
+
+// signals.c
+void     initialize_signals(void);
 
 #endif

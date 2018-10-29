@@ -22,7 +22,7 @@ int			alt_up_key(t_tcap *caps)
 	position_char_in_window_left_alt_keys(caps->cursor, caps, curs_pos);
 	if (curs_pos[1] > caps->y_prompt)
 	{
-		if (curs_pos[0] <= caps->size_prompt && curs_pos[1] == caps->y_prompt + 1) // si x inférieur x prompt
+		if (curs_pos[0] <= caps->size_prompt && curs_pos[1] == (caps->y_prompt == 0 ? caps->y_prompt + 1 : caps->y_prompt) + 1) // si x inférieur x prompt, le terner est pour gérer quand y == 0
 			home_key(caps);
 		else if (curs_pos[0] > caps->x_lines[0]) // si x supérieur x char d'au dessus
 		{
@@ -52,13 +52,14 @@ int			alt_down_key(t_tcap *caps)
 	size_windows(caps);
 	cursor_position(curs_pos);
 	position_char_in_window_left_alt_keys(caps->cursor, caps, curs_pos);
-	if (caps->x_lines[2] != -1)
-	{
+	// dprintf(2, "alt_down: x: %d y: %d y_prompt: %d sz_prompt: %d x_lines[2]: %d\n", curs_pos[0], curs_pos[1], caps->y_prompt, caps->size_prompt, caps->x_lines[2]);
+	// if (caps->x_lines[2] != -1)
+	// {
 		position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 1);
 		// dprintf(2, "alt: %d\n", caps->char_pos[1]);
-		if (curs_pos[1] == caps->char_pos[1] - 1 && curs_pos[0] > caps->x_lines[2]) // si x curseur dépasse x ligne suivante et que derniere ligne
+		if (curs_pos[1] == caps->char_pos[1] - 1 && curs_pos[0] > caps->x_lines[2] && caps->x_lines[2] != -1) // si x curseur dépasse x ligne suivante et que derniere ligne
 			end_key(caps);
-		else if (curs_pos[0] > caps->x_lines[2]) // si x curseur dépasse x ligne suivante en général
+		else if (curs_pos[0] > caps->x_lines[2] && caps->x_lines[2] != -1) // si x curseur dépasse x ligne suivante en général
 		{
 			tputs(tgetstr("vi", NULL), 1, ft_outc);
 			i = -1;
@@ -74,6 +75,6 @@ int			alt_down_key(t_tcap *caps)
                 right_key(caps);
             tputs(tgetstr("ve", NULL), 1, ft_outc);
         }
-	}
+	// }
 	return (0);
 }
