@@ -48,6 +48,12 @@ void		get_cursor_position(int curs_pos[2])
 	curs_pos[0] = ft_atoi(buf + j + 1);
 }
 
+/*
+*** - Aim of the function : Iterate on the 
+*** - get_cursor_position function in order to collect
+*** - a proper curs_pos
+*/
+
 void			cursor_position(int curs_pos[2])
 {
 	curs_pos[0] = -1;
@@ -59,43 +65,3 @@ void			cursor_position(int curs_pos[2])
 			break ;
 	}
 }
-
-// #define ANSI_Q_CURSORXY			"\033[6n"
-// #define ANSI_Q_CURSORXY_SIZE	 sizeof("\033[6n") - 1
-
-// void		cursor_position(int curs_pos[2])
-// {
-// 	char				buf[16];
-// 	size_t				i;
-
-// 	// caps__get_context(&context);
-// 	if (write(0, ANSI_Q_CURSORXY,
-// 		ANSI_Q_CURSORXY_SIZE) != ANSI_Q_CURSORXY_SIZE)
-// 		return ;
-// 	if (read(0, buf, sizeof(buf)) == sizeof(buf))
-// 		return ;
-// 	i = sizeof("\033[") - 1;
-// 	curs_pos[1] = ft_atoi(buf + i);
-// 	while (ft_isdigit(buf[i]))
-// 		i++;
-// 	i += sizeof(";") - 1;
-// 	curs_pos[0] = ft_atoi(buf + i);
-// }
-
-// bool	caps__cursor_getxy(int *out_x, int *out_y)
-// {
-// 	int		x;
-// 	int		y;
-
-// 	if (out_x != NULL)
-// 		*out_x = 0;
-// 	if (out_y != NULL)
-// 		*out_y = 0;
-// 	if (!s_caps__cursor_getxy(&x, &y))
-// 		return (false);
-// 	if (out_x)
-// 		*out_x = x;
-// 	if (out_y)
-// 		*out_y = y;
-// 	return (true);
-// }
