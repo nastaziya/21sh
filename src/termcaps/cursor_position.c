@@ -52,19 +52,11 @@ void			cursor_position(int curs_pos[2])
 {
 	curs_pos[0] = -1;
 	curs_pos[1] = -1;
-	// get_cursor_position(curs_pos);
-	// if ((curs_pos[0] == -1) || (curs_pos[1] == -1))
-	// 	get_cursor_position(curs_pos);
 	while (42)
 	{
-		// dprintf(2, "ici");
-		// dprintf(2, "|%d| |%d|\n", curs_pos[0], curs_pos[1]);
 		get_cursor_position(curs_pos);
 		if (curs_pos[0] != -1 && curs_pos[1] != -1)
-		{
-			// dprintf(2, "|%d| |%d|\n", curs_pos[0], curs_pos[1]);
 			break ;
-		}
 	}
 }
 
