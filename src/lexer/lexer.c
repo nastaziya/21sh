@@ -375,12 +375,54 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 
 /*
 *** - Aim of the function :
+*** - Function that manages the heredoc if necesary, will malloc of the proper size
+*** -will first malloc the *** with the proper number of char** (that will be the number of << word with separators)
+*** - => cat << non << oui ; ls ; cat << plus gives 2 char** 
+*** - => cat << non ; ls ; cat << yo ; cat << plus gives 3 char***
+*** -  and builds the proper char***
+*** - En premier, compter le nombre de char** à malloc, et ressortir les cases à remplir
+*** - puis après, 
+*/
+
+int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
+{
+	// char *cmd;
+
+	// while (42)
+	// {
+	// 	if (lexer->used_size > 0 && lexer->tokens[lexer->used_size - 1].content
+	// 	&& (!ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "|")
+	// 		|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "&&")
+	// 		|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "||")))
+	// 	{
+	// 		ft_get_entire_line(&cmd, "heredoc > ", history);
+	// 		// if (cmd && ft_strlen(cmd) > 0)
+	// 		// 	if (!string_to_lexer(cmd, lexer))
+	// 		// 		ft_putendl_fd("error !", 1);
+	// 		// // History add, if arguments are missing (realloc)
+	// 		tmp = (*history)->content;
+	// 		(*history)->content = ft_strjoin(tmp, " ");
+	// 		free(tmp);
+	// 		tmp = (*history)->content;
+	// 		(*history)->content = ft_strjoin(tmp, cmd);
+	// 		free(tmp);
+	// 		free(cmd);
+	// 	}
+	// 	else
+	// 		break ;
+	// }
+	return (0);
+}
+
+
+/*
+*** - Aim of the function :
 *** - Function that manages if the lexing ends up with && || |
 *** - if that's the case, we need to show a new prompt, collect a new string
 *** -  and lex it
 */
 
-int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history)
+int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history, char ***heredoc)
 {
 	char	*cmd;
 	char	*tmp;
@@ -414,6 +456,7 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 		else
 			break ;
 	}
+	ft_manage_heredoc(lexer, heredoc, history);
 	return (1);
 }
 
@@ -424,7 +467,7 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 *** - and fills it : string_to_lexer
 */
 
-t_lexer		final_tokens(t_dlist **history)
+t_lexer		final_tokens(t_dlist **history, char ***heredoc)
 {
 	char	*cmd;
 	t_lexer	lexer;
@@ -432,7 +475,7 @@ t_lexer		final_tokens(t_dlist **history)
 	ft_get_entire_line(&cmd, "bash > ", history);
 	lexer_init(&lexer);
 	if (cmd && ft_strlen(cmd) > 0)
-		if (!ft_manage_string_to_lexer(cmd, &lexer, history))
+		if (!ft_manage_string_to_lexer(cmd, &lexer, history, heredoc))
 			ft_putendl_fd("error !", 1);
 	// dprintf(2, "history: %s\n", (*history)->content);
 	// if (cmd[0])

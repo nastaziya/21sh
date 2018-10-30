@@ -66,6 +66,8 @@ int		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end,
 	int 	curs[2];
 
 	cursor_position(curs);
+	size_windows(caps);
+	// cursor_position(curs);
 	x = curs[0] - 1;
 	y = curs[1];
 	caps->last_char = 0;

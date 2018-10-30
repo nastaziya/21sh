@@ -42,7 +42,8 @@ void check_op(t_command cmd, t_env_tools *env)
 		free(path);
 	}
 }
-void	all_exec(char **environ)
+
+void	all_exec(char **environ, char ***heredoc)
 {
 	t_dlist		*history;
 	t_lexer 	lex;
@@ -56,7 +57,7 @@ void	all_exec(char **environ)
 	history = ft_dlstnew(NULL);
 	while (42)
 	{
-		lex = final_tokens(&history);
+		lex = final_tokens(&history, heredoc);
 		// final_tokens(&lex);
 		print(&lex);
 		command_init(&cmd);
@@ -77,12 +78,13 @@ void	all_exec(char **environ)
 int main(int argc, char **argv, char **environ)
 {
 	 t_term		term;
+	 char		***heredoc;
 
+	heredoc = NULL;
 	// //Initialisation du termios
 	terminal_data(&term);
   	modify_terminos(&term);
-
-	all_exec(environ);
+	all_exec(environ, heredoc);
 
 	reset_termios(&term);
 }
