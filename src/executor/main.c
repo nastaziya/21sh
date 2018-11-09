@@ -57,7 +57,21 @@ void	all_exec(char **environ, char ***heredoc)
 	history = ft_dlstnew(NULL);
 	while (42)
 	{
-		lex = final_tokens(&history, heredoc);
+		lex = final_tokens(&history, &heredoc);
+		//debug heredoc
+		// int i = -1;
+		// int j;
+		// while (heredoc && heredoc[++i])
+		// {
+		// 	j = -1;
+		// 	dprintf(2, "i de heredoc: %d\n", i);
+		// 	while (heredoc[i] && heredoc[i][++j])
+		// 	{
+		// 		dprintf(2, "i: %d - j de heredoc: %d\n", i, j);
+		// 		dprintf(2, "AFFICHE HEREDOC: [%s]\n", heredoc[i][j]);
+		// 	}
+		// }
+		// debug
 		// final_tokens(&lex);
 		print(&lex);
 		command_init(&cmd);

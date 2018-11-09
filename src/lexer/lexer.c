@@ -373,6 +373,8 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 	ft_putchar_fd('\n', 1);
 }
 
+////////////////// HEREDOC
+
 /*
 *** - Aim of the function :
 *** - Function that counts the number of commands that have an heredoc then mallocs it
@@ -402,18 +404,131 @@ int		ft_initialize_heredoc(t_lexer *lexer, char ****heredoc, int other_command, 
 				nb_to_malloc++;
 		}
 		// dprintf(2, "nb_to_malloc: %d\n", nb_to_malloc);
-		if (!(*heredoc = (char***)malloc(sizeof(char**) * (nb_to_malloc + 1))))
+		if (!(heredoc[0] = (char***)malloc(sizeof(char**) * (nb_to_malloc + 1))))
 			return (1);
 		i = -1;
-		//heredoc[0][nb_to_malloc] = NULL;
 		while (++i <= nb_to_malloc)
-		{
 			heredoc[0][i] = NULL;
-		}
-		dprintf(2, "ahah: %d - %d", i, nb_to_malloc);
-		//ft_memset(heredoc, 1 , nb_to_malloc); // voir si ça ne fait pas planter
-		// heredoc[nb_to_malloc] = NULL;
 	}
+	return (0);
+}
+
+/*
+*** - Aim of the function :
+*** - Function that finds the end of the command and counts the number of heredocs (the number of <<)
+*** - And stores the index of each keyword to match to quit each heredoc
+*/
+
+int		ft_find_end_command_and_nb_kewyords(t_hdoc *h, t_lexer *lexer)
+{
+	//reset table
+	ft_memset(h->words, -1, 50);
+	h->i = h->j - 1;
+	// find the limit of the current command (find separator -> && || ;)
+	while (lexer->tokens[h->j].type != T_DBLOR && lexer->tokens[h->j].type != T_DBLAND
+		&& lexer->tokens[h->j].type != T_SEMI && h->j < lexer->used_size - 1)
+		++(h->j);
+	// first passage to see how many heredoc there are in this current command
+	// + keep track of the index for each word after <<
+	h->i_words = 0;
+	while (++(h->i) < h->j)
+		if (lexer->tokens[h->i].type == T_DBL_LESS && h->words[h->i_words] == -1)			
+		{
+			h->words[h->i_words] = h->i + 1;
+			(h->i_words)++;
+		}
+	// set k value at 0 not after for the norm
+	h->k = 0;
+	return (0);
+}
+
+/*
+*** - Aim of the function :
+*** - Function that reallocs the heredoc for the proper command
+*/
+
+int		realloc_heredoc(t_hdoc *h, char ****heredoc)
+{
+	// compter combien d'éléments il y a 
+	while (heredoc[0][h->command][h->l] != NULL)
+		++(h->l);
+	// puis en rajouter 1
+	// tmp the current heredoc
+	h->tmp = heredoc[0][h->command];
+	//realloc dans le heredoc avec le bon numéro
+	if (!(heredoc[0][h->command] = (char**)malloc(sizeof(char*) * (h->l + 2))))
+		return (1);
+	h->l = -1;
+	while (h->tmp[++(h->l)] != NULL)
+		heredoc[0][h->command][h->l] = h->tmp[h->l];
+	free(h->tmp[h->l]);
+	heredoc[0][h->command][h->l] = h->cmd;
+	heredoc[0][h->command][++(h->l)] = NULL;
+	free (h->tmp);
+	return (0);
+}
+
+/*
+*** - Aim of the function :
+*** - Function that manages the heredoc when we are waiting for the last keyword of the command
+*** - => cat << oui << non -> we are in this function when we are expecting the "non" keyword
+*** - => The if is for when the user typed the closing word
+*** - the else if for when the user typed another keyword -> realloc
+*/
+
+int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ****heredoc)
+{
+	// quand c'est le mot clé fermant, on free et c'est tout
+	if (ft_strcmp(h->cmd, lexer->tokens[h->words[h->k]].content) == 0)
+	{
+		(h->k)++;
+		free(h->cmd);
+	}
+	// là on realloc
+	else
+	{
+		dprintf(2, "ft_manage_last_keyword | command: %d|\n", h->command);
+		// ici on initialise
+		if (heredoc[0][h->command] == NULL)//[0]
+		{
+			if (!(heredoc[0][h->command] = (char**)malloc(sizeof(char*) * 2)))
+				return (1);
+			heredoc[0][h->command][0] = h->cmd;
+			heredoc[0][h->command][1] = NULL;
+		}
+		// ici on realloc
+		else //// GERER les leaks, normalement pas bon
+			if (realloc_heredoc(h, heredoc))
+				return (1);
+	}
+	return (0);
+}
+
+/*
+*** - Aim of the function :
+*** - Function that collects the line, manages when we are not at the last keyword of the heredoc
+*** - (cat << oui << non --> when we are expecting the Oui keyword) <= managed in the if
+*** - else if -> manage when last keyword
+*/
+
+int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer, char ****heredoc, t_dlist **history)
+{
+	if (h->i_words > 0)
+		while (h->k < h->i_words)
+		{
+			h->l = 0;
+			ft_get_entire_line(&h->cmd, "Heredoc > ", history);
+			//si mot clé c'est pas le dernier, free ce que l'on get_line et passer au suivant
+			if (h->k < h->i_words - 1)
+			{
+				if (ft_strcmp(lexer->tokens[h->words[h->k]].content, h->cmd) == 0)
+					(h->k)++;
+				free(h->cmd);
+			}
+			// quand on arrive au dernier, on collecte les données dans le char***
+			else if (h->k == h->i_words - 1)
+				ft_manage_last_keyword(h, lexer, heredoc);
+		}
 	return (0);
 }
 
@@ -428,164 +543,30 @@ int		ft_initialize_heredoc(t_lexer *lexer, char ****heredoc, int other_command, 
 *** - puis après, 
 */
 
-int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
+int		ft_manage_heredoc(t_lexer *lexer, char ****heredoc, t_dlist **history)
 {
-	ft_initialize_heredoc(lexer, &heredoc, 0, 0);
+	t_hdoc	h;
+	h.j = 0;
+	h.command = 0;
 
-	// trouver le / les mots clés à get_line puis strcmp dessus
-
-	int		i; // index socké dans words et représente le mot à strcmp
-	int		j = 0; // index qui s'arrête quand tombe sur || && ;
-	// int prev;
-	int		l;
-	int		command = 0; // index pour savoir dans quel * du char *** on est
-	int		words[50]; // Tableau qui stocke les différents index des mots clés à strcmp du heredoc
-	int		i_words; // index dans le tableau words pour quand on rentre les données
-	int		k; // compteur pour savoir l'index d'où on est dans le get_line
-	char	*cmd;// pour le get_line
-	char	**tmp; // tmp for the realloc of char*
-	// int	has_dblor = 0;
-
-	while (j < lexer->used_size - 1)
+	ft_initialize_heredoc(lexer, heredoc, 0, 0);
+	// loop on the different commands (with separators : && || ;)
+	while (h.j < lexer->used_size - 1)
 	{
-		ft_memset(words, -1, 50);
-		i = j - 1;
-		//DEBUG
-		int a = j - 1;
-		// prev = j;
-		// ft_bzero(words, 2);
-		dprintf(2, "dans la boucle ;"); //- prev: %d\n", prev)
-		while (lexer->tokens[j].type != T_DBLOR && lexer->tokens[j].type != T_DBLAND
-			&& lexer->tokens[j].type != T_SEMI && j < lexer->used_size - 1)
+		ft_find_end_command_and_nb_kewyords(&h, lexer);
+		ft_collect_line_and_realloc_heredoc(&h, lexer, heredoc, history);
+		// Go to the next command, and if a << was found in the current command
+		// go to the next * of the char*** heredoc
+		if (h.j < lexer->used_size - 1)
 		{
-			dprintf(2, "j: %d - used_size: %d\n", j, lexer->used_size);
-			++j;
-		}
-		dprintf(2, "sortie boucle j: %d - word: %s - used_size: %d\n", j, lexer->tokens[j].content,lexer->used_size);
-		// premier passage pour savoir nombre de mots clés pour lesquels vérifier, en gardant leur index +
-		// si jamais il y a un "<<", sinon passer la suite
-		i_words = 0;
-		while (++i < j)//j < lexer->used_size && 
-		{
-			// dprintf(2, "je boucle: %d\n", i);
-			if (lexer->tokens[i].type == T_DBL_LESS && words[i_words] == -1)			
-			{
-				// dprintf(2, "je retntre dans le premier");
-				words[i_words] = i + 1;
-				i_words++;
-			}
-		}
-		dprintf(2, "TABLEAU words\n");
-		//DEBUG
-		while (++a < j)
-			dprintf(2, "|%d| ", words[a]);
-		dprintf(2, "TABLEAU words\n");
-		k = 0;
-		/// if jamais il y a un heredoc, collecter les infos, et avancer dans le i_words
-		// jusqu'à i_words - 1, collecter et free
-		// une fois à i_words - 1, 
-		dprintf(2, "i_words: %d\n", i_words);
-		if (i_words > 0)
-		{
-			dprintf(2, "rentré dans le if\n");
-			dprintf(2, "command: %d\n", command);
-			dprintf(2, "avant boucle ++k => k: %d - i_words + 1: %d\n", k, i_words + 1);
-			while (k < i_words)// +1
-			{
-				dprintf(2, "dans boucle ++k => k: %d - i_words + 1: %d\n", k, i_words + 1);
-				// dprintf(2, "rentré dans la bouclinf\n");
-				l = 0;
-				ft_get_entire_line(&cmd, "Heredoc > ", history);
-				dprintf(2, "IMPORTANT\n");
-				dprintf(2, "words[k]: |%d|", words[k]);
-				// if (k < i_words + 1)
-				// 	dprintf(2, "[[[[[dans boucle: cmd: |%s| - words[k]: |%s|]]]]]\n", cmd, lexer->tokens[words[k]].content);
-				dprintf(2, "IMPORTANT\n");
-				//si inférieur au dernier mot clé, free et passer au suivant
-				if (k < i_words - 1)
-				{
-					dprintf(2, "rentré dans le if du while");
-					dprintf(2, "[[[[[dans boucle: cmd: |%s| - words[k]: |%s|]]]]]\n", cmd, lexer->tokens[words[k]].content);
-					// if (dprintf(2, "||||||||||||||||DEBUG strcmp k < i_words: %d||||||||||\n", !ft_strcoo(cmd, lexer->tokens[words[k]].content)))
-					if (ft_strcmp(lexer->tokens[words[k]].content, cmd) == 0)
-					{
-						// dprintf(2, "||||||||||||||||DEBUG strcmp k < i_words: %d||||||||||\n", ft_strcoo(lexer->tokens[words[k]].content, cmd));
-						dprintf(2, "merde j'incrémente et il faut pas\n");
-						k++;
-					}
-					free(cmd);
-				}
-				// quand on arrive au dernier, on collecte les données dans le char***
-				else if (k == i_words - 1)
-				{
-					dprintf(2, "rentre dans elseif du while => k: %d - i_words: %d\n", k, i_words - 1);
-					// dprintf(2, "rentré dans le k == i_words -- %d - %d\n", k, words[k -1]);
-					// quand c'est le mot clé fermant, on free et c'est tout
-					if (ft_strcmp(cmd, lexer->tokens[words[k]].content) == 0)
-					{
-						dprintf(2, "rentré dans mot clé fermant k == i_words\n");
-						k++;
-						free(cmd);
-					}
-					// là on realloc
-					else
-					{
-						dprintf(2, "rentré dans else k == i_words\n");
-						// ici on initialise
-						//dprintf(2, "index : %s\n", heredoc[command][0]);
-						if (heredoc[command] == NULL)//[0]
-						{
-							dprintf(2, "k == i_words, else -> initialisation\n");
-							if (!(heredoc[command] = (char**)malloc(sizeof(char*) * 2)))
-								return (1);
-							heredoc[command][0] = cmd;
-							heredoc[command][1] = NULL;
-						}
-						// ici on realloc
-						else //// GERER les leaks, normalement pas bon
-						{
-							dprintf(2, "k == i_words, else -> realloc\n");
-							// compter combien d'éléments il y a 
-								while (heredoc[command][l] != NULL)
-									++l;
-							// puis en rajouter 1
-							dprintf(2, "nb_l_avant : %d\n", l);
-							// tmp the current heredoc
-							tmp = heredoc[command];
-							//realloc dans le heredoc avec le bon numéro
-							if (!(heredoc[command] = (char**)malloc(sizeof(char*) * (l + 2)))) // OU 1, vérifier avec le printf
-								return (1);
-							l = -1;
-							while (tmp[++l] != NULL)
-								heredoc[command][l] = tmp[l];
-							free(tmp[l]);
-							heredoc[command][l] = cmd;
-							heredoc[command][++l] = NULL;
-							free (tmp);
-							// dprintf(2, "nb_l_apres : %d\n", l);
-							// int p = -1;
-							// while (++p < l)
-							// 	dprintf(2, "DEBUG_REALLOC: |%s| - %d - %d\n", heredoc[command][p], p, l);
-						}
-					}
-				}
-				dprintf(2, "-Un passage-\n");
-			}
-		}
-		dprintf(2, "words[0]:%d - words[1]:%d - i: %d - j: %d\n", words[0], words[1], i, j);
-		// ++i;
-		// 2ème passage de collecte de get_line_avec realloc (uniquement quand il y a "<<" )
-		if (j < lexer->used_size - 1)
-		{
-			dprintf(2, "un passage\n");
-			j++;
-			if (words[0] != -1)
-				command++;
+			(h.j)++;
+			if (h.words[0] != -1)
+				(h.command)++;
 		}
 	}
 	return (0);
 }
-
+////////////////// HEREDOC
 
 /*
 *** - Aim of the function :
@@ -598,7 +579,7 @@ int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 *** - Function also adds history
 */
 
-int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history, char ***heredoc)
+int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history, char ****heredoc)
 {
 	char	*cmd;
 	char	*tmp;
@@ -644,7 +625,7 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 *** - and fills it : string_to_lexer
 */
 
-t_lexer		final_tokens(t_dlist **history, char ***heredoc)
+t_lexer		final_tokens(t_dlist **history, char ****heredoc)
 {
 	char	*cmd;
 	t_lexer	lexer;
