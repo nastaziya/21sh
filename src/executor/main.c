@@ -67,6 +67,7 @@ void	all_exec(char **environ, char ***heredoc)
 		free_the_op_content_array_token(&lex);
 		free_struct(&cmd, lex);
 		//free(lex.tokens);
+		// to do -> free heredoc
 		
 		
 	}
@@ -75,6 +76,7 @@ void	all_exec(char **environ, char ***heredoc)
 	// Je free ici, mais a voir si free plus tard/ autre part (en fonction du exit)
 	ft_dlstdel(&history);
 }
+
 int main(int argc, char **argv, char **environ)
 {
 	 t_term		term;

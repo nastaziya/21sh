@@ -375,8 +375,49 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 
 /*
 *** - Aim of the function :
+*** - Function that counts the number of commands that have an heredoc then mallocs it
+*** - If a other_command != previous command, it means that we met a ; || &&
+*** - so we have to malloc the heredoc for the new command. The first if is for 
+*** - the initialization the first time we meet a <<
+*/
+
+int		ft_initialize_heredoc(t_lexer *lexer, char ***heredoc, int other_command, int previous_command)
+{
+	int		nb_to_malloc;
+	int		i;
+
+	nb_to_malloc = 0;
+	i = -1;
+	if (lexer->used_size > 0)
+	{
+		while (++i < lexer->used_size)
+		{
+			if (lexer->tokens[i].type == T_DBL_LESS && other_command == 0 && (other_command++) && (nb_to_malloc++))
+				previous_command++;
+			else if ((lexer->tokens[i].type == T_DBLOR
+				|| lexer->tokens[i].type == T_SEMI
+					|| lexer->tokens[i].type == T_DBLAND))
+				other_command++;
+			else if (lexer->tokens[i].type == T_DBL_LESS && (other_command != previous_command) && (previous_command = other_command))
+				nb_to_malloc++;
+		}
+		// dprintf(2, "nb_to_malloc: %d\n", nb_to_malloc);
+		if (!(heredoc = (char***)malloc(sizeof(char**) * (nb_to_malloc + 1))))
+			return (1);
+		i = -1;
+		while (++i < nb_to_malloc)
+			heredoc[i] = NULL;
+		dprintf(2, "ahah: %d - %d", i, nb_to_malloc);
+		//ft_memset(heredoc, 1 , nb_to_malloc); // voir si ça ne fait pas planter
+		// heredoc[nb_to_malloc] = NULL;
+	}
+	return (0);
+}
+
+/*
+*** - Aim of the function :
 *** - Function that manages the heredoc if necesary, will malloc of the proper size
-*** -will first malloc the *** with the proper number of char** (that will be the number of << word with separators)
+*** - will first malloc the *** with the proper number of char** (that will be the number of << word with separators)
 *** - => cat << non << oui ; ls ; cat << plus gives 2 char** 
 *** - => cat << non ; ls ; cat << yo ; cat << plus gives 3 char***
 *** -  and builds the proper char***
@@ -386,31 +427,153 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 
 int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 {
-	// char *cmd;
+	ft_initialize_heredoc(lexer, heredoc, 0, 0);
 
-	// while (42)
-	// {
-	// 	if (lexer->used_size > 0 && lexer->tokens[lexer->used_size - 1].content
-	// 	&& (!ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "|")
-	// 		|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "&&")
-	// 		|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "||")))
-	// 	{
-	// 		ft_get_entire_line(&cmd, "heredoc > ", history);
-	// 		// if (cmd && ft_strlen(cmd) > 0)
-	// 		// 	if (!string_to_lexer(cmd, lexer))
-	// 		// 		ft_putendl_fd("error !", 1);
-	// 		// // History add, if arguments are missing (realloc)
-	// 		tmp = (*history)->content;
-	// 		(*history)->content = ft_strjoin(tmp, " ");
-	// 		free(tmp);
-	// 		tmp = (*history)->content;
-	// 		(*history)->content = ft_strjoin(tmp, cmd);
-	// 		free(tmp);
-	// 		free(cmd);
-	// 	}
-	// 	else
-	// 		break ;
-	// }
+	// trouver le / les mots clés à get_line puis strcmp dessus
+
+	int		i; // index socké dans words et représente le mot à strcmp
+	int		j = 0; // index qui s'arrête quand tombe sur || && ;
+	// int prev;
+	int		l;
+	int		command = 0; // index pour savoir dans quel * du char *** on est
+	int		words[50]; // Tableau qui stocke les différents index des mots clés à strcmp du heredoc
+	int		i_words; // index dans le tableau words pour quand on rentre les données
+	int		k; // compteur pour savoir l'index d'où on est dans le get_line
+	char	*cmd;// pour le get_line
+	char	**tmp; // tmp for the realloc of char*
+	// int	has_dblor = 0;
+
+	while (j < lexer->used_size - 1)
+	{
+		ft_memset(words, -1, 50);
+		i = j - 1;
+		//DEBUG
+		int a = j - 1;
+		// prev = j;
+		// ft_bzero(words, 2);
+		dprintf(2, "dans la boucle ;"); //- prev: %d\n", prev)
+		while (lexer->tokens[j].type != T_DBLOR && lexer->tokens[j].type != T_DBLAND
+			&& lexer->tokens[j].type != T_SEMI && j < lexer->used_size - 1)
+		{
+			dprintf(2, "j: %d - used_size: %d\n", j, lexer->used_size);
+			++j;
+		}
+		dprintf(2, "sortie boucle j: %d - word: %s - used_size: %d\n", j, lexer->tokens[j].content,lexer->used_size);
+		// premier passage pour savoir nombre de mots clés pour lesquels vérifier, en gardant leur index +
+		// si jamais il y a un "<<", sinon passer la suite
+		i_words = 0;
+		while (++i < j)//j < lexer->used_size && 
+		{
+			// dprintf(2, "je boucle: %d\n", i);
+			if (lexer->tokens[i].type == T_DBL_LESS && words[i_words] == -1)			
+			{
+				// dprintf(2, "je retntre dans le premier");
+				words[i_words] = i + 1;
+				i_words++;
+			}
+		}
+		dprintf(2, "TABLEAU words\n");
+		//DEBUG
+		while (++a < j)
+			dprintf(2, "|%d| ", words[a]);
+		dprintf(2, "TABLEAU words\n");
+		k = 0;
+		/// if jamais il y a un heredoc, collecter les infos, et avancer dans le i_words
+		// jusqu'à i_words - 1, collecter et free
+		// une fois à i_words - 1, 
+		dprintf(2, "i_words: %d\n", i_words);
+		if (i_words > 0)
+		{
+			dprintf(2, "rentré dans le if\n");
+			dprintf(2, "command: %d\n", command);
+			dprintf(2, "avant boucle ++k => k: %d - i_words + 1: %d\n", k, i_words + 1);
+			while (k < i_words)// +1
+			{
+				dprintf(2, "dans boucle ++k => k: %d - i_words + 1: %d\n", k, i_words + 1);
+				// dprintf(2, "rentré dans la bouclinf\n");
+				l = 0;
+				ft_get_entire_line(&cmd, "Heredoc > ", history);
+				dprintf(2, "IMPORTANT\n");
+				dprintf(2, "words[k]: |%d|", words[k]);
+				// if (k < i_words + 1)
+				// 	dprintf(2, "[[[[[dans boucle: cmd: |%s| - words[k]: |%s|]]]]]\n", cmd, lexer->tokens[words[k]].content);
+				dprintf(2, "IMPORTANT\n");
+				//si inférieur au dernier mot clé, free et passer au suivant
+				if (k < i_words - 1)
+				{
+					dprintf(2, "rentré dans le if du while");
+					dprintf(2, "[[[[[dans boucle: cmd: |%s| - words[k]: |%s|]]]]]\n", cmd, lexer->tokens[words[k]].content);
+					// if (dprintf(2, "||||||||||||||||DEBUG strcmp k < i_words: %d||||||||||\n", !ft_strcoo(cmd, lexer->tokens[words[k]].content)))
+					if (ft_strcmp(lexer->tokens[words[k]].content, cmd) == 0)
+					{
+						// dprintf(2, "||||||||||||||||DEBUG strcmp k < i_words: %d||||||||||\n", ft_strcoo(lexer->tokens[words[k]].content, cmd));
+						dprintf(2, "merde j'incrémente et il faut pas\n");
+						k++;
+					}
+					free(cmd);
+				}
+				// quand on arrive au dernier, on collecte les données dans le char***
+				else if (k == i_words - 1)
+				{
+					dprintf(2, "rentre dans elseif du while => k: %d - i_words: %d\n", k, i_words - 1);
+					// dprintf(2, "rentré dans le k == i_words -- %d - %d\n", k, words[k -1]);
+					// quand c'est le mot clé fermant, on free et c'est tout
+					if (ft_strcmp(cmd, lexer->tokens[words[k]].content) == 0)
+					{
+						dprintf(2, "rentré dans mot clé fermant k == i_words\n");
+						k++;
+						free(cmd);
+					}
+					// là on realloc
+					else
+					{
+						dprintf(2, "rentré dans else k == i_words\n");
+						// ici on initialise
+						//dprintf(2, "index : %s\n", heredoc[command][0]);
+						if (heredoc[command] == NULL)//[0]
+						{
+							dprintf(2, "k == i_words, else -> initialisation\n");
+							if (!(heredoc[command] = (char**)malloc(sizeof(char*) * 2)))
+								return (1);
+							heredoc[command][0] = cmd;
+							heredoc[command][1] = NULL;
+						}
+						// ici on realloc
+						else
+						{
+							dprintf(2, "k == i_words, else -> realloc\n");
+							// compter combien d'éléments il y a 
+								while (heredoc[command][l] != NULL)
+									++l;
+							// puis en rajouter 1
+							dprintf(2, "nb_l : %d\n", l);
+							// tmp the current heredoc
+							tmp = heredoc[command];
+							//realloc dans le heredoc avec le bon numéro
+							if (!(heredoc[command] = (char**)malloc(sizeof(char*) * l + 2))) // OU 1, vérifier avec le printf
+								return (1);
+							l = 0;
+							while (tmp[++l] != NULL)
+								heredoc[command][l] = tmp[l];
+							heredoc[command][l] = cmd;
+							heredoc[command][++l] = NULL;
+						}
+					}
+				}
+				dprintf(2, "-Un passage-\n");
+			}
+		}
+		dprintf(2, "words[0]:%d - words[1]:%d - i: %d - j: %d\n", words[0], words[1], i, j);
+		// ++i;
+		// 2ème passage de collecte de get_line_avec realloc (uniquement quand il y a "<<" )
+		if (j < lexer->used_size - 1)
+		{
+			dprintf(2, "un passage\n");
+			j++;
+			if (words[0] != -1)
+				command++;
+		}
+	}
 	return (0);
 }
 
@@ -420,6 +583,10 @@ int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 *** - Function that manages if the lexing ends up with && || |
 *** - if that's the case, we need to show a new prompt, collect a new string
 *** -  and lex it
+*** - Also manages the "cat << &&" error <= Should not enter in the Missing argument prompt
+*** - with this line : 	&& (lexer->used_size > 1 ? lexer->tokens[lexer->used_size - 2].type != T_DBL_LESS : 1))
+*** - Also manages the heredoc
+*** - Function also adds history
 */
 
 int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history, char ***heredoc)
@@ -438,7 +605,8 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 		if (lexer->used_size > 0 && lexer->tokens[lexer->used_size - 1].content
 		&& (!ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "|")
 			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "&&")
-			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "||")))
+			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "||"))
+			&& (lexer->used_size > 1 ? lexer->tokens[lexer->used_size - 2].type != T_DBL_LESS : 1))
 		{
 			ft_get_entire_line(&cmd, "Missing arguments > ", history);
 			if (cmd && ft_strlen(cmd) > 0)
