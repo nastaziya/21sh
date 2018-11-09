@@ -381,7 +381,7 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 *** - the initialization the first time we meet a <<
 */
 
-int		ft_initialize_heredoc(t_lexer *lexer, char ***heredoc, int other_command, int previous_command)
+int		ft_initialize_heredoc(t_lexer *lexer, char ****heredoc, int other_command, int previous_command)
 {
 	int		nb_to_malloc;
 	int		i;
@@ -402,11 +402,14 @@ int		ft_initialize_heredoc(t_lexer *lexer, char ***heredoc, int other_command, i
 				nb_to_malloc++;
 		}
 		// dprintf(2, "nb_to_malloc: %d\n", nb_to_malloc);
-		if (!(heredoc = (char***)malloc(sizeof(char**) * (nb_to_malloc + 1))))
+		if (!(*heredoc = (char***)malloc(sizeof(char**) * (nb_to_malloc + 1))))
 			return (1);
 		i = -1;
-		while (++i < nb_to_malloc)
-			heredoc[i] = NULL;
+		//heredoc[0][nb_to_malloc] = NULL;
+		while (++i <= nb_to_malloc)
+		{
+			heredoc[0][i] = NULL;
+		}
 		dprintf(2, "ahah: %d - %d", i, nb_to_malloc);
 		//ft_memset(heredoc, 1 , nb_to_malloc); // voir si ça ne fait pas planter
 		// heredoc[nb_to_malloc] = NULL;
@@ -427,7 +430,7 @@ int		ft_initialize_heredoc(t_lexer *lexer, char ***heredoc, int other_command, i
 
 int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 {
-	ft_initialize_heredoc(lexer, heredoc, 0, 0);
+	ft_initialize_heredoc(lexer, &heredoc, 0, 0);
 
 	// trouver le / les mots clés à get_line puis strcmp dessus
 
@@ -550,7 +553,7 @@ int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 							// tmp the current heredoc
 							tmp = heredoc[command];
 							//realloc dans le heredoc avec le bon numéro
-							if (!(heredoc[command] = (char**)malloc(sizeof(char*) * l + 2))) // OU 1, vérifier avec le printf
+							if (!(heredoc[command] = (char**)malloc(sizeof(char*) * (l + 2)))) // OU 1, vérifier avec le printf
 								return (1);
 							l = 0;
 							while (tmp[++l] != NULL)
