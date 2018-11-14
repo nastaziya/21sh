@@ -1,7 +1,7 @@
 #ifndef LEXER_H
 # define LEXER_H
 
-
+# include "../libft/libft.h"
 // # include  	<stdlib.h>
 
 #define LEXER_INITIAL_CAPACITY 100
@@ -116,5 +116,6 @@
   t_lexer   final_tokens();
   void      print(const t_lexer* lexer);
   void      free_the_content_array_token(t_lexer* lexer);
+  void      ft_get_entire_line(char **cmd, char *str, t_dlist **history);
 
   #endif

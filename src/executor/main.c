@@ -57,26 +57,26 @@ void	all_exec(char **environ, char ***heredoc)
 	history = ft_dlstnew(NULL);
 	while (42)
 	{
-		lex = final_tokens(&history, &heredoc);
-		//debug heredoc
-		// int i = -1;
-		// int j;
-		// while (heredoc && heredoc[++i])
-		// {
-		// 	j = -1;
-		// 	dprintf(2, "i de heredoc: %d\n", i);
-		// 	while (heredoc[i] && heredoc[i][++j])
-		// 	{
-		// 		dprintf(2, "i: %d - j de heredoc: %d\n", i, j);
-		// 		dprintf(2, "AFFICHE HEREDOC: [%s]\n", heredoc[i][j]);
-		// 	}
-		// }
-		// debug
+		lex = final_tokens(&history);
 		// final_tokens(&lex);
 		print(&lex);
 		command_init(&cmd);
-		add_simple_command(&cmd, lex);
+		add_simple_command(&cmd, lex, &history, heredoc);
 		//print_struct(cmd);
+		//debug heredoc
+		int i = -1;
+		// int j;
+		while (heredoc[0] && heredoc[0][++i])
+		{
+		// 	// j = -1;
+		// 	// dprintf(2, "i de heredoc: %d\n", i);
+		// 	// while (heredoc[i] && heredoc[i][++j])
+		// 	// {
+		// 		// dprintf(2, "i: %d - j de heredoc: %d\n", i, j);
+				dprintf(2, "AFFICHE HEREDOC: [%s]\n", heredoc[0][i]);
+		// 	// }
+		}
+		// debug
 		check_op(cmd, &env);
 		free_the_op_content_array_token(&lex);
 		free_struct(&cmd, lex);
@@ -94,13 +94,13 @@ void	all_exec(char **environ, char ***heredoc)
 int main(int argc, char **argv, char **environ)
 {
 	 t_term		term;
-	 char		***heredoc;
+	 char **heredoc;
 
 	heredoc = NULL;
 	// //Initialisation du termios
 	terminal_data(&term);
   	modify_terminos(&term);
-	all_exec(environ, heredoc);
+	all_exec(environ, &heredoc);
 
 	reset_termios(&term);
 }
