@@ -37,6 +37,7 @@ void print_struct(t_command cmd)
 		if (cmd.command[j].redirection.used_space > 0)
 		{
 			printf("REDIRECTIONS: \n");
+			printf("index : %d\n",cmd.command[j].redirection.index_heredoc);
 			print_array(cmd.command[j].redirection.used_space, cmd.command[j].redirection.red);
 			print_array(cmd.command[j].redirection.used_space, cmd.command[j].redirection.file);
 			print_array_int(cmd.command[j].redirection.used_space, cmd.command[j].redirection.fd);	

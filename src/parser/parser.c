@@ -16,7 +16,7 @@ void assign_tok(t_command *cmd, t_lexer lex, int *j, int val_tok)
 	cmd->command[*j].tok = val_tok;
 }
 
-void    tab_io_assign(t_red *redir, t_lexer lex, int j)
+void    tab_io_assign(t_red *redir, t_lexer lex, int j, int index_heredoc)
 {
 	int *temp;
 	int i;
@@ -24,6 +24,7 @@ void    tab_io_assign(t_red *redir, t_lexer lex, int j)
 	i = -1;	
 	temp = redir->fd;
 	redir->fd = (int *)malloc(sizeof(int) * redir->av_space + 1);
+	redir->index_heredoc = index_heredoc;
 	if (redir->fd == NULL)
 		exit(EXIT_FAILURE);
 		while(++i < redir->used_space)
@@ -74,6 +75,10 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 
 void	complete_simple_command_and_red(t_command *cmd, t_lexer lex, int i, int *j)
 {
+	static int index_heredoc = -1;
+
+	if (i == lex.used_size - 1)
+		index_heredoc = -1;
 	if (i == 0 && lex.tokens[i].type == T_WORD)
 		tab_assign(&cmd->command[*j], lex, i);
 	else if (lex.tokens[i].type == T_WORD && !is_red(lex, i - 1) &&
@@ -81,7 +86,9 @@ void	complete_simple_command_and_red(t_command *cmd, t_lexer lex, int i, int *j)
 			tab_assign(&cmd->command[*j], lex, i);
 	else if (is_red(lex, i) && lex.tokens[i + 1].type == T_WORD)
 	{
-		tab_io_assign(&cmd->command[*j].redirection, lex, i - 1);
+		if (lex.tokens[i].type == 16)
+			index_heredoc++;
+		tab_io_assign(&cmd->command[*j].redirection, lex, i - 1, index_heredoc);
 		tab_red_assign(&cmd->command[*j].redirection, lex, i, i + 1);
 	}
 	else if(lex.tokens[i + 1].type != T_WORD && is_op(lex,i))
@@ -102,6 +109,7 @@ void    add_simple_command(t_command *cmd, t_lexer lex)
 	size_simple_cmd = 0;
 	if (parse_errors(lex))
 	{
+		
 		add_token_val(cmd, lex, &size_simple_cmd);
 		while(++i < lex.used_size && j <= size_simple_cmd)
 			complete_simple_command_and_red(cmd, lex, i, &j);

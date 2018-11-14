@@ -12,6 +12,7 @@ void    tab_init(t_simp_com *simple_cmd)
 void    tab_red_init(t_red *redir)
 {
 	redir->used_space = 0;
+	redir->index_heredoc = 0;
 	redir->av_space = TAB_INITIAL_CAPACITY;
 	redir->red = malloc(sizeof(char*) * redir->av_space);
 	redir->file = malloc(sizeof(char*) * redir->av_space);

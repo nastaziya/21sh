@@ -7,6 +7,8 @@ void    tab_expansion_init(t_dynamic_array *arr)
 	arr->capacity = TAB_INITIAL_CAPACITY;
 	if (!(arr->array_expanded =(char*)malloc(sizeof(char) * (arr->capacity + 1))))
 		return;
+	arr->array_expanded[arr->used_size] = '\0';
+	
 }
 
 void		add_char_to_array(t_dynamic_array *arr, char item)
