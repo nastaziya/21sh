@@ -224,18 +224,18 @@ int			string_to_lexer(const char *s, t_lexer *lexer)
 *** - Checked, it's ok now;
 */
 
-void		print(const t_lexer *lexer)
-{
-	// int	i;
+// void		print(const t_lexer *lexer)
+// {
+// 	// int	i;
 
-	// i = 0;
-	// while (i < lexer->used_size)
-	// {
-	// 	printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
-	// 	++i;
-	// }
-	// // printf("\n");
-}
+// 	// i = 0;
+// 	// while (i < lexer->used_size)
+// 	// {
+// 	// 	printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
+// 	// 	++i;
+// 	// }
+// 	// // printf("\n");
+// }
 
 /*
 *** - Aim of the function :
@@ -314,16 +314,9 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 	char	*line;
 	char	*tmp;
 
-			// dprintf(2, "youhou test ici");
-	// line = NULL;
 	while (42)
 	{
 		ret = get_line_term(&line, ft_manage_prompt(type_quote), history);
-		// if (!line[0])
-		// {
-		// 	dprintf(2, "passe par la");
-		// 	continue ;
-		// }
 		if (line && ft_strlen(line) > 0)
 		{
 			tmp = *cmd;
@@ -369,7 +362,6 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 			if ((type_quote = ft_count_quote(*cmd)))
 				ft_new_prompt(cmd, type_quote, history);
 	}
-	// if (ret != 3)
 	ft_putchar_fd('\n', 1);
 }
 
@@ -419,7 +411,6 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 		else
 			break ;
 	}
-	// ft_manage_heredoc(lexer, heredoc, history);
 	return (1);
 }
 

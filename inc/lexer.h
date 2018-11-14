@@ -114,7 +114,7 @@
 
   int       string_to_lexer(const char* s, t_lexer* lexer);
   t_lexer   final_tokens();
-  void      print(const t_lexer* lexer);
+  // void      print(const t_lexer* lexer);
   void      free_the_content_array_token(t_lexer* lexer);
   void      ft_get_entire_line(char **cmd, char *str, t_dlist **history);
 
