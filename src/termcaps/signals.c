@@ -32,7 +32,10 @@ void    win_resize(int sig)
     position_char_in_window_print_inside_string(caps.cursor, &caps, caps.sz_str, 0);
     if ((caps.char_pos[0] < caps.window_size[1] && caps.char_pos[1] < caps.window_size[0]) 
         && caps.window_size[1] > caps.size_prompt)
-        ft_putstr_fd(caps.str[0],1);
+    {
+        if (caps.sz_str > caps.size_prompt)
+            ft_putstr_fd(caps.str[0],1);
+    }
     else
     {
         tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
