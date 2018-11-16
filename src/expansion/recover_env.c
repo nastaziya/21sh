@@ -1,5 +1,6 @@
 #include "../../inc/sh.h"
 /*take take what it is after env var = */ 
+//const char return
 char	*env_var(t_env_tools env, char *str, int size)
 {
 	int		i;
@@ -15,7 +16,7 @@ char	*env_var(t_env_tools env, char *str, int size)
 		if (!ft_strncmp(env.env_cpy[i], str, size_env) && size == size_env)
 		{
 			ret_var = ft_strsub(ft_strchr(env.env_cpy[i], '='), 1,
-					ft_strlen(ft_strchr(env.env_cpy[i], '=')) - 1);
+			ft_strlen(ft_strchr(env.env_cpy[i], '=')) - 1);
 			check_var = 1;
 		}
 		i++;
@@ -30,7 +31,7 @@ int size_env_var(char *tmp, int i)
     int size;
 
     size = 0;
-    while (tmp[i] != ' ' && tmp[i] != '\\' && tmp[i] != '\''  && tmp[i] != '"' && i != ft_strlen(tmp))
+    while (ft_isalnum(tmp[i]) && tmp[i] != '\\' && tmp[i] != '\''  && tmp[i] != '"' && i != ft_strlen(tmp))
     {
         size++;
         i++;

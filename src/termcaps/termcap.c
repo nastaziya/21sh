@@ -50,54 +50,49 @@ int		ft_clean(void *s, size_t n)
 	return (0);
 }
 
-int 		get_line_term(char **res, char *str, t_dlist **history)
+void		ft_initialize_get_line(t_tab **ttab, char *str, t_term *term, t_dlist **history)
 {
-	t_tab		*ttab;
-	t_tab		*tmp_tab;
-	// int			ret;
-	// int 		i;
-
-//compteur pour \n seul -> eviter segfault
-	// i = 0;
+	terminal_data(term);
+	modify_terminos(term);
 // Initialisation du tableau de pointeurs sur fonction
-	ttab = tab_termcaps();
+	*ttab = tab_termcaps();
 // Initialisation de la struct caps
 	initialize_caps(&caps, str);
 	initialize_signals();
 //inclure un printf de prompt pour voir
-	// ft_putstr_fd(str, 1);
 	caps.history = history;
+}
+
+int 		get_line_term(char **res, char *str, t_dlist **history)
+{
+	t_tab		*ttab;
+	t_tab		*tmp_tab;
+	t_term		term;
+
+	ft_initialize_get_line(&ttab, str, &term, history);
 // Itérer sur infini
 	while ((tmp_tab = (ttab - 1)) && !ft_clean(caps.buf, 2048) && (read(0, caps.buf, 2047) >= 0))
 	{
-		// tmp_tab = (ttab - 1);
-		// ft_bzero(caps.buf, 2048);
-		// ft_bzero(caps.buf, 2048);
-		// if ((ret = read(0, caps.buf, 4) < 0))
-		// 	return (1);
 		// dprintf(2, "LA: %d %d %d %d %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4]);
-		if (ENTER_KEY) //|| CTRL_D_KEY
+		if (ENTER_KEY && !end_key(&caps)) //|| CTRL_D_KEY
 		{
 			// to avoid segfault when empty
-			end_key(&caps);
 			if (((caps.sz_str - caps.size_prompt) == 0) && (*res = ft_memalloc(2)))
-			// returns 3 when ctrl + L otherwise, 2 when normal \n but empty str
-				return (2);//CTRL_L_KEY ? 3 : 
+			// returns 2 when normal \n but empty str
+				return (2);
 			break ;
 		}
-		// dprintf(2, "ret= %d - buf: |%s|\n", ret, caps.buf);
-		dprintf(2, "buf: |%s|\n", caps.buf);
+		// dprintf(2, "buf: |%s|\n", caps.buf);
 		while ((++tmp_tab)->cmd)
 			if (BUF_EQUALS_ARRAY && !(tmp_tab->ptr(&caps)))
 				break;
 		if (!tmp_tab->cmd)
-			// print_normal_char(&caps);
 			print_buf(&caps, caps.buf);
-		// i++;
 	}
 	*res = caps.str[0];
 	// dprintf(2, "tmp_str: %s\n", caps.tmp_str);
 	if (caps.tmp_str && caps.tmp_str[0])
 		free(caps.tmp_str);
+	reset_termios(&term);
 return (0);
 }

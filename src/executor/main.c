@@ -99,9 +99,15 @@ int main(int argc, char **argv, char **environ)
 
 	heredoc = NULL;
 	// //Initialisation du termios
-	terminal_data(&term);
-  	modify_terminos(&term);
+	// Protection if the program is launched with the env -i option :
+	// env -i ./a.out 2&>/dev/ttys001
+	if (terminal_data(&term) < 0)
+	{
+		ft_putstr_fd("envoie les bonnes infos ma gueule !!!\n", 2);
+		exit(0);
+	}
+  	// modify_terminos(&term);
 	all_exec(environ, &heredoc);
 
-	reset_termios(&term);
+	// reset_termios(&term);
 }

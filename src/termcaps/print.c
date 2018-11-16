@@ -164,7 +164,7 @@ int              print_buf(t_tcap *caps, char *buf)
         print_normal_char(caps);
     }
     // // else if (str[0] != 9)
-    else if (str[0] > 32 && !(str[0] == ';' && str[0] == '[')) //&& str[0] == 'C' str[0] == ' ' && 
+    else if ((str[0] > 32 || str[0] == '\n') && !(str[0] == ';' && str[0] == '[')) //&& str[0] == 'C' str[0] == ' ' && 
     // else
     {
     //     dprintf(2, "passe ici: |%s|\n", buf);
