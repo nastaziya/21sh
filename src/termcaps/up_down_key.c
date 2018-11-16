@@ -53,7 +53,7 @@ int			     up_key(t_tcap *caps)
         while (tmp[++i])
         {
             // dprintf(2, "c: |%c|", tmp[i]);
-            ft_bzero(caps->buf, 5);
+            ft_bzero(caps->buf, 2048);
             caps->buf[0] = tmp[i];
             // dprintf(2, "||%c||", caps->buf[0]);
             print_normal_char(caps);
@@ -94,7 +94,7 @@ int			     down_key(t_tcap *caps)
         while (tmp[++i])
         {
             // dprintf(2, "qcaui");
-            ft_bzero(caps->buf, 5);
+            ft_bzero(caps->buf, 2048);
             caps->buf[0] = tmp[i];
             print_normal_char(caps);
         }
@@ -113,7 +113,7 @@ int			     down_key(t_tcap *caps)
         while (caps->tmp_str[++i])
         {
             // dprintf(2, "qcaui");
-            ft_bzero(caps->buf, 5);
+            ft_bzero(caps->buf, 2048);
             caps->buf[0] = caps->tmp_str[i];
             print_normal_char(caps);
         }

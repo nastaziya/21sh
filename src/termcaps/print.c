@@ -143,3 +143,39 @@ int			     print_normal_char(t_tcap *caps)
         tputs(tgetstr("bl", NULL), 1, ft_outc);
 	return (0);
 }
+
+/*
+*** - For the cmd + c || cmd + v management ! I modified the size of the buf to 4096
+*** - And manages checks if ft_strlen == 1 (normal char) or not
+// */
+
+int              print_buf(t_tcap *caps, char *buf)
+{
+    int i;
+    // char str[2048];
+    char *str;
+
+    i = -1;
+    // ft_memcpy(str, buf, 2048);
+    str = ft_strdup(buf);
+    if (ft_strlen(str) == 1 && str[0] != 9)
+    {
+        dprintf(2, "OUlA: %d\n", ft_strlen(caps->buf));
+        print_normal_char(caps);
+    }
+    // // else if (str[0] != 9)
+    else if (str[0] > 32 && !(str[0] == ';' && str[0] == '[')) //&& str[0] == 'C' str[0] == ' ' && 
+    // else
+    {
+    //     dprintf(2, "passe ici: |%s|\n", buf);
+        while (str && str[++i])
+        {
+            ft_bzero(caps->buf, 2048);
+            caps->buf[0] = str[i];
+            dprintf(2, "%c", str[i]);
+            print_normal_char(caps);
+        }
+    }
+    free(str);
+    return (0);
+}

@@ -37,18 +37,24 @@ t_tab		*tab_termcaps(void)
 		{&alt_s, -61, -110, 0, 0, 0, "alt_s"},
 		{&alt_w, -30, -128, -71, 0, 0, "alt_w"},
 		{&alt_p, -49, -128, 0, 0, 0, "alt_p"},
+		// {&debug, 91, 0, 0, 0, 0, "escape_bug"},
 		{NULL, 0, 0, 0, 0, 0, NULL}
 	};
 
 	return ((t_tab*)ttab);
 }
 
+int		ft_clean(void *s, size_t n)
+{
+	ft_bzero(s, n);
+	return (0);
+}
 
 int 		get_line_term(char **res, char *str, t_dlist **history)
 {
 	t_tab		*ttab;
 	t_tab		*tmp_tab;
-	int			ret;
+	// int			ret;
 	// int 		i;
 
 //compteur pour \n seul -> eviter segfault
@@ -62,12 +68,13 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 	// ft_putstr_fd(str, 1);
 	caps.history = history;
 // Itérer sur infini
-	while (42)
+	while ((tmp_tab = (ttab - 1)) && !ft_clean(caps.buf, 2048) && (read(0, caps.buf, 2047) >= 0))
 	{
-		tmp_tab = (ttab - 1);
-		ft_bzero(caps.buf, 5);
-		if ((ret = read(0, caps.buf, 4) < 0))
-			return (1);
+		// tmp_tab = (ttab - 1);
+		// ft_bzero(caps.buf, 2048);
+		// ft_bzero(caps.buf, 2048);
+		// if ((ret = read(0, caps.buf, 4) < 0))
+		// 	return (1);
 		// dprintf(2, "LA: %d %d %d %d %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4]);
 		if (ENTER_KEY) //|| CTRL_D_KEY
 		{
@@ -78,11 +85,14 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 				return (2);//CTRL_L_KEY ? 3 : 
 			break ;
 		}
+		// dprintf(2, "ret= %d - buf: |%s|\n", ret, caps.buf);
+		dprintf(2, "buf: |%s|\n", caps.buf);
 		while ((++tmp_tab)->cmd)
 			if (BUF_EQUALS_ARRAY && !(tmp_tab->ptr(&caps)))
 				break;
 		if (!tmp_tab->cmd)
-			print_normal_char(&caps);
+			// print_normal_char(&caps);
+			print_buf(&caps, caps.buf);
 		// i++;
 	}
 	*res = caps.str[0];

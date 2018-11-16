@@ -30,3 +30,8 @@ int			ctrl_l(t_tcap *caps)
     }
     return (0);
 }
+
+int 		debug(t_tcap *caps)
+{
+    return (0);
+}

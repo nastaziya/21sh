@@ -28,7 +28,8 @@ typedef struct          s_tcap
     int             size_prompt;// size of the prompt
     int             cursor;//position of the cursor in the string
     int             window_size[2]; // row in [0], col in [1]
-    char            buf[5]; // String that contains the return of the read
+    char            buf[2048];
+    // char            buf[5]; // String that contains the return of the read
     char            **str; // string that gets constantly realloc'd    
     char            *res; // return the tgetstr function
     int             curs_pos[2]; //Cursor position, X in [0], Y in [1]
@@ -105,6 +106,8 @@ int			alt_down_key(t_tcap *caps);
 //print.c
 int			     print_normal_char(t_tcap *caps);
 void            print_end_line(t_tcap *caps, char *string, char *tmp);
+int              print_buf(t_tcap *caps, char *buf);
+
 
 
 // termcap.c - MAIN FILE
@@ -127,6 +130,7 @@ int 		alt_p(t_tcap *caps);
 
 // control_commands.c
 int			ctrl_l(t_tcap *caps);
+// int 		debug(t_tcap *caps);
 
 // signals.c
 void     initialize_signals(void);

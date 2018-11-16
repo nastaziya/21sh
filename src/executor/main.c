@@ -64,18 +64,18 @@ void	all_exec(char **environ, char ***heredoc)
 		add_simple_command(&cmd, lex, &history, heredoc);
 		//print_struct(cmd);
 		//debug heredoc
-		int i = -1;
+		// int i = -1;
 		// int j;
-		while (heredoc[0] && heredoc[0][++i])
-		{
-		// 	// j = -1;
-		// 	// dprintf(2, "i de heredoc: %d\n", i);
-		// 	// while (heredoc[i] && heredoc[i][++j])
-		// 	// {
-		// 		// dprintf(2, "i: %d - j de heredoc: %d\n", i, j);
-				dprintf(2, "AFFICHE HEREDOC: [%s]\n", heredoc[0][i]);
-		// 	// }
-		}
+		// while (heredoc[0] && heredoc[0][++i])
+		// {
+		// // 	// j = -1;
+		// // 	// dprintf(2, "i de heredoc: %d\n", i);
+		// // 	// while (heredoc[i] && heredoc[i][++j])
+		// // 	// {
+		// // 		// dprintf(2, "i: %d - j de heredoc: %d\n", i, j);
+		// 		dprintf(2, "AFFICHE HEREDOC: [%s]\n", heredoc[0][i]);
+		// // 	// }
+		// }
 		// debug
 		check_op(cmd, &env);
 		free_the_op_content_array_token(&lex);
@@ -89,6 +89,7 @@ void	all_exec(char **environ, char ***heredoc)
 		free_str(env.env_cpy);
 	// Je free ici, mais a voir si free plus tard/ autre part (en fonction du exit)
 	ft_dlstdel(&history);
+	// à free -> copier-coller - heredoc
 }
 
 int main(int argc, char **argv, char **environ)
