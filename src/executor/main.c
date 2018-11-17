@@ -1,46 +1,48 @@
 #include "../../inc/sh.h"
 
+
 void check_op(t_command cmd, t_env_tools *env)
 {
 	int i;
-	// int res;
 	char	*path;
 	char **cmd_expended;
 
 	path = NULL;
 	i = -1;
-	/*if (cmd.used_space > 0 && !is_built_in(cmd, 0))
-		env->g_return_value = error_exec_or_exec(env->paths, path, cmd.command[0].cmd_simple, env->env_cpy);
+	if (cmd.used_space > 0)
+		cmd_expended = expense_cmd(cmd, *env, 0);
+	if (cmd.used_space > 0 && !is_built_in(cmd, 0))
+		env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
 	else if (is_built_in(cmd, 0))
 	{
 		// stocker valeur de retour : env->g_return_value
 		printf("builtin\n");
-	}*/
-	//cmd_expended = expense_cmd(cmd, env, 0);
-	while(++i < cmd.used_space )//&& cmd.command[i].tok != -1)
+	}
+	while(++i < cmd.used_space)//&& cmd.command[i].tok != -1)
 	{
-		cmd_expended = expense_cmd(cmd, *env, i);
-		print_array(cmd.command[i].used_space, cmd_expended);
-	/*	if (*cmd.command[i + 1].cmd_simple == NULL)
-				break;
+		//print_array(cmd.command[i].used_space, cmd_expended);
+		if (i  == cmd.used_space -1)
+			break;
+		cmd_expended = expense_cmd(cmd, *env, i + 1);
 		if (is_built_in(cmd, i))
 			printf("privet\n");
 		if (cmd.command[i].tok == T_DBLOR && !is_built_in(cmd, i))
 		{
-			if (check_path(env->paths, &path,  cmd.command[i].cmd_simple) == 0 || res > 0)
-				res = error_exec_or_exec(env->paths, path, cmd.command[i + 1].cmd_simple, env->env_cpy);
+			//check_path(env->paths, &path,  cmd.command[i].cmd_simple) == 0 &&
+			if (env->g_return_value > 0)
+				env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
 		}
 		if (cmd.command[i].tok == T_DBLAND && !is_built_in(cmd, i))
 		{
-			if (check_path(env->paths, &path,  cmd.command[i].cmd_simple) > 0 && res == 0)
-				res = error_exec_or_exec(env->paths, path, cmd.command[i + 1].cmd_simple, env->env_cpy);
-		}.*/
-		// if (cmd.command[i].tok == T_SEMI && !is_built_in(cmd, i))
-		//	printf("hei\n");
-			//printf("0 : %s\n",cmd_expended[0]);
-			//			printf("1  : %s\n",cmd_expended[1]);
-		env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
-		free(path);
+			//check_path(env->paths, &path,  cmd.command[i].cmd_simple) > 0 &&
+			if ( env->g_return_value == 0)
+			{
+				env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
+			}
+		}
+		if (cmd.command[i].tok == T_SEMI && !is_built_in(cmd, i))
+			env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
+		//free(path);
 		free_str(cmd_expended);
 	}
 }
@@ -59,7 +61,7 @@ void	all_exec(char **environ)
 	{
 		lex = final_tokens();
 		// final_tokens(&lex);
-		print(&lex);
+		//print(&lex);
 		command_init(&cmd);
 		add_simple_command(&cmd, lex);
 		//print_struct(cmd);

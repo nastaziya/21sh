@@ -128,7 +128,7 @@ int		error_exec_or_exec(char **paths, char *path, char **str,
 		res = check_path(paths, &path, str);
 	if (res == 0 && i == 0)
 	{
-		//res = 127;
+		res = 127;
 		error_command(str);
 	}
 	else if (res > 1)
