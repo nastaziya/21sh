@@ -7,15 +7,17 @@ int		is_red(t_lexer lex, int i)
 		return (1); 
 	return (0);
 }
-
 int is_built_in(t_command cmd, int i)
 {
-	if (!ft_strcmp("echo", cmd.command[i].cmd_simple[0]) ||
-	!ft_strcmp("setenv", cmd.command[i].cmd_simple[0]) ||
-	!ft_strcmp("unsetenv", cmd.command[i].cmd_simple[0]) ||
-	!ft_strcmp("cd", cmd.command[i].cmd_simple[0]) ||
-	!ft_strcmp("env", cmd.command[i].cmd_simple[0]))
-		return (1);
+	if (cmd.used_space > 0 && cmd.command[0].tok == T_WORD)
+	{
+		if (!ft_strcmp("echo", cmd.command[i].cmd_simple[0]) ||
+		!ft_strcmp("setenv", cmd.command[i].cmd_simple[0]) ||
+		!ft_strcmp("unsetenv", cmd.command[i].cmd_simple[0]) ||
+		!ft_strcmp("cd", cmd.command[i].cmd_simple[0]) ||
+		!ft_strcmp("env", cmd.command[i].cmd_simple[0]))
+			return (1);
+	}
 	return (0);
 }
 
