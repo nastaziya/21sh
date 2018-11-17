@@ -21,7 +21,8 @@ void		add_char_to_array(t_dynamic_array *arr, char item)
 	{
 		temp = arr->array_expanded;
 		arr->capacity = (arr->used_size * 3) / 2 + 1;
-		arr->array_expanded = malloc(sizeof(char) * arr->capacity + 1);
+		if (!(arr->array_expanded = malloc(sizeof(char) * arr->capacity + 1)))
+			return ;
 		if (arr->array_expanded == NULL)
 			exit(EXIT_FAILURE);
 		while (++i < arr->used_size)

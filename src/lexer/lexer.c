@@ -35,7 +35,8 @@ void		lexer_init(t_lexer *lexer)
 {
 	lexer->used_size = 0;
 	lexer->capacity = LEXER_INITIAL_CAPACITY;
-	lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity);
+	if (!(lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity)))
+		return ;
 }
 
 /*
@@ -59,7 +60,8 @@ void		add_token_to_lexer(t_lexer *lexer, const char *text,
 	{
 		temp = lexer->tokens;
 		lexer->capacity = (lexer->used_size * 3) / 2 + 1;
-		lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity + 1);
+		if (!(lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity + 1)))
+			return ;
 		if (lexer->tokens == NULL)
 			exit(EXIT_FAILURE);
 		while (++i < lexer->used_size)
@@ -390,10 +392,11 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 	while (42)
 	{
 		if (lexer->used_size > 0 && lexer->tokens[lexer->used_size - 1].content
-		&& (!ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "|")
-			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "&&")
-			|| !ft_strcmp(lexer->tokens[lexer->used_size - 1].content, "||"))
-			&& (lexer->used_size > 1 ? lexer->tokens[lexer->used_size - 2].type != T_DBL_LESS : 1))
+		&& ((lexer->tokens[lexer->used_size - 1].type == T_PIPE)
+			|| (lexer->tokens[lexer->used_size - 1].type == T_DBLAND)
+			|| (lexer->tokens[lexer->used_size - 1].type == T_DBLOR))
+			// && (lexer->used_size > 1 ? lexer->tokens[lexer->used_size - 2].type != T_DBL_LESS : 1))
+			&& (lexer->used_size > 1 ? lexer->tokens[lexer->used_size - 2].type == T_WORD : 1))
 		{
 			ft_get_entire_line(&cmd, "Missing arguments > ", history);
 			if (cmd && ft_strlen(cmd) > 0)

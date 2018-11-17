@@ -4,7 +4,8 @@ void    command_init(t_command *cmd)
 {
 	cmd->used_space = 0;
 	cmd->av_space = TAB_INITIAL_CAPACITY;
-	cmd->command = malloc(sizeof(t_simp_com) * cmd->av_space);
+	if (!(cmd->command = malloc(sizeof(t_simp_com) * cmd->av_space)))
+		return ;
 }
 
 void assign_tok(t_command *cmd, t_lexer lex, int *j, int val_tok)
@@ -23,7 +24,8 @@ void    tab_io_assign(t_red *redir, t_lexer lex, int j)
 
 	i = -1;	
 	temp = redir->fd;
-	redir->fd = (int *)malloc(sizeof(int) * redir->av_space + 1);
+	if (!(redir->fd = (int *)malloc(sizeof(int) * redir->av_space + 1)))
+		return ;
 	if (redir->fd == NULL)
 		exit(EXIT_FAILURE);
 		while(++i < redir->used_space)

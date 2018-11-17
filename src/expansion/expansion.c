@@ -83,7 +83,8 @@ char **expense_cmd(t_command cmd, t_env_tools env, int i)
 	char **res;
 	char *temp;
 	
-	res = (char**)malloc(sizeof(char*) * (cmd.command[i].used_space + 1));
+	if (!(res = (char**)malloc(sizeof(char*) * (cmd.command[i].used_space + 1))))
+		return (NULL);
 	j = -1;
 	temp = NULL;
 	res[cmd.command[i].used_space] = NULL;
