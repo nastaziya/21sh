@@ -104,9 +104,6 @@ t_lexer		final_tokens(t_dlist **history)
 	if (cmd && ft_strlen(cmd) > 0)
 		if (!ft_manage_string_to_lexer(cmd, &lexer, history))
 			ft_putendl_fd("error !", 1);
-	// dprintf(2, "history: %s\n", (*history)->content);
-	// if (cmd[0])
-	// if (ft_strlen(cmd) > 0)
 	free(cmd);
 	return (lexer);
 }

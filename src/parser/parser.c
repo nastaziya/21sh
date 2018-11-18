@@ -10,6 +10,7 @@ void    command_init(t_command *cmd)
 
 void assign_tok(t_command *cmd, t_lexer lex, int *j, int val_tok)
 {
+	(void)lex;// ATTENTION INUTILISE
 	simple_cmd_assign(cmd, *cmd->command);
 	(*j)++;
 	tab_init(&cmd->command[*j]);

@@ -22,7 +22,7 @@ int 		left_key(t_tcap *caps)
 		size_windows(caps);
 		if (curs_pos[0] == 1)
 		{
-			position_char_in_window_left_alt_keys(caps->cursor, caps, curs_pos);
+			position_char_in_window_left_alt_keys(caps, curs_pos);
 			tputs(tgoto(tgetstr("cm", NULL), caps->x_lines[0], curs_pos[1] - 2), 1, ft_outc);
 		}
 		else

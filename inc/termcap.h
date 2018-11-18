@@ -85,7 +85,7 @@ int 		left_key(t_tcap *caps);
 int			del_key(t_tcap *caps);// -> Faire suppr key
 
 // pos_char.c
-void		position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[2]);
+void		position_char_in_window_left_alt_keys(t_tcap *caps, int curs_pos[2]);
 // void		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end);
 int		    position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end, int bulean);
 

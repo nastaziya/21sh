@@ -97,6 +97,8 @@ int main(int argc, char **argv, char **environ)
 	 t_term		term;
 	 char **heredoc;
 
+	(void)argc;
+	(void)argv;
 	heredoc = NULL;
 	// //Initialisation du termios
 	// Protection if the program is launched with the env -i option :

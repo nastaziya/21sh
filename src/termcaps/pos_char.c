@@ -27,8 +27,8 @@ static void		norm_position_char_window_left_alt_keys(t_tcap *caps)
 *** - The function receives the global struct + the position of the char you
 *** - are looking to get info for (position of the cursor)
 */
-
-void			position_char_in_window_left_alt_keys(int pos, t_tcap *caps, int curs_pos[2])
+//int pos, 
+void			position_char_in_window_left_alt_keys(t_tcap *caps, int curs_pos[2])
 {
 	int 	x;
 	int 	y;

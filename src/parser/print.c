@@ -15,6 +15,8 @@ void print_array(int size, char **cmd)
 
 void print_array_int(int size, int *cmd)
 {
+	(void)size;
+	(void)cmd;
 	// int i;
 
 	// i = 0;
@@ -27,6 +29,7 @@ void print_array_int(int size, int *cmd)
 
 void print_struct(t_command cmd)
 {
+	(void)cmd;
 	// int j = 0;
 	
 	// while (j < cmd.used_space)

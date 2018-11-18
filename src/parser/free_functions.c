@@ -17,6 +17,7 @@ void      free_the_op_content_array_token(t_lexer *lexer)
 
 void	free_struct(t_command *cmd, t_lexer lex)
 {
+	(void)lex; //////////ATTENTION INUTILISE
 	int i;
 
 	i = 0;

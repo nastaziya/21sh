@@ -22,9 +22,9 @@
 
 void		get_cursor_position(int curs_pos[2])
 {
- 	char 	buf[32];
- 	int		i;
- 	int 	j;
+ 	char 			buf[32];
+ 	unsigned long	i;
+ 	int 			j;
 	
 	i = 0;
 	j = 2;
