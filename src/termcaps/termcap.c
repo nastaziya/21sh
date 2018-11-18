@@ -37,7 +37,6 @@ t_tab		*tab_termcaps(void)
 		{&alt_s, -61, -110, 0, 0, 0, "alt_s"},
 		{&alt_w, -30, -128, -71, 0, 0, "alt_w"},
 		{&alt_p, -49, -128, 0, 0, 0, "alt_p"},
-		// {&debug, 91, 0, 0, 0, 0, "escape_bug"},
 		{NULL, 0, 0, 0, 0, 0, NULL}
 	};
 

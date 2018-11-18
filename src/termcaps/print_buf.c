@@ -13,38 +13,29 @@
 
 #include "../../inc/sh.h"
 
-int 		left_key(t_tcap *caps)
-{
-	int  curs_pos[2];
-	if (caps->cursor > caps->size_prompt)
-	{
-		cursor_position(curs_pos);
-		size_windows(caps);
-		if (curs_pos[0] == 1)
-		{
-			position_char_in_window_left_alt_keys(caps->cursor, caps, curs_pos);
-			tputs(tgoto(tgetstr("cm", NULL), caps->x_lines[0], curs_pos[1] - 2), 1, ft_outc);
-		}
-		else
-			tputs(tgetstr("le", NULL), 1, ft_outc);
-		caps->cursor--;
-	}
-	return (0);
-}
+/*
+*** - For the cmd + c || cmd + v management ! I modified the size of the buf to 2048
+*** - And manages checks if ft_strlen == 1 (normal char) or not
+*/
 
-int 		right_key(t_tcap *caps)
+int              print_buf(t_tcap *caps, char *buf)
 {
-	int  curs_pos[2];
-	
-	if (caps->cursor < caps->sz_str)
-	{
-		cursor_position(curs_pos);
-		size_windows(caps);
-		if (curs_pos[0] == caps->window_size[1] || caps->str[0][caps->cursor - caps->size_prompt] == '\n')
-			tputs(tgoto(tgetstr("cm", NULL), 0, curs_pos[1]), 1, ft_outc);
-		else
-			tputs(tgetstr("nd", NULL), 1, ft_outc);
-		caps->cursor++;
-	}
-	return (0);
+    int i;
+    char *str;
+
+    i = -1;
+    str = ft_strdup(buf);
+    if (ft_strlen(str) == 1 && str[0] != 9)
+        print_normal_char(caps);
+    else if ((str[0] > 32 || str[0] == '\n') && !(str[0] == ';' && str[0] == '['))
+    {
+        while (str && str[++i])
+        {
+            ft_bzero(caps->buf, 2048);
+            caps->buf[0] = str[i];
+            print_normal_char(caps);
+        }
+    }
+    free(str);
+    return (0);
 }

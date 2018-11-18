@@ -13,10 +13,20 @@
 
 #include "../../inc/sh.h"
 
+static void	alt_up_key_norm(t_tcap *caps, int curs_pos[2])
+{
+	tputs(tgetstr("vi", NULL), 1, ft_outc);
+	tputs(tgetstr("up", NULL), 1, ft_outc);
+	caps->cursor = caps->cursor - (curs_pos[0] + (caps->x_lines[0] - curs_pos[0]) + 1);
+	tputs(tgetstr("ve", NULL), 1, ft_outc);
+}
+
 int			alt_up_key(t_tcap *caps)
 {
 	int		curs_pos[2];
-	
+	int		i;
+
+	i = -1;
 	size_windows(caps);
 	cursor_position(curs_pos);
 	position_char_in_window_left_alt_keys(caps->cursor, caps, curs_pos);
@@ -27,18 +37,12 @@ int			alt_up_key(t_tcap *caps)
 		else if (curs_pos[0] > caps->x_lines[0]) // si x supérieur x char d'au dessus
 		{
 			tputs(tgetstr("vi", NULL), 1, ft_outc);
-			int i = -1;
 			while (++i < curs_pos[0])
 				left_key(caps);
 			tputs(tgetstr("ve", NULL), 1, ft_outc);
 		}
 		else // le reste
-		{
-			tputs(tgetstr("vi", NULL), 1, ft_outc);
-			tputs(tgetstr("up", NULL), 1, ft_outc);
-			caps->cursor = caps->cursor - (curs_pos[0] + (caps->x_lines[0] - curs_pos[0]) + 1);
-			tputs(tgetstr("ve", NULL), 1, ft_outc);
-		}
+			alt_up_key_norm(caps, curs_pos);
 	}
 	return (0);
 }
@@ -49,32 +53,26 @@ int			alt_down_key(t_tcap *caps)
 	int		curs_pos[2];
     int     i;
 	
+	i = -1;
 	size_windows(caps);
 	cursor_position(curs_pos);
 	position_char_in_window_left_alt_keys(caps->cursor, caps, curs_pos);
-	// dprintf(2, "alt_down: x: %d y: %d y_prompt: %d sz_prompt: %d x_lines[2]: %d\n", curs_pos[0], curs_pos[1], caps->y_prompt, caps->size_prompt, caps->x_lines[2]);
-	// if (caps->x_lines[2] != -1)
-	// {
-		position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 1);
-		// dprintf(2, "alt: %d\n", caps->char_pos[1]);
-		if (curs_pos[1] == caps->char_pos[1] - 1 && curs_pos[0] > caps->x_lines[2] && caps->x_lines[2] != -1) // si x curseur dépasse x ligne suivante et que derniere ligne
-			end_key(caps);
-		else if (curs_pos[0] > caps->x_lines[2] && caps->x_lines[2] != -1) // si x curseur dépasse x ligne suivante en général
-		{
-			tputs(tgetstr("vi", NULL), 1, ft_outc);
-			i = -1;
-			while (++i < (caps->x_lines[1] - curs_pos[0]) + caps->x_lines[2] + 2)
-				right_key(caps);
-			tputs(tgetstr("ve", NULL), 1, ft_outc);
-		}
-        else if (curs_pos[1] < caps->char_pos[1]) // si le curseur n'est pas sur la derniere ligne
-        {
-            tputs(tgetstr("vi", NULL), 1, ft_outc);
-            i = -1;
-            while (++i < (caps->x_lines[1] - curs_pos[0]) + curs_pos[0] + 1)
-                right_key(caps);
-            tputs(tgetstr("ve", NULL), 1, ft_outc);
-        }
-	// }
+	position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 1);
+	if (curs_pos[1] == caps->char_pos[1] - 1 && curs_pos[0] > caps->x_lines[2] && caps->x_lines[2] != -1) // si x curseur dépasse x ligne suivante et que derniere ligne
+		end_key(caps);
+	else if (curs_pos[0] > caps->x_lines[2] && caps->x_lines[2] != -1) // si x curseur dépasse x ligne suivante en général
+	{
+		tputs(tgetstr("vi", NULL), 1, ft_outc);
+		while (++i < (caps->x_lines[1] - curs_pos[0]) + caps->x_lines[2] + 2)
+			right_key(caps);
+		tputs(tgetstr("ve", NULL), 1, ft_outc);
+	}
+	else if (curs_pos[1] < caps->char_pos[1]) // si le curseur n'est pas sur la derniere ligne
+	{
+		tputs(tgetstr("vi", NULL), 1, ft_outc);
+		while (++i < (caps->x_lines[1] - curs_pos[0]) + curs_pos[0] + 1)
+			right_key(caps);
+		tputs(tgetstr("ve", NULL), 1, ft_outc);
+	}
 	return (0);
 }

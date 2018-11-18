@@ -106,8 +106,5 @@ int main(int argc, char **argv, char **environ)
 		ft_putstr_fd("envoie les bonnes infos ma gueule !!!\n", 2);
 		exit(0);
 	}
-  	// modify_terminos(&term);
 	all_exec(environ, &heredoc);
-
-	// reset_termios(&term);
 }

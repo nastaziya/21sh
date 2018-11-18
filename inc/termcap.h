@@ -135,4 +135,7 @@ int			ctrl_l(t_tcap *caps);
 // signals.c
 void     initialize_signals(void);
 
+// print_buf.c
+int              print_buf(t_tcap *caps, char *buf);
+
 #endif
