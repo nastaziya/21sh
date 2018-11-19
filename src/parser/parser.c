@@ -91,11 +91,12 @@ void	complete_simple_command_and_red(t_command *cmd, t_lexer lex, int i, int *j)
 		tab_io_assign(&cmd->command[*j].redirection, lex, i - 1, index_heredoc);
 		tab_red_assign(&cmd->command[*j].redirection, lex, i, i + 1);
 	}
-	else if(lex.tokens[i + 1].type != T_WORD && is_op(lex,i))
+	else if(lex.tokens[i + 1].type != T_WORD && (is_op(lex,i)))
 		*cmd->command[*j + 1].cmd_simple = NULL;
 	else if (!is_red(lex, i) && lex.tokens[i].type != T_IO_NUMB &&
 			lex.tokens[i].type != T_WORD)
 			(*j)++;
+	
 }
 /*(2)*/
 void    add_simple_command(t_command *cmd, t_lexer lex)

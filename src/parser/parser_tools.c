@@ -9,9 +9,11 @@ int		is_red(t_lexer lex, int i)
 }
 int is_built_in(t_command cmd, int i)
 {
-	if (cmd.used_space > 0 && cmd.command[0].tok == T_WORD)
+	//dprintf(2, "AVANT-passe dans builtin: |%d| - |%s| - |%d|\n\n", cmd.command[i].used_space, cmd.command[i].cmd_simple[0], i);
+	if (cmd.command[i].used_space > 0 && cmd.command[i].cmd_simple != NULL)
 	{
-		if (!ft_strcmp("echo", cmd.command[i].cmd_simple[0]) ||
+//		dprintf(2, "passe dans builtin: |%d| - |%s| - |%d|\n", cmd.command[i].used_space, cmd.command[i].cmd_simple[0], i);
+		if ((ft_strcmp("echo", cmd.command[i].cmd_simple[0]) == 0) ||
 		!ft_strcmp("setenv", cmd.command[i].cmd_simple[0]) ||
 		!ft_strcmp("unsetenv", cmd.command[i].cmd_simple[0]) ||
 		!ft_strcmp("cd", cmd.command[i].cmd_simple[0]) ||
