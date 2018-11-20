@@ -56,8 +56,8 @@ N_SRCS = 	executor/exec.c\
 all: $(NAME)
 
 $(NAME):	$(OBJ)
-	@make -C $(LIB_PATH)
-	@$(CC)	$(FLAGS)	$(OBJ)	$(INC)	-L$(LIB_PATH)	-ltermcap	-lft	-o	$(NAME)
+	@$(MAKE) -C $(LIB_PATH)
+	@$(CC) $(FLAGS) $(OBJ) $(INC) -L$(LIB_PATH) -lncurses -lft -o $(NAME)
 	@echo "$(VERT)$(NAME): compilation success!$(NOCOLOR)"
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
@@ -69,14 +69,13 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(OBJ_PATH)/termcaps
 	$(CC) -c $(FLAGS) $(INC) -o $@ $<
 
-
 clean:
-	@make -C $(LIB_PATH) clean
+	@$(MAKE) -C $(LIB_PATH) clean
 	@$(DEL) $(OBJ_PATH)
 	@echo "$(JAUNE)$(NAME): Removing $(NAME) ./obj/$(NOCOLOR)"
 
 fclean: clean
-	@make -C $(LIB_PATH) fclean
+	@$(MAKE) -C $(LIB_PATH) fclean
 	@$(DEL) $(NAME)
 	@echo "$(JAUNE)$(NAME): Removing executable$(NOCOLOR)"
 
