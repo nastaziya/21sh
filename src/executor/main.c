@@ -14,7 +14,7 @@ void check_op(t_command cmd, t_env_tools *env)
 		cmd_expended = expense_cmd(cmd, *env, 0);
 //	print_array(cmd.command[0].used_space, cmd_expended);
 	if (cmd_expended != NULL && cmd.used_space > 0 && !is_built_in(cmd, 0))
-		env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
+		env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env);
 	else if (cmd_expended && is_built_in(cmd, 0))
 	{
 		//stocker valeur de retour : env->g_return_value
@@ -33,21 +33,23 @@ void check_op(t_command cmd, t_env_tools *env)
 		{
 			//check_path(env->paths, &path,  cmd.command[i].cmd_simple) == 0 &&
 			if (env->g_return_value > 0)
-				env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
+				env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env);
 		}
 		else if (cmd.command[i].tok == T_DBLAND && !is_built_in(cmd, i))
 		{
 			//check_path(env->paths, &path,  cmd.command[i].cmd_simple) > 0 &&
 			if ( env->g_return_value == 0)
 			{
-				env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
+				env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env);
 			}
 		}
 		else if (cmd.command[i].tok == T_SEMI && is_built_in(cmd, i) == 0)
-			env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
+			env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env);
 		//free(path);
 		free_str(cmd_expended);
 	}
+			printf ("ret_val : %d\n", env->g_return_value);
+
 }
 void	all_exec(char **environ)
 {
