@@ -55,3 +55,14 @@ char	**copy_env(char **environ, int size)
 	}
 	return (env);
 }
+
+void	set_path(char *str, char ***paths)
+{
+	if (str != NULL)
+	{
+		*paths = ft_strsplit(str, ':');
+		free(str);
+	}
+	else
+		*paths = NULL;
+}

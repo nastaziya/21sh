@@ -48,7 +48,7 @@ void check_op(t_command cmd, t_env_tools *env)
 		//free(path);
 		free_str(cmd_expended);
 	}
-			printf ("ret_val : %d\n", env->g_return_value);
+	printf ("ret_val : %d\n", env->g_return_value);
 
 }
 void	all_exec(char **environ)
