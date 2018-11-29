@@ -8,14 +8,30 @@ int		is_red(t_lexer lex, int i)
 	return (0);
 }
 
-int is_built_in(t_command cmd, int i)
+// int is_built_in(t_command cmd, int i)
+// {
+// 	if (!ft_strcmp("echo", cmd.command[i].cmd_simple[0]) ||
+// 	!ft_strcmp("setenv", cmd.command[i].cmd_simple[0]) ||
+// 	!ft_strcmp("unsetenv", cmd.command[i].cmd_simple[0]) ||
+// 	!ft_strcmp("cd", cmd.command[i].cmd_simple[0]) ||
+// 	!ft_strcmp("env", cmd.command[i].cmd_simple[0]))
+// 		return (1);
+// 	return (0);
+// }
+
+int is_built_in(char **cmd)
 {
-	if (!ft_strcmp("echo", cmd.command[i].cmd_simple[0]) ||
-	!ft_strcmp("setenv", cmd.command[i].cmd_simple[0]) ||
-	!ft_strcmp("unsetenv", cmd.command[i].cmd_simple[0]) ||
-	!ft_strcmp("cd", cmd.command[i].cmd_simple[0]) ||
-	!ft_strcmp("env", cmd.command[i].cmd_simple[0]))
-		return (1);
+	dprintf(2, "||%s||\n", cmd[0]);
+	if (cmd && cmd[0])
+	{
+		if (!ft_strcmp("echo", cmd[0]) ||
+		!ft_strcmp("setenv", cmd[0]) ||
+		!ft_strcmp("unsetenv", cmd[0]) ||
+		!ft_strcmp("cd", cmd[0]) ||
+		!ft_strcmp("env", cmd[0]) ||
+		!ft_strcmp("exit", cmd[0]))
+			return (1);
+	}
 	return (0);
 }
 

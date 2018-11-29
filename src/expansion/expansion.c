@@ -54,8 +54,8 @@ void	treat_expansion_cases(char **str, int i, t_dynamic_array *final_array, t_en
 			dquote(&str[i], &j, final_array, env);
 			j++;
 		}
-		else if (str[i][j] == '~')
-			home_var_expand(str, i, &j, final_array);
+		else if (str[i][j] == '~') //envoyer la copie du home
+			home_var_expand(str, i, &j, final_array); //à normer
 		else if (str[i][j] == '\\') 
 			treat_backslash(str, i, &j, final_array);
 		else if (str[i][j] == '$')

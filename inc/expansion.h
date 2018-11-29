@@ -19,7 +19,7 @@ int     recover_env_var(char *temp,  t_env_tools env, int *i,  char **val_expend
 int		environement_var_call(char *temp,  t_env_tools env, int i, char **val_exp);
 void	dquote(char **str, int *j, t_dynamic_array *final_array, t_env_tools env);
 void	manage_sq(char **str,  t_dynamic_array *final_array, int *j, int i);
-void	home_var_expand(char **str, int i, int *j, t_dynamic_array *final_array);
+void	home_var_expand(char **str, int i, int *j, t_dynamic_array *final_array);//, char *home_cpy
 void    dollar_expand(char **str, int *j, t_dynamic_array *final_array, t_env_tools env);
 void    treat_backslash(char **str, int i, int *j, t_dynamic_array *final_array);
 void  add_env_var_to_final_array(t_dynamic_array *array_without_backslash,

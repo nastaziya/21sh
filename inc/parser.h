@@ -62,6 +62,6 @@ int		is_red(t_lexer lex, int i);
 int		is_op(t_lexer lex, int i);
 int     parse_errors(t_lexer lex);
 int		check_path(char **path_env, char **path, char **str);
-int     is_built_in(t_command cmd, int i);
+int     is_built_in(char **cmd);
 
 #endif

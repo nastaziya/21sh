@@ -47,7 +47,7 @@ void	manage_sq(char **str,  t_dynamic_array *final_array, int *j, int i)
 	(*j)++;
 }
 
-void	home_var_expand(char **str, int i, int *j, t_dynamic_array *final_array)
+void	home_var_expand(char **str, int i, int *j, t_dynamic_array *final_array)//, char *home_cpy
 {
 	//treat directory ~/
 	if (str[i][*j] == '~' && (*j == 0 && str[i][*j + 1] == '/'))
@@ -61,7 +61,10 @@ void	home_var_expand(char **str, int i, int *j, t_dynamic_array *final_array)
 	}
 	else if (str[i][*j] == '~' && *j == 0 && (str[i][*j + 1] == ' '
 	|| str[i][*j + 1] == '\0'))
+	{
+		//// Ici, j'expansionne sur la copie de l'env HOME
 		add_return_from_env(getenv("HOME"), final_array, j, 1);
+	}
 	else
 	{
 		add_char_to_array(final_array, str[0][*j]);

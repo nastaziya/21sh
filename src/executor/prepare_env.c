@@ -39,19 +39,38 @@ void	free_str_2(char **str, int size)
 	str = NULL;
 }
 
-char	**copy_env(char **environ, int size)
+/*
+*** - First, copies the env into the appropriate struct
+*** - We just avoid the OLDPWD env in order to copy the
+*** - behavior of the bash (not set at the beginning)
+*** - This is the reason why we malloc of size
+*** - And put the the at the size - 1 position
+*** - I also added the Initial copy of the home environment
+*** - Bash works with copies (if you unset the HOME),
+*** - Because of the copy, the expansion will still work
+*** - => same management as the PATH (works with copies)
+*/
+
+char	**copy_env(char **environ, int size, t_env_tools *envi)
 {
 	char	**env;
 	int		i;
+	int		j;
 
 	i = 0;
-	if (!(env = (char**)malloc(sizeof(*env) * (size + 1))))
+	j = 0;
+	if (!(env = (char**)malloc(sizeof(*env) * (size))))
 		return (NULL);
-	env[size] = NULL;
+	env[size - 1] = NULL;
 	while (environ[i] != NULL)
 	{
-		env[i] = ft_strdup(environ[i]);
+		if (ft_strncmp(environ[i], "OLDPWD=", 7))
+		{
+			env[j] = ft_strdup(environ[i]);
+			j++;
+		}
 		i++;
 	}
+	envi->home = ft_strdup(getenv("HOME"));
 	return (env);
 }

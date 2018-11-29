@@ -1,5 +1,15 @@
 #include "../../inc/sh.h"
 
+/*
+*** - Initial copy of the home environment
+*** - same management as the PATH (works with copies)
+*/
+
+// void	cpy_home(t_env_tools *env)
+// {
+// 	env->home = ft_strdup(getenv("HOME"));
+// }
+
 void	set_path(char *str, char ***paths)
 {
 	if (str != NULL)
@@ -79,7 +89,7 @@ void	error_command(char **str)
 	ft_putstr_fd("bash: ", 2);
 	ft_putstr_fd(*str, 2);
 	ft_putstr_fd(": command not found", 2);
-	ft_putchar_fd('\n', 2);
+	ft_putchar('\n');
 }
 
 int		exec(char *path, char **str, char **env)
@@ -100,9 +110,12 @@ int		exec(char *path, char **str, char **env)
 	}
 	else
 	{
+		execve(path, str, env);
+		exit(EXIT_FAILURE);
+	/*
 		if (execve(path, str, env) == -1)
 			exit(EXIT_FAILURE);
-		exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);*/
 	}
 	return (0);
 }
@@ -115,7 +128,7 @@ int		error_exec_or_exec(char **paths, char *path, char **str,
 
 	i = 0;
 	res = 0;
-	if (ft_strchr(str[0], '/'))
+	if (str[0] && ft_strchr(str[0], '/'))
 	{
 		path = ft_strdup(str[0]);
 		if (access(path, F_OK) == 0)

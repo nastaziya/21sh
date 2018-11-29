@@ -34,7 +34,7 @@ typedef enum
     T_OP_CMD,
     T_OP_CURLY,
     T_CL_CURLY,
-    T_EQUAL,
+    // T_EQUAL,
     T_WORD,
   } e_token_type;
 
@@ -106,7 +106,7 @@ static const t_oplist existing_token[] =
     {"\t", 1, T_EAT},
     {"\r", 1, T_EAT},
     {"\f", 1, T_EAT},
-    {"=", 1, T_EQUAL},
+    // {"=", 1, T_EQUAL},
     {NULL, 1, 0}
   };
 
@@ -151,5 +151,10 @@ int       string_to_lexer(const char *s, t_lexer *lexer);
 */
 t_lexer		final_tokens(t_dlist **history);
 int       ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history);
+
+
+/////////A enlever plus tard 
+// void		print(const t_lexer *lexer);
+
 
   #endif
