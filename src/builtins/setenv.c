@@ -42,35 +42,6 @@ char		*ft_array_char_to_str_replace_env(char **c_env, int avoid, char *av)
 	return (ret);
 }
 
-// static void		manage_home(char *tmp, t_env_tools *env)
-// {
-// 	char	*tmp2;
-// 	char	buf[1024];
-
-// 	// on check si tmp[6] && si tmp[6] == '/'
-// 	if (ft_strlen(tmp) > 5 && tmp[5] == '/')
-// 	{
-// 		free(env->home);
-// 		env->home = ft_strdup(tmp + 5);
-// 	}
-// 	else
-// 	{
-// 		if ((ft_strlen(tmp) == 5)
-// 			|| (ft_strlen(tmp) > 5 && !ft_strcmp(getenv("HOME"), tmp + 5)))
-// 		{
-// 			free(env->home);
-// 			env->home = ft_strdup(getenv("HOME"));
-// 		}
-// 		else
-// 		{
-// 			getcwd(buf, sizeof(buf));
-// 			tmp2 = ft_strjoin(buf, "/");
-// 			env->home = ft_strjoin(tmp2, tmp + 5);
-// 			free(tmp2);
-// 		}
-// 	}
-// }
-
 static void	ft_builtin_setenv_3(char ***c_env, int i, char *tmp, char ***paths)
 {
 	char	*ret;
@@ -86,14 +57,28 @@ static void	ft_builtin_setenv_3(char ***c_env, int i, char *tmp, char ***paths)
 	free(ret);
 }
 
+static void	ft_builtin_setenv_2_norm(int i, char ***c_env, char *tmp)
+{
+	char *ret;
+
+	ret = ft_array_char_to_str_replace_env(*c_env, i, tmp);
+	ft_free_av(c_env[0]);
+	*c_env = ft_strsplit(ret, ' ');
+	ft_exchange_chars(c_env[0], (char)255, ' ');
+	free(ret);
+	free(tmp);
+}
+
+//Normer setenv_2
 void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths, t_env_tools *env)
 {
 	int		len;
-	char	*ret;
+	// char	*ret;
 	char	*tmp;
 	int		i;
 
 	i = 0;
+
     // dprintf(2, "|||||| YOUHOU JE CHANGE |||||||");
 	len = (ft_strchr(av, '=') ? ft_strchr(av, '=') - av : ft_strlen(av));
 	tmp = ft_strdup_without_quotes(av);
@@ -107,17 +92,11 @@ void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths, t_env_tools *e
 	if (!ft_strncmp(tmp, "PATH=", 5) && !ft_free_av(*paths))
 		*paths = ft_strsplit(ft_strchr(tmp, '='), ':');
 	if ((*c_env)[i]) // if we have found the env
-	{
-		ret = ft_array_char_to_str_replace_env(*c_env, i, tmp);
-		ft_free_av(c_env[0]);
-		*c_env = ft_strsplit(ret, ' ');
-		ft_exchange_chars(c_env[0], (char)255, ' ');
-		free(ret);
-		free(tmp);
-	}
+		ft_builtin_setenv_2_norm(i, c_env, tmp);
 	else //if the env is not present here
 		ft_builtin_setenv_3(c_env, i, tmp, paths);
 }
+
 //CSH - HOME
 	//// je gère tout au niveau de setenv -> Plus simple
 
@@ -139,27 +118,21 @@ int			ft_builtin_setenv(char **av, char ***c_env, char ***paths, t_env_tools *en
 {
 	int		len;
 
-	(void)env;
 	len = ft_len_array_char(av);
 	if (len == 1)
 		ft_print_env(c_env);
-	if (len > 2 && !ft_int_error("setenv: Too many arguments.\n", 2))
-		return (1);
+	if (len > 2)
+		return (ft_int_error("setenv: Too many arguments.\n", 2, 1));
 	ft_exchange_chars(av, ' ', (char)255);
 	if (len == 2)
 	{
-		if (!ft_isalpha(av[1][0]) && !ft_int_error("setenv: Variable name must begin with a letter.\n", 2))
-            return (1);
-        else if (ft_str_is_alpha_setenv(av[1]) && !ft_int_error("setenv: Variable name must", 2)
-            && !ft_int_error(" contain alphanumeric characters.\n", 2))//!ft_int_print_error("setenv: Variable name must", av[1], " contain alphanumeric characters.\n", 2)
-                return (1);
+		if (!ft_isalpha(av[1][0]))
+            return (ft_int_error("setenv: Variable name must begin with a letter.\n", 2, 1));
+        else if (ft_str_is_alpha_setenv(av[1])
+			&& !ft_int_error("setenv: Variable name must", 2, 0))
+                return (ft_int_error(" contain alphanumeric characters.\n", 2, 1));
         else
 			ft_builtin_setenv_2(av[1], &(env)->env_cpy, &(env)->paths, env);// c_env, paths
 	}
-//DEBUG
-	int i = 0;
-	while ((*c_env)[i] && ft_strncmp((*c_env)[i], "HOME=", 5))
-		i++;
-	dprintf(2, "normal: |%s| - cpy: |%s|\n", (*c_env)[i] ,env->home);
 	return (0);
 }

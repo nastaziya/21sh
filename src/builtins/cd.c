@@ -54,34 +54,16 @@ static int  ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env, int p)
 	return (0);
 }
 
-// static int  ft_manage_dash_p_option(char c, char ***c_env, t_env_tools *env)
-// {
-// 	int		count;
-// 	char	*tmp;
-
-// 	count = 0;
-// 	while ((*c_env)[count] && ft_strncmp((*c_env)[count],
-// 				(c == '~' ? "HOME=" : "OLDPWD="), (c == '~' ? 5 : 7)))
-// 		count++;
-// 	if ((*c_env)[count])
-// 	{
-// 		tmp = ft_strdup(ft_strchr((*c_env)[count], '=') + 1);
-// 		ft_change_directory_and_modify_pwds(tmp, c_env, env, 1);
-// 		if (c == '-')
-//         ft_putendl_fd(tmp, 1);
-//         free(tmp);
-// 	}
-// 	else
-// 		return (ft_find_path_and_cd2(c));
-// 	return (0);
-// }
-
 /*
 *** - Aim of the function : checks if the av is correct
 *** - Then : checks returns the letter of the last option set
 *** - Also :
 *** - And the position of the av I need to change directory to
 *** - Begin == 0 when it ends with a "-"
+*** - Aim of this part of the code :
+*** - *begin = ((*av)[count - 1][0] == '-' || (i < count - 1)) ? 0 : i - 1;
+*** - Begin == 0 quand ça se termine par un "-", sinon, renvoie la position du dernier - 1
+*** - enfin, du dernier lu car la boucle ne lit que jusqu'au "-", s'il y en a un
 */
 int   ft_normalize_av(char ***av, char *c, int *begin)
 {
@@ -92,45 +74,22 @@ int   ft_normalize_av(char ***av, char *c, int *begin)
     count = ft_len_array_char(*av);
     *c = 0;
     while (++i < count && (i < count && ft_strcmp((*av)[i], "-")))
-    { // Gérer erreur cd -O => Erreur bypassée
+    {
         if (!ft_strcmp((*av)[i], "-L") || !ft_strcmp((*av)[i], "-P")
             || !ft_strcmp((*av)[i], "-PL") || !ft_strcmp((*av)[i], "-LP")
-                || (i == count - 1 && (*av)[i][0] == '-' ? !ft_strcmp((*av)[i], "-") : i == count - 1))
-                // || (i == count - 1 && !ft_strcmp((*av)[i], "-")))
+                || (i == count - 1 && (*av)[i][0] == '-' ?
+                    !ft_strcmp((*av)[i], "-") : i == count - 1))
         {
-            dprintf(2, "passe quand même ici");
-            // if (!(i == count - 1) || (i == count - 1 && !ft_strcmp((*av)[i], "-")))// - 1
             if (((*av)[i][0] == '-' || !(i == count - 1)) && i != 0)
-                // if (i != 0)
                 if (ft_strcmp((*av)[i], "-"))
                     *c = (*av)[i][ft_strlen((*av)[i]) - 1];
         }
         else if ((*av)[i][0] != '-' && i != (count - 1))
-        {
-            ft_putstr_fd("cd: Too many arguments.\n", 2);
-		    return (1);
-        }
+            return (ft_int_error("cd: Too many arguments.\n", 2, 1));
         else
             return (ft_usage_error("cd", ": usage:"," [-L|-P] [dir]", 1));
     }
-    // Begin == 0 quand ça se termine par un "-", sinon, renvoie la position du dernier - 1
-    if ((*av)[count - 1][0] == '-')
-    {
-        *begin = 0;
-        dprintf(2, "premier: %d - %d\n", *begin, *c);
-    }
-    else if (i < count - 1)
-    {
-        *begin = 0;
-        dprintf(2, "deuxieme: %d - %d\n", *begin, *c);
-    }
-    else
-    {
-        *begin = i - 1;
-        dprintf(2, "troisieme: %d - %d\n", *begin, *c);
-    }
-        // *begin = (*av)[count - 1][0] == '-' ? 0 : i - 1;//count - 1
-    // begin = (count - 1);
+   *begin = ((*av)[count - 1][0] == '-' || (i < count - 1)) ? 0 : i - 1;
     return (0);
 }
 

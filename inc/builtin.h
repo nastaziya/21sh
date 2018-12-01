@@ -19,7 +19,7 @@
 int		ft_len_array_char(char **av);
 int		ft_exec_builtin(t_env_tools *env, char **cmd);
 int	    ft_builtin_echo(char **av, char ***c_env);
-int		ft_int_error(char *str, int fd);
+int		ft_int_error(char *str, int fd, int ret);
 int		ft_int_print_error(char *str, char *str2, char *str3, int fd);
 void	ft_exchange_chars(char **av, char delimitor, char to_replace);
 int		ft_str_is_alpha_setenv(char *str);

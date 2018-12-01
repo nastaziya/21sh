@@ -70,15 +70,6 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
 	{
         free (s2);
         dprintf(2, "[%s]\n", av);
-		// if (dash == 0)
-        // {
-        //     getcwd(buf, sizeof(buf));
-		//     tmp2 = ft_strjoin("OLDPWD=", buf);
-        // }
-        // else
-        // {
-
-        // }
         while ((*c_env)[i] && ft_strncmp((*c_env)[i], "PWD=", 4))
 		    i++;
         dprintf(2, "c_env[i]: %s - %d\n", (*c_env)[i], i);
@@ -90,7 +81,6 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
             getcwd(curpath, sizeof(curpath));
             tmp2 = ft_strjoin("OLDPWD=", curpath);
         }
-        // void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths, t_env_tools *env)
 		dprintf(2, "TMP2: %s\n", tmp2);
         ft_builtin_setenv_2(tmp2, c_env, &(env->paths), env);
         if (dash == 0)
@@ -117,32 +107,8 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
         }
         else if (S_ISLNK(buf2.st_mode))
         {
-            // Mettre un if, si "-P"
-            // IF ("-P")
-            // {
-                // if (dash == 0)
-                // {
-                //      chdir(av);
-		    //          getcwd(buf, sizeof(buf));
-		    //          tmp = ft_strjoin("PWD=", buf);
-		    //          ft_builtin_setenv_2(tmp, c_env, 0);
-		    //          free(tmp); 
-                // }
-                // else
-                // {
-            //          chdir(av);
-		    //          getcwd(buf, sizeof(buf));
-		    //          tmp = ft_strjoin("PWD=", buf);
-		    //          ft_builtin_setenv_2(tmp, c_env, 0);
-		    //          free(tmp);
-            //      }
-            // }
-
-
-            // getcwd(buf, sizeof(buf));
             dprintf(2, "LINK\n");//- |%s|
             chdir(av);
-            // tmp = ft_strjoin("PWD=", buf);
             if (dash == 0)// quand ce n'est pas la commande cd '-'
             {
                 tmp = ft_strjoin("PWD=", tmp2);
@@ -153,8 +119,6 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
                 tmp = ft_strjoin("PWD=", av);
                 dprintf(2, "TMP_S_IS_LINK_ELSE: %s\n", av);//- |%s|
             }
-            // tmp = ft_strjoin("PWD=", tmp2);
-            // tmp2 = ft_strjoin(tmp, av);
             free(tmp2);
             ft_builtin_setenv_2(tmp, c_env, &(env->paths), env);
 		    free(tmp);
@@ -163,19 +127,3 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
 	}
     return (0);
 }
-
-// int         ft_manage_dot(char *av, char ***c_env, t_env_tools *env)
-// {
-//     char    *tmp;
-//     int     ret;
-
-//     if (!ft_strcmp(av, "."))
-//         ret = ft_change_directory_and_modify_pwds(env->home, c_env, env);
-//     else
-//     {
-//         tmp = ft_strjoin(env->home, av + 1);
-//         ret = ft_change_directory_and_modify_pwds(tmp, c_env, env);
-//         free(tmp);
-//     }
-//     return (ret);
-// }

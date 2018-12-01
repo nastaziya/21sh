@@ -23,10 +23,10 @@ int		ft_usage_error(char *command, char *btwn, char *after, int i)
 }
 
 // Aim of the function ? Int in order to put it inside if statement
-int		ft_int_error(char *str, int fd)
+int		ft_int_error(char *str, int fd, int ret)
 {
 	ft_putstr_fd(str,fd);
-	return (0);
+	return (ret);
 }
 
 // Aim of the function ? Int in order to put it inside if statement

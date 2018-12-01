@@ -47,8 +47,8 @@ int		ft_builtin_unsetenv(char **av, char ***c_env, char ***paths, t_env_tools *e
 
 	i = 0;
 	len = ft_len_array_char(av);
-	if (len == 1 && !ft_int_error("unsetenv: Too few arguments\n", 2))
-		return (1);
+	if (len == 1)
+		return (ft_int_error("unsetenv: Too few arguments\n", 2, 1));
 	while (len != 1 && av[++i])
 		ft_builtin_unsetenv_2(av[i], c_env, paths, env);
 	return (0);
