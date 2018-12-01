@@ -43,7 +43,7 @@ void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths, t_env_tools *e
 *** - cd2.c
 */
 
-int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tools *env, int dash);
+int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tools *env, int dash, int p);
 // int         ft_manage_dot(char *av, char ***c_env, t_env_tools *env);
 
 

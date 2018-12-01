@@ -26,7 +26,7 @@ static int		ft_print_error(char *av, char *str)
 */
 // fonctionne pour cd et cd -L
 // => cd -P == comme avant (cf minishell)
-int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tools *env, int dash) // -> DASH == GESTION "-"
+int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tools *env, int dash, int p) // -> DASH == GESTION "-"
 {
 	char	    *tmp;
     char        *tmp2;
@@ -38,7 +38,8 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
     // tmp = NULL;
 	if ((access(av, F_OK)) == -1)
 		return(ft_print_error(av, ": No such file or directory.\n"));
-	else if ((access(av, X_OK)) == -1)
+	
+    else if ((access(av, X_OK)) == -1)
 		return (ft_print_error(av, ": Permission denied.\n"));
 	else
 	{
@@ -55,7 +56,14 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
         while ((*c_env)[i] && ft_strncmp((*c_env)[i], "PWD=", 4))
 		    i++;
         dprintf(2, "c_env[i]: %s - %d\n", (*c_env)[i], i);
-        tmp2 = ft_strjoin("OLDPWD=", (*c_env)[i] + 4);
+        if ((*c_env)[i])
+            tmp2 = ft_strjoin("OLDPWD=", (*c_env)[i] + 4);
+        else
+        {
+            char	    curpath[1024];
+            getcwd(curpath, sizeof(curpath));
+            tmp2 = ft_strjoin("OLDPWD=", curpath);
+        }
         // void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths, t_env_tools *env)
 		dprintf(2, "TMP2: %s\n", tmp2);
         ft_builtin_setenv_2(tmp2, c_env, &(env->paths), env);
@@ -70,7 +78,7 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
         int ret = 0;
         ret = dash == 0 ? lstat(tmp2, &buf2) : lstat(av, &buf2);
         dprintf(2, "|%s| - ret: %d - %d\n", tmp2, ret, S_ISLNK(buf2.st_mode));
-        if (!S_ISLNK(buf2.st_mode)) // || 
+        if (!S_ISLNK(buf2.st_mode) || p == 0) // || BOOL -> "-P" // || p == 0
 		{
             dprintf(2, "NO LINK\n");
             chdir(av);
@@ -102,7 +110,7 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
 		    //          ft_builtin_setenv_2(tmp, c_env, 0);
 		    //          free(tmp);
             //      }
-            
+            // }
 
 
             // getcwd(buf, sizeof(buf));
