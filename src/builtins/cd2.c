@@ -21,6 +21,14 @@ static int		ft_print_error(char *av, char *str)
 	return (1);
 }
 
+int		ft_print_dir_error(char *command, char *btwn, char *after, int i)
+{
+	ft_putstr_fd(command, 2);
+	ft_putstr_fd(btwn, 2);
+	ft_putendl_fd(after, 2);
+	return (i);
+}
+
 /*
 *** - Fonction : Gestion d'erreur du cd - et PWD & OLDPWD non set
 */
@@ -33,16 +41,34 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
 	char	    buf[1024];
     struct stat buf2;
     int         i;
+    char        *s1;
+    char        *s2;
 
     i = 0;
-    // tmp = NULL;
+    if (dash == 0 && ft_strcmp(av, ".."))
+    {
+        char    pa[1024];
+        getcwd(pa, sizeof(pa));
+        s1 = ft_strjoin(buf, "/");
+        s2 = ft_strjoin(s1, av);
+        free(s1);
+    }
+    else
+        s2 = ft_strdup(av);
+    dprintf(2, "lstat, s2: %s\n", s2);
+    stat(s2, &buf2);
 	if ((access(av, F_OK)) == -1)
 		return(ft_print_error(av, ": No such file or directory.\n"));
-	
+	else if (ft_strcmp(av, "..") && !S_ISDIR(buf2.st_mode))
+    {
+        free (s2);
+        return (ft_print_dir_error("bash: cd:", av, ": Not a directory", 1));
+    }
     else if ((access(av, X_OK)) == -1)
 		return (ft_print_error(av, ": Permission denied.\n"));
 	else
 	{
+        free (s2);
         dprintf(2, "[%s]\n", av);
 		// if (dash == 0)
         // {
