@@ -34,7 +34,7 @@ int		ft_print_dir_error(char *command, char *btwn, char *after, int i)
 */
 // fonctionne pour cd et cd -L
 // => cd -P == comme avant (cf minishell)
-int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tools *env, int dash, int p) // -> DASH == GESTION "-"
+int	    	ft_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env, int dash, int p) // -> DASH == GESTION "-"
 {
 	char	    *tmp;
     char        *tmp2;
@@ -55,24 +55,21 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
     }
     else
         s2 = ft_strdup(av);
-    dprintf(2, "lstat, s2: %s\n", s2);
+    // dprintf(2, "lstat, s2: %s\n", s2);
     stat(s2, &buf2);
 	if ((access(av, F_OK)) == -1)
 		return(ft_print_error(av, ": No such file or directory.\n"));
-	else if (ft_strcmp(av, "..") && !S_ISDIR(buf2.st_mode))
-    {
-        free (s2);
+	else if (ft_strcmp(av, "..") && !S_ISDIR(buf2.st_mode) && ft_free(s2))
         return (ft_print_dir_error("bash: cd:", av, ": Not a directory", 1));
-    }
     else if ((access(av, X_OK)) == -1)
 		return (ft_print_error(av, ": Permission denied.\n"));
 	else
 	{
         free (s2);
-        dprintf(2, "[%s]\n", av);
+        // dprintf(2, "[%s]\n", av);
         while ((*c_env)[i] && ft_strncmp((*c_env)[i], "PWD=", 4))
 		    i++;
-        dprintf(2, "c_env[i]: %s - %d\n", (*c_env)[i], i);
+        // dprintf(2, "c_env[i]: %s - %d\n", (*c_env)[i], i);
         if ((*c_env)[i])
             tmp2 = ft_strjoin("OLDPWD=", (*c_env)[i] + 4);
         else
@@ -81,7 +78,7 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
             getcwd(curpath, sizeof(curpath));
             tmp2 = ft_strjoin("OLDPWD=", curpath);
         }
-		dprintf(2, "TMP2: %s\n", tmp2);
+		// dprintf(2, "TMP2: %s\n", tmp2);
         ft_builtin_setenv_2(tmp2, c_env, &(env->paths), env);
         if (dash == 0)
         {
@@ -93,32 +90,32 @@ int	    	ft_change_directory_and_modify_pwds(char *av, char ***c_env, t_env_tool
         }
         int ret = 0;
         ret = dash == 0 ? lstat(tmp2, &buf2) : lstat(av, &buf2);
-        dprintf(2, "|%s| - ret: %d - %d\n", tmp2, ret, S_ISLNK(buf2.st_mode));
+        // dprintf(2, "|%s| - ret: %d - %d\n", tmp2, ret, S_ISLNK(buf2.st_mode));
         if (!S_ISLNK(buf2.st_mode) || p == 0) // || BOOL -> "-P" // || p == 0
 		{
-            dprintf(2, "NO LINK\n");
+            // dprintf(2, "NO LINK\n");
             chdir(av);
             getcwd(buf, sizeof(buf));
 		    tmp = ft_strjoin("PWD=", buf);
 		    ft_builtin_setenv_2(tmp, c_env, &(env->paths), env);
-            dprintf(2, "TMP_!S_NOT_LINK: %s\n", tmp);
+            // dprintf(2, "TMP_!S_NOT_LINK: %s\n", tmp);
 		    free(tmp);
             free(tmp2);
         }
         else if (S_ISLNK(buf2.st_mode))
         {
-            dprintf(2, "LINK\n");//- |%s|
+            // dprintf(2, "LINK\n");//- |%s|
             chdir(av);
             if (dash == 0)// quand ce n'est pas la commande cd '-'
-            {
+            // {
                 tmp = ft_strjoin("PWD=", tmp2);
-                dprintf(2, "TMP_S_IS_LINK_IF: %s\n", tmp2);
-            }
+                // dprintf(2, "TMP_S_IS_LINK_IF: %s\n", tmp2);
+            // }
             else
-            {
+            // {
                 tmp = ft_strjoin("PWD=", av);
-                dprintf(2, "TMP_S_IS_LINK_ELSE: %s\n", av);//- |%s|
-            }
+                // dprintf(2, "TMP_S_IS_LINK_ELSE: %s\n", av);//- |%s|
+            // }
             free(tmp2);
             ft_builtin_setenv_2(tmp, c_env, &(env->paths), env);
 		    free(tmp);

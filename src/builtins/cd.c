@@ -14,15 +14,34 @@
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
 
+/*
+*** - Aim of the function :
+*** - Print errors, and return 1
+*/
+
 static int	ft_find_path_and_cd2(char c)
 {
 	if (c == '~')
 		ft_putstr_fd("No $HOME variable set.\n", 2);
-    // else if (c == '|')
-    //     ft_putstr_fd("No $PWD variable set.\n", 2);
 	else
 		ft_putstr_fd("No $OLDPWD variable set.\n", 2);
 	return (1);
+}
+
+/*
+*** - Aim of the function :
+*** - Man the len of the char** for the cd command
+*** - stops when meets '\0' or a '-' char
+*/
+
+int		ft_len_array_char_cd(char **av)
+{
+    int	i;
+
+    i = 0;
+    while (av[i] && (i > 0 ? ft_strcmp(av[i - 1], "-") : 1))
+        i++;
+    return (i);
 }
 
 /*
@@ -32,7 +51,8 @@ static int	ft_find_path_and_cd2(char c)
 *** - ft_find_path_and_cd2 => Manage the errors
 */
 
-static int  ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env, int p)
+static int  ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
+                int p)
 {
 	int		count;
 	char	*tmp;
@@ -44,7 +64,7 @@ static int  ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env, int p)
 	if ((*c_env)[count])
 	{
 		tmp = ft_strdup(ft_strchr((*c_env)[count], '=') + 1);
-		ft_change_directory_and_modify_pwds(tmp, c_env, env, 1, p);
+		ft_change_dir_and_pwds(tmp, c_env, env, 1, p);
 		if (c == '-')
             ft_putendl_fd(tmp, 1);
         free(tmp);
@@ -56,15 +76,16 @@ static int  ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env, int p)
 
 /*
 *** - Aim of the function : checks if the av is correct
-*** - Then : checks returns the letter of the last option set
+*** - Then : keeps the letter of the last option set (*begin)
 *** - Also :
-*** - And the position of the av I need to change directory to
+*** - Keeps the position of the av I need to change directory to
 *** - Begin == 0 when it ends with a "-"
 *** - Aim of this part of the code :
 *** - *begin = ((*av)[count - 1][0] == '-' || (i < count - 1)) ? 0 : i - 1;
 *** - Begin == 0 quand ça se termine par un "-", sinon, renvoie la position du dernier - 1
 *** - enfin, du dernier lu car la boucle ne lit que jusqu'au "-", s'il y en a un
 */
+
 int   ft_normalize_av(char ***av, char *c, int *begin)
 {
     int     i;
@@ -93,120 +114,77 @@ int   ft_normalize_av(char ***av, char *c, int *begin)
     return (0);
 }
 
-int		ft_len_array_char_cd(char **av)
+int                 ft_manage_cd_p_xxx(char **av, char ***c_env, int begin,
+                        t_env_tools *env)
 {
-    int	i;
+    char	    buf[1024];
 
-    i = 0;
-    while (av[i] && (i > 0 ? ft_strcmp(av[i - 1], "-") : 1))
-        i++;
-    dprintf(2, "[[%d]]\n", i);
-    return (i);
+    if (av[begin][0] == '/')
+        return (ft_change_dir_and_pwds(av[begin], c_env, env, 1, 0));
+    else if (!ft_strcmp(av[begin], "."))
+    {
+        getcwd(buf, sizeof(buf));
+        return (ft_change_dir_and_pwds(buf, c_env, env, 1, 0));
+    }
+    else
+        return (ft_change_dir_and_pwds(av[begin], c_env, env, 0, 0));
 }
 
+// A NORMER
+int             ft_manage_cd_normal(char **av, char ***c_env, int begin,
+                    t_env_tools *env)
+{
+    char    *tmp;
+    int     i;
+    int     ret;
+    char    buf[1024];
 
-// À gérer : cd . && cd .. ??? => DONE
+    i = 0;
+    if (av[begin][0] == '/')
+        return (ft_change_dir_and_pwds(av[begin], c_env, env, 1, 1));
+    else if (!ft_strcmp(av[begin], ".")) // Gérer l'expansion du . => PWD
+    {
+        while ((*c_env)[i] && ft_strncmp("PWD=", (*c_env)[i], 4))
+            i++;
+        if ((*c_env)[i] && (tmp = ft_strdup(ft_strchr((*c_env)[i], '=') + 1)))
+        {
+            ret = ft_change_dir_and_pwds(tmp, c_env, env, 1, 1);
+            free (tmp);
+            return (ret);
+        }
+        else if (getcwd(buf, sizeof(buf)))
+            return (ft_change_dir_and_pwds(buf, c_env, env, 1, 1));
+    }
+    else // Gérer le normal : cd 21LN (lien symbolique en l'occurence)
+        return (ft_change_dir_and_pwds(av[begin], c_env, env, 0, 1));
+    return (0);
+}
 
-// Gérer cd -P && -L
-
-    // else if (argc == 2 && (!ft_strcmp(av[1], ".") || (!ft_strncmp(av[1], "./", 2)))) // cd . or cd ./
-    // return(ft_manage_dot(av[1], c_env, env));
 int			        ft_builtin_cd(char **av, char ***c_env, t_env_tools *env)
 {
-	// int		count;
 	int		argc;
     char    c;
     int     begin;
 
-    // count = 0;
     begin = -1;
     if(ft_normalize_av(&av, &c, &begin))
         return (1);
-    dprintf(2, "|%c - %d|\n", c, begin);
 	argc = ft_len_array_char_cd(av);
-    // (argc == 1) || (argc == 2 && c == '-P') || (argc == 2 && c == '-L') => cd, cd -L, cd -P
-	if (argc == 1 || (((begin == 0 && c == 'P') || (begin == 0 && c == 'L')) && ft_strcmp(av[argc - 1], "-"))) // cd alone, I send with the ~ char to differentiate with the -
-	{
-        dprintf(2, "1er");
-        return (ft_find_path_and_cd('~', c_env, env, 1)); // 1 == PAS DE P
-    }
-    // (argc == 2 && c == '-') || (argc == 3 && c == 'L' && av[len -1] == '-') => cd -, cd -L -
-	else if ((c == 0 && begin == 0 && !ft_strcmp(av[argc - 1], "-")) || (c == 'L' && begin == 0 && !ft_strcmp(av[argc - 1], "-"))) // cd - // || c == 'P'
-	{
-        /////////Intégrer la gestion de l'arrêt en plein milieu -> quand "-"
-        /// !ft_strcmp(av[argc - 1], "-"), modifier fonction ft_len_array_char
-        dprintf(2, "2ème");
-        return (ft_find_path_and_cd('-', c_env, env, 1)); // || c == 'P') <= option ajoutée
-    }
-    // (argc == 3 && c == '-P' && av[len -1] == '-') => Manage "cd -P -" ==> refaire une fonction ft_find_path_and_cd qui prend en compte sa particularité
+    // cd, cd -L, cd -P
+	if (argc == 1 || (((begin == 0 && c == 'P') || (begin == 0 && c == 'L'))
+        && ft_strcmp(av[argc - 1], "-")))
+        return (ft_find_path_and_cd('~', c_env, env, 1));
+    // cd -, cd -L -
+	else if ((c == 0 && begin == 0 && !ft_strcmp(av[argc - 1], "-"))
+        || (c == 'L' && begin == 0 && !ft_strcmp(av[argc - 1], "-")))
+        return (ft_find_path_and_cd('-', c_env, env, 1));
+    // cd -P -
     else if (c == 'P' && begin == 0 && !ft_strcmp(av[argc - 1], "-"))
-    {
-        dprintf(2, "3ème");
         return (ft_find_path_and_cd('-', c_env, env, 0));
-    }
-        // -> Raffiche le lien symbolique la premiere fois, sinon après passe par le lien physique
-    // (argc == 3 && c == '-P' => cd -P XXX => N'affiche pas PATH lien symbolique
-	else if (begin > 0 && c == 'P') // Gérer les -P
-    {// && ft_strcmp(av[begin], ".")
-        dprintf(2, "4ème"); // terner is used to manage if av[begin] == /bla/bla/folder
-        if (av[begin][0] == '/')
-            return (ft_change_directory_and_modify_pwds(av[begin], c_env, env, 1, 0));
-        else if (!ft_strcmp(av[begin], "."))
-        {
-            char	    buf[1024];
-            getcwd(buf, sizeof(buf));
-            // int i = 0;
-            // while ((*c_env)[i] && ft_strncmp("PWD=", (*c_env)[i], 4))
-            //     i++;
-            // if ((*c_env)[i])
-                return (ft_change_directory_and_modify_pwds(buf, c_env, env, 1, 0));// + 1
-            // else
-            //      return (ft_find_path_and_cd2('|'));
-        }
-        else
-            return (ft_change_directory_and_modify_pwds(av[begin], c_env, env, 0, 0));
-    }
-        //oui
-        // return (0);
-    else if ((argc == 2 || (begin > 0 ))) // the rest //&& c == 'P'
-	{// && ft_strcmp(av[begin], ".")
-        dprintf(2, "5ème"); // terner is used to manage if av[begin] == /bla/bla/folder
-        if (av[begin][0] == '/') // Gérer envoie PATH et par la même occasion expansion ~/bla
-            return (ft_change_directory_and_modify_pwds(av[begin], c_env, env, 1, 1));
-        else if (!ft_strcmp(av[begin], ".")) // Gérer l'expansion du . => PWD
-        {
-            char *tmp;
-            int i = 0;
-            while ((*c_env)[i] && ft_strncmp("PWD=", (*c_env)[i], 4))
-                i++;
-            // dprintf(2, "zut - |%s|\n", ft_strchr((*c_env)[i], '=') + 1);
-            if ((*c_env)[i])
-            {
-                tmp = ft_strdup(ft_strchr((*c_env)[i], '=') + 1);
-                int ret = ft_change_directory_and_modify_pwds(tmp, c_env, env, 1, 1);
-                free (tmp);
-                return (ret);
-            }
-                // return (ft_change_directory_and_modify_pwds(tmp, c_env, env, 1, 1));// + 1
-            else
-            {
-                char	    buf[1024];
-                getcwd(buf, sizeof(buf));
-            ///// !!!!!! /////
-                ///// SUREMENT PASSER PAR LE CURRENT WORKING DIRECTORY ET NON LA GESTION D'ERREUR
-                // return (ft_find_path_and_cd2('|'));
-                return (ft_change_directory_and_modify_pwds(buf, c_env, env, 1, 1));
-            }
-        }
-       else // Gérer le normal : cd 21LN (lien symbolique en l'occurence)
-            return (ft_change_directory_and_modify_pwds(av[begin], c_env, env, 0, 1));
-    }
-	// else // error
-	// {
-	// 	ft_putstr_fd("cd: Too many arguments.\n", 2);
-	// 	return (1);
-	// }
+    // cd -P XXX => N'affiche pas PATH lien symbolique
+	else if (begin > 0 && c == 'P')
+        return (ft_manage_cd_p_xxx(av, c_env, begin, env));
+    else if ((argc == 2 || (begin > 0 ))) // the rest
+        return (ft_manage_cd_normal(av, c_env, begin, env));
 	return (0);
 }
-
-/////// Gerer expansion ~ => conflit avec LINK OU NON

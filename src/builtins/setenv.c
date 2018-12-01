@@ -14,7 +14,8 @@
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
 
-char		*ft_array_char_to_str_replace_env(char **c_env, int avoid, char *av)
+char		*ft_array_char_to_str_replace_env(char **c_env, int avoid,
+				char *av)
 {
 	char	*ret;
 	char	*tmp;
@@ -42,7 +43,8 @@ char		*ft_array_char_to_str_replace_env(char **c_env, int avoid, char *av)
 	return (ret);
 }
 
-static void	ft_builtin_setenv_3(char ***c_env, int i, char *tmp, char ***paths)
+static void	ft_builtin_setenv_3(char ***c_env, int i, char *tmp,
+				char ***paths)
 {
 	char	*ret;
 	char	*ret2;
@@ -70,15 +72,14 @@ static void	ft_builtin_setenv_2_norm(int i, char ***c_env, char *tmp)
 }
 
 //Normer setenv_2
-void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths, t_env_tools *env)
+void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths,
+				t_env_tools *env)
 {
 	int		len;
-	// char	*ret;
 	char	*tmp;
 	int		i;
 
 	i = 0;
-
     // dprintf(2, "|||||| YOUHOU JE CHANGE |||||||");
 	len = (ft_strchr(av, '=') ? ft_strchr(av, '=') - av : ft_strlen(av));
 	tmp = ft_strdup_without_quotes(av);
@@ -87,7 +88,8 @@ void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths, t_env_tools *e
 		i++;
 	// Manage cpy env HOME
 	if (!ft_strncmp(tmp, "HOME=", 5) && !ft_free(env->home))
-		env->home = (ft_strlen(tmp) == 5 ? ft_strdup(getenv("HOME")) : ft_strdup(tmp + 5));
+		env->home = (ft_strlen(tmp) == 5 ? ft_strdup(getenv("HOME"))
+			: ft_strdup(tmp + 5));
 	// modify the copy of the str -> we execute on this copy
 	if (!ft_strncmp(tmp, "PATH=", 5) && !ft_free_av(*paths))
 		*paths = ft_strsplit(ft_strchr(tmp, '='), ':');
@@ -114,7 +116,8 @@ void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths, t_env_tools *e
 	/// Quand modif HOME, ça modifie et la copie, et l'env
 	// Mais quand unsetenv HOME -> COPY = getenv(HOME)
 
-int			ft_builtin_setenv(char **av, char ***c_env, char ***paths, t_env_tools *env)
+int			ft_builtin_setenv(char **av, char ***c_env, char ***paths,
+				t_env_tools *env)
 {
 	int		len;
 
