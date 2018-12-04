@@ -21,6 +21,7 @@ typedef struct		s_norm_cd
 
 typedef struct      s_nom_pwd
 {
+    int         dash;
     char	    *tmp;
     char        *tmp2;
 	char	    buf[1024];
@@ -28,6 +29,7 @@ typedef struct      s_nom_pwd
     int         i;
     char        *s1;
     char        *s2;
+    int         p;
 }                   t_norm_pwd;
 
 // typedef struct		s_env_tools

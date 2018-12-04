@@ -29,12 +29,12 @@ int		ft_print_dir_error(char *command, char *btwn, char *after, int i)
 	return (i);
 }
 
-void         ft_copy_and_stat(t_norm_cd *n_cd, t_norm_pwd *n, char *av)
+void         ft_copy_and_stat(t_norm_pwd *n, char *av)
 {
     // ft_copy_and_stat(n_cd, n, av);
     // s2 = ft_manage_double_dots;
     // gérer ".." -> dans chemin ou non ?
-    if (n_cd->dash == 0 && ft_strcmp(av, ".."))
+    if (n->dash == 0 && ft_strcmp(av, ".."))
     {
         getcwd(n->buf, sizeof(n->buf));
         n->s1 = ft_strjoin(n->buf, "/");
@@ -44,8 +44,85 @@ void         ft_copy_and_stat(t_norm_cd *n_cd, t_norm_pwd *n, char *av)
     else
         n->s2 = ft_strdup(av);
     // stat pour regarder si là ou ça pointe est un dossier -> erreur not a directory
+    dprintf(2, "n->s2: |%s|\n", n->s2);
     stat(n->s2, &n->buf2);
     // return (0);
+}
+
+char    *ft_skip_slash(char *s)
+{
+    int i;
+
+    i = 0;
+    while (s[i])
+    {
+        if (s[i] == '.')
+            i++;
+        if (s[i] == '/')
+        {
+            i++;
+            continue ;
+        }
+        return (s + i);
+    }
+    return (s);
+}
+
+
+void        ft_norm_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env, t_norm_pwd *n)
+{
+    // pour les leaks
+    free (n->s2);
+    // on remplace l'OLDPWD par là où on est -> LE PWD ACTUEL OU LE OLDPWD SI
+    // PWD A ETE UNSETENV
+    while ((*c_env)[n->i] && ft_strncmp((*c_env)[n->i], "PWD=", 4))
+        n->i++;
+    if ((*c_env)[n->i])
+        n->tmp2 = ft_strjoin("OLDPWD=", (*c_env)[n->i] + 4);
+    else
+    {
+        getcwd(n->buf, sizeof(n->buf));
+        n->tmp2 = ft_strjoin("OLDPWD=", n->buf);
+    }
+    ft_builtin_setenv_2(n->tmp2, c_env, &(env->paths), env);
+    
+    // si c'est un chemin sans / au début, alors on rajoute par rapport au
+    // chemin actuel -> 
+    if (n->dash == 0)
+    {
+        free(n->tmp2);
+        getcwd(n->buf, sizeof(n->buf));
+        n->tmp = ft_strjoin(n->buf, "/");
+    // A MODIFIER -> passer les ./././ et les ../../../ je pense
+    /////////////////
+    //////////
+        if (av[0] == '.' && av[1] == '/')
+            dprintf(2, "DEBUG: %s\n", ft_skip_slash(av));
+        n->tmp2 = av[0] == '.' && av[1] == '/' ? ft_strjoin(n->tmp, ft_skip_slash(av)) : ft_strjoin(n->tmp, av);
+        free(n->tmp);
+    }
+    // lstat sur le path correct
+    n->dash == 0 ? lstat(n->tmp2, &n->buf2) : lstat(av, &n->buf2);
+    if (!S_ISLNK(n->buf2.st_mode) || n->p == 0) // p == Gérer le -P && lien non symboliques
+    {
+        chdir(av);
+        getcwd(n->buf, sizeof(n->buf));
+        n->tmp = ft_strjoin("PWD=", n->buf);
+        ft_builtin_setenv_2(n->tmp, c_env, &(env->paths), env);
+        free(n->tmp);
+        free(n->tmp2);
+    }
+    else if (S_ISLNK(n->buf2.st_mode)) // Gérer les liens symboliques
+    {
+        chdir(av);
+        if (n->dash == 0)// quand il y a un / dans le path ou commande cd -
+            n->tmp = ft_strjoin("PWD=", n->tmp2);
+        else
+            n->tmp = ft_strjoin("PWD=", av);
+        free(n->tmp2);
+        ft_builtin_setenv_2(n->tmp, c_env, &(env->paths), env);
+        free(n->tmp);
+    }
 }
 
 /*
@@ -55,84 +132,19 @@ void         ft_copy_and_stat(t_norm_cd *n_cd, t_norm_pwd *n, char *av)
 // => cd -P == comme avant (cf minishell)
 int	    	ft_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env, t_norm_cd *n_cd) // -> DASH == GESTION "-"
 {
-    // int             dash;
     t_norm_pwd      n;
-    // dash = n_cd->dash;
-    // n.p = env->p;
+
     n.i = 0;
-    ft_copy_and_stat(n_cd, &n, av);
-    // // s2 = ft_manage_double_dots;
-    // // gérer ".." -> dans chemin ou non ?
-    // if (n_cd->dash == 0 && ft_strcmp(av, ".."))
-    // {
-    //     getcwd(n->buf, sizeof(n->buf));
-    //     n->s1 = ft_strjoin(n->buf, "/");
-    //     n->s2 = ft_strjoin(n->s1, av);
-    //     free(n->s1);
-    // }
-    // else
-    //     n->s2 = ft_strdup(av);
-    // // stat pour regarder si là ou ça pointe est un dossier -> erreur not a directory
-    // stat(n->s2, &n->buf2);
-    // erreurs
+    n.dash = n_cd->dash;
+    n.p = n_cd->p;
+    ft_copy_and_stat(&n, av);
 	if ((access(av, F_OK)) == -1)
 		return(ft_print_error(av, ": No such file or directory.\n"));
-	else if (ft_strcmp(av, "..") && !S_ISDIR(n->buf2.st_mode) && ft_free(n->s2))
+	else if (ft_strcmp(av, "..") && !S_ISDIR(n.buf2.st_mode) && ft_free(n.s2))
         return (ft_print_dir_error("bash: cd:", av, ": Not a directory", 1));
-    else if ((access(av, X_OK)) == -1 && ft_free(n->s2))
+    else if ((access(av, X_OK)) == -1 && ft_free(n.s2))
 		return (ft_print_error(av, ": Permission denied.\n"));
 	else //process
-	{
-        // pour les leaks
-        free (n->s2);
-        // on remplace l'OLDPWD par là où on est -> LE PWD ACTUEL OU LE OLDPWD SI
-        // PWD A ETE UNSETENV
-        while ((*c_env)[n->i] && ft_strncmp((*c_env)[n->i], "PWD=", 4))
-		    n->i++;
-        if ((*c_env)[n->i])
-            n->tmp2 = ft_strjoin("OLDPWD=", (*c_env)[n->i] + 4);
-        else
-        {
-            getcwd(n->buf, sizeof(n->buf));
-            n->tmp2 = ft_strjoin("OLDPWD=", n->buf);
-        }
-        ft_builtin_setenv_2(n->tmp2, c_env, &(env->paths), env);
-       
-       // si c'est un chemin sans / au début, alors on rajoute par rapport au
-       // chemin actuel -> 
-        if (n_cd->dash == 0)
-        {
-            free(n->tmp2);
-            getcwd(n->buf, sizeof(n->buf));
-            n->tmp = ft_strjoin(n->buf, "/");
-      // A MODIFIER -> passer les ./././ et les ../../../ je pense
-      /////////////////
-      //////////
-            n->tmp2 = av[0] == '.' && av[1] == '/' ? ft_strjoin(n->tmp, av + 2) : ft_strjoin(n->tmp, av);
-            free(n->tmp);
-        }
-        // lstat sur le path correct
-        n_cd->dash == 0 ? lstat(n->tmp2, &n->buf2) : lstat(av, &n->buf2);
-        if (!S_ISLNK(n->buf2.st_mode) || norm_cd->p == 0) // p == Gérer le -P && lien non symboliques
-		{
-            chdir(av);
-            getcwd(n->buf, sizeof(n->buf));
-		    n->tmp = ft_strjoin("PWD=", n->buf);
-		    ft_builtin_setenv_2(n->tmp, c_env, &(env->paths), env);
-		    free(n->tmp);
-            free(n->tmp2);
-        }
-        else if (S_ISLNK(n->buf2.st_mode)) // Gérer les liens symboliques
-        {
-            chdir(av);
-            if (n_cd->dash == 0)// quand il y a un / dans le path ou commande cd -
-                n->tmp = ft_strjoin("PWD=", n->tmp2);
-            else
-                n->tmp = ft_strjoin("PWD=", av);
-            free(n->tmp2);
-            ft_builtin_setenv_2(n->tmp, c_env, &(env->paths), env);
-		    free(n->tmp);
-        }
-	}
+        ft_norm_change_dir_and_pwds(av, c_env, env, &n);
     return (0);
 }
