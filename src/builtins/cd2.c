@@ -31,7 +31,6 @@ int		ft_print_dir_error(char *command, char *btwn, char *after, int i)
 
 void         ft_copy_and_stat(t_norm_pwd *n, char *av)
 {
-    // ft_copy_and_stat(n_cd, n, av);
     // s2 = ft_manage_double_dots;
     // gérer ".." -> dans chemin ou non ?
     if (n->dash == 0 && ft_strcmp(av, ".."))
@@ -44,9 +43,8 @@ void         ft_copy_and_stat(t_norm_pwd *n, char *av)
     else
         n->s2 = ft_strdup(av);
     // stat pour regarder si là ou ça pointe est un dossier -> erreur not a directory
-    dprintf(2, "n->s2: |%s|\n", n->s2);
+    // dprintf(2, "n->s2: |%s|\n", n->s2);
     stat(n->s2, &n->buf2);
-    // return (0);
 }
 
 char    *ft_skip_slash(char *s)
@@ -93,11 +91,6 @@ void        ft_norm_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *en
         free(n->tmp2);
         getcwd(n->buf, sizeof(n->buf));
         n->tmp = ft_strjoin(n->buf, "/");
-    // A MODIFIER -> passer les ./././ et les ../../../ je pense
-    /////////////////
-    //////////
-        if (av[0] == '.' && av[1] == '/')
-            dprintf(2, "DEBUG: %s\n", ft_skip_slash(av));
         n->tmp2 = av[0] == '.' && av[1] == '/' ? ft_strjoin(n->tmp, ft_skip_slash(av)) : ft_strjoin(n->tmp, av);
         free(n->tmp);
     }
