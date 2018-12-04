@@ -9,6 +9,27 @@
 
 // # include "sh.h"
 
+typedef struct		s_norm_cd
+{
+    int         begin;
+    char        c;
+    int         p;
+    int         argc;
+    // char        **av;
+    int         dash;
+}                   t_norm_cd;
+
+typedef struct      s_nom_pwd
+{
+    char	    *tmp;
+    char        *tmp2;
+	char	    buf[1024];
+    struct stat buf2;
+    int         i;
+    char        *s1;
+    char        *s2;
+}                   t_norm_pwd;
+
 // typedef struct		s_env_tools
 // {
 // 	char			**env_cpy;
@@ -43,7 +64,7 @@ void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths, t_env_tools *e
 *** - cd2.c
 */
 
-int	    	ft_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env, int dash, int p);
+int	    	ft_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env, t_norm_cd *n);
 // int         ft_manage_dot(char *av, char ***c_env, t_env_tools *env);
 
 

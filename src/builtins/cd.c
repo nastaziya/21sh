@@ -52,19 +52,21 @@ int		ft_len_array_char_cd(char **av)
 */
 
 static int  ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
-                int p)
+                t_norm_cd *n) // p == 0 pour cd -P - ; sinon, p == 1
 {
 	int		count;
 	char	*tmp;
 
 	count = 0;
+    // env->p = p;
 	while ((*c_env)[count] && ft_strncmp((*c_env)[count],
 				(c == '~' ? "HOME=" : "OLDPWD="), (c == '~' ? 5 : 7)))
 		count++;
 	if ((*c_env)[count])
 	{
 		tmp = ft_strdup(ft_strchr((*c_env)[count], '=') + 1);
-		ft_change_dir_and_pwds(tmp, c_env, env, 1, p);
+        n->dash = 1;
+		ft_change_dir_and_pwds(tmp, c_env, env, n);// envoyer n*
 		if (c == '-')
             ft_putendl_fd(tmp, 1);
         free(tmp);
@@ -114,25 +116,29 @@ int   ft_normalize_av(char ***av, char *c, int *begin)
     return (0);
 }
 
-int                 ft_manage_cd_p_xxx(char **av, char ***c_env, int begin,
-                        t_env_tools *env)
+// envoyer en dernier paramètre -> n;
+int                 ft_manage_cd_p_xxx(char **av, char ***c_env, t_norm_cd *n,
+                        t_env_tools *env) // p == 0
 {
     char	    buf[1024];
-
-    if (av[begin][0] == '/')
-        return (ft_change_dir_and_pwds(av[begin], c_env, env, 1, 0));
-    else if (!ft_strcmp(av[begin], "."))
+    
+    n->p = 0;
+    n->dash = 0;
+    if (av[n->begin][0] == '/' && (n->dash = 1))
+        return (ft_change_dir_and_pwds(av[n->begin], c_env, env, n));
+    else if (!ft_strcmp(av[n->begin], "."))
     {
         getcwd(buf, sizeof(buf));
-        return (ft_change_dir_and_pwds(buf, c_env, env, 1, 0));
+        n->dash = 1;
+        return (ft_change_dir_and_pwds(buf, c_env, env, n));
     }
     else
-        return (ft_change_dir_and_pwds(av[begin], c_env, env, 0, 0));
+        return (ft_change_dir_and_pwds(av[n->begin], c_env, env, n));
 }
 
 // A NORMER
-int             ft_manage_cd_normal(char **av, char ***c_env, int begin,
-                    t_env_tools *env)
+int             ft_manage_cd_normal(char **av, char ***c_env, t_norm_cd *n,
+                    t_env_tools *env) // p == 1
 {
     char    *tmp;
     int     i;
@@ -140,51 +146,59 @@ int             ft_manage_cd_normal(char **av, char ***c_env, int begin,
     char    buf[1024];
 
     i = 0;
-    if (av[begin][0] == '/')
-        return (ft_change_dir_and_pwds(av[begin], c_env, env, 1, 1));
-    else if (!ft_strcmp(av[begin], ".")) // Gérer l'expansion du . => PWD
+    n->dash = 0;
+    if (av[n->begin][0] == '/' && (n->dash = 1))
+        return (ft_change_dir_and_pwds(av[n->begin], c_env, env, n));
+    else if (!ft_strcmp(av[n->begin], ".") && (n->dash = 1)) // Gérer l'expansion du . => PWD
     {
         while ((*c_env)[i] && ft_strncmp("PWD=", (*c_env)[i], 4))
             i++;
         if ((*c_env)[i] && (tmp = ft_strdup(ft_strchr((*c_env)[i], '=') + 1)))
         {
-            ret = ft_change_dir_and_pwds(tmp, c_env, env, 1, 1);
+            ret = ft_change_dir_and_pwds(tmp, c_env, env, n);
             free (tmp);
             return (ret);
         }
         else if (getcwd(buf, sizeof(buf)))
-            return (ft_change_dir_and_pwds(buf, c_env, env, 1, 1));
+            return (ft_change_dir_and_pwds(buf, c_env, env, n));
     }
     else // Gérer le normal : cd 21LN (lien symbolique en l'occurence)
-        return (ft_change_dir_and_pwds(av[begin], c_env, env, 0, 1));
+        return (ft_change_dir_and_pwds(av[n->begin], c_env, env, n));
     return (0);
 }
 
 int			        ft_builtin_cd(char **av, char ***c_env, t_env_tools *env)
 {
-	int		argc;
-    char    c;
-    int     begin;
+	// int		argc;
+    // char    c;
+    // int     begin;
+    t_norm_cd   n;
 
-    begin = -1;
-    if(ft_normalize_av(&av, &c, &begin))
+    n.begin = -1;
+    n.p = 1;
+    if (ft_normalize_av(&av, &n.c, &n.begin))
         return (1);
-	argc = ft_len_array_char_cd(av);
+	n.argc = ft_len_array_char_cd(av);
+    dprintf(2, "n.c: %d/%c - argc: %d - begin: %d\n", n.c, n.c, n.argc, n.begin);
     // cd, cd -L, cd -P
-	if (argc == 1 || (((begin == 0 && c == 'P') || (begin == 0 && c == 'L'))
-        && ft_strcmp(av[argc - 1], "-")))
-        return (ft_find_path_and_cd('~', c_env, env, 1));
+	if (n.argc == 1 || (((n.begin == 0 && n.c == 'P') || (n.begin == 0 && n.c == 'L'))
+        && ft_strcmp(av[n.argc - 1], "-")))
+        return (ft_find_path_and_cd('~', c_env, env, &n));
     // cd -, cd -L -
-	else if ((c == 0 && begin == 0 && !ft_strcmp(av[argc - 1], "-"))
-        || (c == 'L' && begin == 0 && !ft_strcmp(av[argc - 1], "-")))
-        return (ft_find_path_and_cd('-', c_env, env, 1));
+	else if ((n.c == 0 && n.begin == 0 && !ft_strcmp(av[n.argc - 1], "-"))
+        || (n.c == 'L' && n.begin == 0 && !ft_strcmp(av[n.argc - 1], "-")))
+        return (ft_find_path_and_cd('-', c_env, env, &n));
     // cd -P -
-    else if (c == 'P' && begin == 0 && !ft_strcmp(av[argc - 1], "-"))
-        return (ft_find_path_and_cd('-', c_env, env, 0));
+    else if (n.c == 'P' && n.begin == 0 && !ft_strcmp(av[n.argc - 1], "-"))
+    {
+        n.p = 0;
+        // dprintf(2, "oui");
+        return (ft_find_path_and_cd('-', c_env, env, &n));
+    }
     // cd -P XXX => N'affiche pas PATH lien symbolique
-	else if (begin > 0 && c == 'P')
-        return (ft_manage_cd_p_xxx(av, c_env, begin, env));
-    else if ((argc == 2 || (begin > 0 ))) // the rest
-        return (ft_manage_cd_normal(av, c_env, begin, env));
+	else if (n.begin > 0 && n.c == 'P')
+        return (ft_manage_cd_p_xxx(av, c_env, &n, env));
+    else if ((n.argc == 2 || (n.begin > 0 ))) // the rest
+        return (ft_manage_cd_normal(av, c_env, &n, env));
 	return (0);
 }

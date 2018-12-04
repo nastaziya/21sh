@@ -19,6 +19,7 @@ typedef struct		s_env_tools
 	char			**paths;
 	char			*home;
 	int				g_return_value;
+	// int				p; // norm cd
 }					t_env_tools;
 
 int		size_str(char **environ);
