@@ -14,22 +14,15 @@
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
 
-static int		ft_print_error(char *av, char *str)
-{
-	ft_putstr_fd(av, 2);
-	ft_putstr_fd(str, 2);
-	return (1);
-}
+/*
+*** - Aim of the function :
+*** - Part one of the change dir and pwd function : created for the norm
+*** - as a first step, we copy the proper string, which means that we manage
+*** - the cd .. command, as the cd ../../ is automatically managed
+*** - Then, we stat the string in order to collect the infos for the errors
+*/
 
-int		ft_print_dir_error(char *command, char *btwn, char *after, int i)
-{
-	ft_putstr_fd(command, 2);
-	ft_putstr_fd(btwn, 2);
-	ft_putendl_fd(after, 2);
-	return (i);
-}
-
-void         ft_copy_and_stat(t_norm_pwd *n, char *av)
+static void         ft_copy_and_stat(t_norm_pwd *n, char *av)
 {
     // s2 = ft_manage_double_dots;
     // gérer ".." -> dans chemin ou non ?
@@ -43,41 +36,27 @@ void         ft_copy_and_stat(t_norm_pwd *n, char *av)
     else
         n->s2 = ft_strdup(av);
     // stat pour regarder si là ou ça pointe est un dossier -> erreur not a directory
-    // dprintf(2, "n->s2: |%s|\n", n->s2);
     stat(n->s2, &n->buf2);
 }
 
-char    *ft_skip_slash(char *s)
+/*
+*** - Aim of the function :
+*** - Changes the OLDPWD with the current PWD, or, if PWD unset
+*** - finds the current PATH and writes it
+*** - The last part (if n->dash = 0) if for a command with - such as cd -
+*** - We prepare the proper string for the lstat command, in order to differenciate
+*** - the behavior when Symbolic link or not
+*/
+
+static void         ft_manage_oldpwd_and_prepare_pwd(char *av, char ***c_env, t_env_tools *env,
+                                            t_norm_pwd *n)
 {
-    int i;
-
-    i = 0;
-    while (s[i])
-    {
-        if (s[i] == '.')
-            i++;
-        if (s[i] == '/')
-        {
-            i++;
-            continue ;
-        }
-        return (s + i);
-    }
-    return (s);
-}
-
-
-void        ft_norm_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env, t_norm_pwd *n)
-{
-    // pour les leaks
-    free (n->s2);
     // on remplace l'OLDPWD par là où on est -> LE PWD ACTUEL OU LE OLDPWD SI
-    // PWD A ETE UNSETENV
     while ((*c_env)[n->i] && ft_strncmp((*c_env)[n->i], "PWD=", 4))
         n->i++;
     if ((*c_env)[n->i])
         n->tmp2 = ft_strjoin("OLDPWD=", (*c_env)[n->i] + 4);
-    else
+    else // if PWD A ETE UNSETENV
     {
         getcwd(n->buf, sizeof(n->buf));
         n->tmp2 = ft_strjoin("OLDPWD=", n->buf);
@@ -86,6 +65,7 @@ void        ft_norm_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *en
     
     // si c'est un chemin sans / au début, alors on rajoute par rapport au
     // chemin actuel -> 
+    // We also manage the ./././21SH string
     if (n->dash == 0)
     {
         free(n->tmp2);
@@ -94,6 +74,23 @@ void        ft_norm_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *en
         n->tmp2 = av[0] == '.' && av[1] == '/' ? ft_strjoin(n->tmp, ft_skip_slash(av)) : ft_strjoin(n->tmp, av);
         free(n->tmp);
     }
+}
+
+/*
+*** - Aim of the Fonction : Changes the PWD in the env
+*** - The function also changes the current directory
+*** - We copy the bash behavior of the cd command for 
+*** - symbolic links and physical links
+*/
+
+static void         ft_norm_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env,
+                                            t_norm_pwd *n)
+{
+    // pour les leaks
+    free (n->s2);
+    // on remplace l'OLDPWD par là où on est -> LE PWD ACTUEL OU LE OLDPWD SI
+    // PWD A ETE UNSETENV
+    ft_manage_oldpwd_and_prepare_pwd(av, c_env, env, n);
     // lstat sur le path correct
     n->dash == 0 ? lstat(n->tmp2, &n->buf2) : lstat(av, &n->buf2);
     if (!S_ISLNK(n->buf2.st_mode) || n->p == 0) // p == Gérer le -P && lien non symboliques
@@ -119,11 +116,12 @@ void        ft_norm_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *en
 }
 
 /*
-*** - Fonction : Gestion d'erreur du cd - et PWD & OLDPWD non set
+*** - Aim of the Fonction : Manage the errors of "cd -"" && "PWD && OLDPWD non set"
+*** - We first manage the string properly, then we print the errors
+*** - if necessary. Otherwise, execute the following part of the function
 */
-// fonctionne pour cd et cd -L
-// => cd -P == comme avant (cf minishell)
-int	    	ft_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env, t_norm_cd *n_cd) // -> DASH == GESTION "-"
+
+int	    	        ft_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env, t_norm_cd *n_cd) // -> DASH == GESTION "-"
 {
     t_norm_pwd      n;
 
@@ -137,7 +135,7 @@ int	    	ft_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env, t_nor
         return (ft_print_dir_error("bash: cd:", av, ": Not a directory", 1));
     else if ((access(av, X_OK)) == -1 && ft_free(n.s2))
 		return (ft_print_error(av, ": Permission denied.\n"));
-	else //process
+	else //process the cd command
         ft_norm_change_dir_and_pwds(av, c_env, env, &n);
     return (0);
 }

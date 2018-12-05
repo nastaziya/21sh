@@ -15,50 +15,20 @@
 #include "../../inc/builtin.h"
 
 /*
-*** - Aim of the function :
-*** - Print errors, and return 1
-*/
-
-static int	ft_find_path_and_cd2(char c)
-{
-	if (c == '~')
-		ft_putstr_fd("No $HOME variable set.\n", 2);
-	else
-		ft_putstr_fd("No $OLDPWD variable set.\n", 2);
-	return (1);
-}
-
-/*
-*** - Aim of the function :
-*** - Man the len of the char** for the cd command
-*** - stops when meets '\0' or a '-' char
-*/
-
-int		ft_len_array_char_cd(char **av)
-{
-    int	i;
-
-    i = 0;
-    while (av[i] && (i > 0 ? ft_strcmp(av[i - 1], "-") : 1))
-        i++;
-    return (i);
-}
-
-/*
 *** - Function to manage :
 *** - cd alone
 *** - cd -
 *** - ft_find_path_and_cd2 => Manage the errors
+*** - p == 0 for cd -P - ; otherwise p == 1
 */
 
 static int  ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
-                t_norm_cd *n) // p == 0 pour cd -P - ; sinon, p == 1
+                t_norm_cd *n)
 {
 	int		count;
 	char	*tmp;
 
 	count = 0;
-    // env->p = p;
 	while ((*c_env)[count] && ft_strncmp((*c_env)[count],
 				(c == '~' ? "HOME=" : "OLDPWD="), (c == '~' ? 5 : 7)))
 		count++;
@@ -66,7 +36,7 @@ static int  ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
 	{
 		tmp = ft_strdup(ft_strchr((*c_env)[count], '=') + 1);
         n->dash = 1;
-		ft_change_dir_and_pwds(tmp, c_env, env, n);// envoyer n*
+		ft_change_dir_and_pwds(tmp, c_env, env, n);
 		if (c == '-')
             ft_putendl_fd(tmp, 1);
         free(tmp);
@@ -116,9 +86,16 @@ int   ft_normalize_av(char ***av, char *c, int *begin)
     return (0);
 }
 
-// envoyer en dernier paramètre -> n;
+/*
+*** - Aim of the function :
+*** - We copy the behavior of the cd builtin
+*** - In order of the ifs and elsifs, I manage the following commands :
+*** - same behavior as the function below
+*** - p == 0
+*/
+
 int                 ft_manage_cd_p_xxx(char **av, char ***c_env, t_norm_cd *n,
-                        t_env_tools *env) // p == 0
+                        t_env_tools *env)
 {
     char	    buf[1024];
     
@@ -136,9 +113,21 @@ int                 ft_manage_cd_p_xxx(char **av, char ***c_env, t_norm_cd *n,
         return (ft_change_dir_and_pwds(av[n->begin], c_env, env, n));
 }
 
-// A NORMER
+
+/*
+*** - Aim of the function :
+*** - We copy the behavior of the cd builtin
+*** - In order of the ifs and elsifs, I manage the following commands :
+*** - 1. cd /21sh
+*** - 2. cd . blabla or cd ./blabla and verifies that the PWD exists
+*** - 3. the normal cd -> cd 21LN for example
+*** - p == 1
+*/
+
+// A NORMER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 int             ft_manage_cd_normal(char **av, char ***c_env, t_norm_cd *n,
-                    t_env_tools *env) // p == 1
+                    t_env_tools *env)
 {
     char    *tmp;
     int     i;
@@ -149,7 +138,7 @@ int             ft_manage_cd_normal(char **av, char ***c_env, t_norm_cd *n,
     n->dash = 0;
     if (av[n->begin][0] == '/' && (n->dash = 1))
         return (ft_change_dir_and_pwds(av[n->begin], c_env, env, n));
-    else if (!ft_strcmp(av[n->begin], ".") && (n->dash = 1)) // Gérer l'expansion du . => PWD
+    else if (!ft_strcmp(av[n->begin], ".") && (n->dash = 1))
     {
         while ((*c_env)[i] && ft_strncmp("PWD=", (*c_env)[i], 4))
             i++;
@@ -162,16 +151,24 @@ int             ft_manage_cd_normal(char **av, char ***c_env, t_norm_cd *n,
         else if (getcwd(buf, sizeof(buf)))
             return (ft_change_dir_and_pwds(buf, c_env, env, n));
     }
-    else // Gérer le normal : cd 21LN (lien symbolique en l'occurence)
+    else
         return (ft_change_dir_and_pwds(av[n->begin], c_env, env, n));
     return (0);
 }
 
+/*
+*** - Aim of the function :
+*** - We copy the behavior of the cd builtin
+*** - In order of the ifs and elsifs, I manage the following commands :
+*** - 1. cd, cd -L, cd -P
+*** - 2. cd -, cd -L -
+*** - 3. cd -P -
+*** - 4. cd -P XXX => which shows the physical link, not the symbolic one
+*** - 5. The rest (cd 21LN / cd -L 21LN)
+*/
+
 int			        ft_builtin_cd(char **av, char ***c_env, t_env_tools *env)
 {
-	// int		argc;
-    // char    c;
-    // int     begin;
     t_norm_cd   n;
 
     n.begin = -1;
@@ -179,7 +176,6 @@ int			        ft_builtin_cd(char **av, char ***c_env, t_env_tools *env)
     if (ft_normalize_av(&av, &n.c, &n.begin))
         return (1);
 	n.argc = ft_len_array_char_cd(av);
-    dprintf(2, "n.c: %d/%c - argc: %d - begin: %d\n", n.c, n.c, n.argc, n.begin);
     // cd, cd -L, cd -P
 	if (n.argc == 1 || (((n.begin == 0 && n.c == 'P') || (n.begin == 0 && n.c == 'L'))
         && ft_strcmp(av[n.argc - 1], "-")))
@@ -192,7 +188,6 @@ int			        ft_builtin_cd(char **av, char ***c_env, t_env_tools *env)
     else if (n.c == 'P' && n.begin == 0 && !ft_strcmp(av[n.argc - 1], "-"))
     {
         n.p = 0;
-        // dprintf(2, "oui");
         return (ft_find_path_and_cd('-', c_env, env, &n));
     }
     // cd -P XXX => N'affiche pas PATH lien symbolique

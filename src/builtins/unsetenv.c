@@ -14,7 +14,19 @@
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
 
-void	ft_builtin_unsetenv_2(char *av, char ***c_env, char ***paths, t_env_tools *env)
+/*
+*** - Aim of the function :
+*** - Following of the unsetenv function
+*** - We also manage the unsetenv PATH (we modify it's copy)
+*** - Same for the HOME
+*** - Then we unset the proper variable
+*** - So, when we unset PATH, then env -> the env will not
+*** - show the PATH and ls will not work
+*** - But, if we do the same : uset HOME, then echo ~ -> the expansion works
+*** - So, there is a copy of the HOME that the expansion uses
+*/
+
+static void	ft_builtin_unsetenv_2(char *av, char ***c_env, char ***paths, t_env_tools *env)
 {
 	int		i;
 	char	*ret;
@@ -40,7 +52,12 @@ void	ft_builtin_unsetenv_2(char *av, char ***c_env, char ***paths, t_env_tools *
 	}
 }
 
-int		ft_builtin_unsetenv(char **av, char ***c_env, char ***paths, t_env_tools *env)
+/*
+*** - Aim of the function :
+*** - Copies the unsetenv builtin
+*/
+
+int			ft_builtin_unsetenv(char **av, char ***c_env, char ***paths, t_env_tools *env)
 {
 	int		i;
 	int		len;

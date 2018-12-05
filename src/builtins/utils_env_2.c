@@ -14,11 +14,24 @@
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
 
+/*
+*** - Aim of the function : 
+*** - Free with return to include inside
+*** - an if statement
+*/
+
 int		ft_free(char *av)
 {
 	free(av);
 	return (0);
 }
+
+/*
+*** - Aim of the function : 
+*** - Name not correct as the string is already expansioned
+*** - Manages the "setenv OUI" and "setenv OUI=" by creating a copy
+*** - that will always be "OUI=""
+*/
 
 char	*ft_strdup_without_quotes(char *av)
 {
@@ -35,6 +48,13 @@ char	*ft_strdup_without_quotes(char *av)
 	}
 	return (ret);
 }
+
+/*
+*** - Aim of the function : 
+*** - We modify the global env. Used in the unsetenv command
+*** - We realloc without the env[avoid]; -> we avoid this variable
+*** - because I work with a string that I will split afterward
+*/
 
 char	*ft_array_char_to_str(char **c_env, int avoid)
 {

@@ -14,7 +14,14 @@
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
 
-char		*ft_array_char_to_str_replace_env(char **c_env, int avoid,
+/*
+*** - Aim of the function :
+*** - Replace the env with the new string
+*** - And we return the new proper str
+*** - that we will split afterward
+*/
+
+static char		*ft_array_char_to_str_replace_env(char **c_env, int avoid,
 				char *av)
 {
 	char	*ret;
@@ -43,6 +50,11 @@ char		*ft_array_char_to_str_replace_env(char **c_env, int avoid,
 	return (ret);
 }
 
+/*
+*** - Aim of the function :
+*** - For the norm
+*/
+
 static void	ft_builtin_setenv_3(char ***c_env, int i, char *tmp,
 				char ***paths)
 {
@@ -59,6 +71,11 @@ static void	ft_builtin_setenv_3(char ***c_env, int i, char *tmp,
 	free(ret);
 }
 
+/*
+*** - Aim of the function :
+*** - For the norm
+*/
+
 static void	ft_builtin_setenv_2_norm(int i, char ***c_env, char *tmp)
 {
 	char *ret;
@@ -71,7 +88,16 @@ static void	ft_builtin_setenv_2_norm(int i, char ***c_env, char *tmp)
 	free(tmp);
 }
 
-//Normer setenv_2
+/*
+*** - Aim of the function :
+*** - We first find the corresponding variable,
+*** - so before the "=" if there is one
+*** - if this is HOME or PATH, we also work on the copies
+*** - Because they have different behaviors
+*** - Then we modify the env by modifying the variable
+*** - or adding the new one if this is the case
+*/
+
 void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths,
 				t_env_tools *env)
 {
@@ -90,7 +116,7 @@ void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths,
 	if (!ft_strncmp(tmp, "HOME=", 5) && !ft_free(env->home))
 		env->home = (ft_strlen(tmp) == 5 ? ft_strdup(getenv("HOME"))
 			: ft_strdup(tmp + 5));
-	// modify the copy of the str -> we execute on this copy
+	// modify the copy of the path -> we execute on this copy
 	if (!ft_strncmp(tmp, "PATH=", 5) && !ft_free_av(*paths))
 		*paths = ft_strsplit(ft_strchr(tmp, '='), ':');
 	if ((*c_env)[i]) // if we have found the env
@@ -99,22 +125,29 @@ void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths,
 		ft_builtin_setenv_3(c_env, i, tmp, paths);
 }
 
-//CSH - HOME
-	//// je gère tout au niveau de setenv -> Plus simple
-
-	//1. récupérer valeur de l'env HOME
-	//2. Vérifier si Home[0] == / ou non
-	// 3. Si == /, alors on prend le / et on modifie la copie pour qu'elle soit == à l'home de l'env
-	// 4. Si Home[0] != backslash
-		// 4.1 - On regarde si HOME == getenv
-			// Si c'est le cas -> on modifie la copie et l'env == HOME
-			// et donc echo ~ == au retour de getenv
-		// 4.2 - Si ce n'est pas le cas
-			// On prend la copie et on met le current working directory + ce qui est écrit dans l'env HOME
-
-//BASH - HOME
-	/// Quand modif HOME, ça modifie et la copie, et l'env
-	// Mais quand unsetenv HOME -> COPY = getenv(HOME)
+/*
+*** - Aim of the function :
+*** - Copy the behavior of the setenv builtin
+*** - Part one : we verify the errors
+*** - Part two : we execute the builtin
+*** - Keep track of the setenv for BASH AND CSH
+*** -//CSH - HOME
+*** -//// je gère tout au niveau de setenv -> Plus simple
+*** -
+*** -//1. récupérer valeur de l'env HOME
+*** -//2. Vérifier si Home[0] == / ou non
+*** -// 3. Si == /, alors on prend le / et on modifie la copie pour qu'elle soit == à l'home de l'env
+*** -// 4. Si Home[0] != backslash
+*** -// 4.1 - On regarde si HOME == getenv
+*** -// Si c'est le cas -> on modifie la copie et l'env == HOME
+*** -// et donc echo ~ == au retour de getenv
+*** -// 4.2 - Si ce n'est pas le cas
+*** -// On prend la copie et on met le current working directory + ce qui est écrit dans l'env HOME
+*** -
+*** -//BASH - HOME
+*** -/// Quand modif HOME, ça modifie et la copie, et l'env
+*** -// Mais quand unsetenv HOME -> COPY = getenv(HOME)
+*/
 
 int			ft_builtin_setenv(char **av, char ***c_env, char ***paths,
 				t_env_tools *env)

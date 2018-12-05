@@ -13,6 +13,11 @@
 
 #include "../../inc/builtin.h"
 
+/*
+*** - Aim of the function :
+*** - Print usage error and returns the proper int
+*/
+
 int		ft_usage_error(char *command, char *btwn, char *after, int i)
 {
 	ft_putstr_fd(command, 2);
@@ -22,14 +27,24 @@ int		ft_usage_error(char *command, char *btwn, char *after, int i)
 	return (i);
 }
 
-// Aim of the function ? Int in order to put it inside if statement
+/*
+*** - Aim of the function :
+*** - ft_putstr inside int function
+*** - in order to use it inside if statement
+*/
+
 int		ft_int_error(char *str, int fd, int ret)
 {
 	ft_putstr_fd(str,fd);
 	return (ret);
 }
 
-// Aim of the function ? Int in order to put it inside if statement
+/*
+*** - Aim of the function :
+*** - Several ft_putstr inside int function
+*** - in order to use it inside if statement
+*/
+
 int		ft_int_print_error(char *str, char *str2, char *str3, int fd)
 {
 	ft_putstr_fd(str, fd);
@@ -37,6 +52,11 @@ int		ft_int_print_error(char *str, char *str2, char *str3, int fd)
 	ft_putstr_fd(str3, fd);
 	return (0);
 }
+
+/*
+*** - Aim of the function :
+*** - Returns the len of the char **
+*/
 
 int		ft_len_array_char(char **av)
 {
@@ -47,6 +67,12 @@ int		ft_len_array_char(char **av)
 		i++;
 	return (i);
 }
+
+/*
+*** - Aim of the function :
+*** - Function directs to the proper builtin
+*** - and returns the proper int
+*/
 
 int		ft_exec_builtin(t_env_tools *env, char **cmd)
 {
