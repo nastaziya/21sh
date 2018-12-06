@@ -4,6 +4,7 @@
 # include "../libft/libft.h"
 # include <sys/stat.h>
 # include <sys/types.h>
+# include <unistd.h>
 
 /*
 *** - Struct for the norm of the builtin_cd
@@ -111,6 +112,6 @@ void	ft_print_env(char ***c_env);
 *** - env.c
 */
 
-int			ft_builtin_env(char *av, char ***c_env, char ***paths, t_env_tools *env);
+int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env);
 
 #endif

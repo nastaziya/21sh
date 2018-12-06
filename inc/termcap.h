@@ -42,6 +42,7 @@ typedef struct          s_tcap
     int             ct_arrow; // count the number of arrows that were used, 1 == last arrow was down key ; 2 == last arrow was up key
     char            *copy_str; // copy of str when copy_paste
     char            *prompt; // copy of the prompt str for the resize of the window management
+    // int             g_glob; // int to specify is inside running function or not
 }                       t_tcap;
 
 // typedef struct		s_dlist

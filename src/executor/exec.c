@@ -120,14 +120,20 @@ int		exec(char *path, char **str, char **env)
 	return (0);
 }
 
-int		error_exec_or_exec(char **paths, char *path, char **str,
+// str == command
+// char *path -> error_exec_or_exec
+// int		error_exec_or_exec(char **paths, char *path, char **str,
+// 		char **env)
+int		error_exec_or_exec(char **paths, char **str,
 		char **env)
 {
 	int		res;
 	int		i;
+	char	*path;
 
 	i = 0;
 	res = 0;
+	path = NULL;
 	if (str[0] && ft_strchr(str[0], '/'))
 	{
 		path = ft_strdup(str[0]);
@@ -142,11 +148,10 @@ int		error_exec_or_exec(char **paths, char *path, char **str,
 		error_command(str);
 	}
 	else if (res > 1)
-		ft_putendl_fd("minishell : permission denied.", 2);
+		ft_putendl_fd("bash : permission denied.", 2);
 	else
 		res = exec(path, str, env);
 	if (path != NULL)
 		free(path);
 	return (res);
 }
-
