@@ -107,7 +107,7 @@ void	all_exec(char **environ, char ***heredoc)
 
 int main(int argc, char **argv, char **environ)
 {
-	//  t_term		term;
+	 t_term		term;
 	 char **heredoc;
 
 	(void)argc;
@@ -116,10 +116,10 @@ int main(int argc, char **argv, char **environ)
 	// //Initialisation du termios
 	// Protection if the program is launched with the env -i option :
 	// env -i ./a.out 2&>/dev/ttys001
-	// if (terminal_data(&term) < 0)
-	// {
-	// 	ft_putstr_fd("envoie les bonnes infos ma gueule !!!\n", 2);
-	// 	exit(0);
-	// }
+	if (terminal_data(&term) < 0)
+	{
+		ft_putstr_fd("envoie les bonnes infos ma gueule !!!\n", 2);
+		exit(0);
+	}
 	all_exec(environ, &heredoc);
 }
