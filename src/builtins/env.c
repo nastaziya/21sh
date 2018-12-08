@@ -169,8 +169,11 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
 				if (!av[i + 1])
 					ft_print_env(&cp_c_env);
 			}
+            else if (i == argc - 1 && !ft_strcmp(av[i], "env"))
+                ft_print_env(&cp_c_env);
 			else if (i != argc - 1 ? ft_strcmp(av[i], "env") : 1)
 			    ret = ft_builtin_env2(av, cp_c_env, i, 0);
+
 		}
     }
 	ft_free_av(cp_c_env);
