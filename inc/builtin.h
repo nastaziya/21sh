@@ -48,6 +48,10 @@ int		ft_int_print_error(char *str, char *str2, char *str3, int fd);
 int		ft_len_array_char(char **av);
 int		ft_exec_builtin(t_env_tools *env, char **cmd);
 
+
+int		ft_usage_is_good(char *limitor, char *str);
+
+
 /*
 *** - unsetenv.c
 */

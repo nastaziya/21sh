@@ -68,8 +68,9 @@ static int   ft_normalize_av(char ***av, char *c, int *begin)
     *c = 0;
     while (++i < count && (i < count && ft_strcmp((*av)[i], "-")))
     {
-        if (!ft_strcmp((*av)[i], "-L") || !ft_strcmp((*av)[i], "-P")
-            || !ft_strcmp((*av)[i], "-PL") || !ft_strcmp((*av)[i], "-LP")
+        // !ft_strcmp((*av)[i], "-L") || !ft_strcmp((*av)[i], "-P")
+            // || !ft_strcmp((*av)[i], "-PL") || !ft_strcmp((*av)[i], "-LP"
+        if (!ft_usage_is_good("LP", (*av)[i])
                 || (i == count - 1 && (*av)[i][0] == '-' ?
                     !ft_strcmp((*av)[i], "-") : i == count - 1))
         {

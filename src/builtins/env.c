@@ -98,15 +98,26 @@ int         ft_usage_env_builtin(char **av, int argc, int *i, char *p)
     *i = (argc > 1 ? 1 : 0);
     if (argc > 1)
     {
-        while (av[*i] && !ft_strcmp(av[*i], "-i") && (*p = 'i'))
+        while (av[*i] && !ft_usage_is_good("i", av[*i]) && (*p = 'i'))
             (*i)++;
         // dprintf(2, "[%s]\n", av[*i]);
         if (av[*i] && ft_strcmp(av[*i], "-") && av[*i][0] == '-')
-            return (ft_usage_error("env: illegal option -- ", av[*i], "\nusage: env [-i] [name=value ...] [utility [argument ...]]", 1));
+            return (
+            ft_usage_error("env: illegal option -- ", av[*i],
+            "\nusage: env [-i] [name=value ...] [utility [argument ...]]", 1));
         else if (av[*i] && av[*i][0] == '-' && *i == argc)
             return (2);
     }
-    dprintf(2, "av[sortie]: |%s|\n", av[*i]);
+    // dprintf(2, "av[sortie]: |%s|\n", av[*i]);
+    return (0);
+}
+
+int     ft_manage_option_i_env(char	***cp_c_env)
+{
+    cp_c_env[0] = (char**)malloc(sizeof(char*) * 2);
+    cp_c_env[0][0] = NULL;
+    // cp_c_env[0][0] = (char*)malloc(sizeof(char) * 2);
+    cp_c_env[0][1] = NULL;
     return (0);
 }
 
@@ -140,7 +151,7 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
         return (ret == 2 ? 0 : 1);
     dprintf(2, "builtin env: %d - %c - %d\n", i, p, argc);
     // gérer avec le -i
-	ft_cp_env(&cp_c_env, *c_env);
+	p == 0 ? ft_cp_env(&cp_c_env, *c_env) : ft_manage_option_i_env(&cp_c_env);
 	if (argc == 1)//  || i == argc ------ //i == argc - 1
 		ft_print_env(c_env);
 	else

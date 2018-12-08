@@ -68,6 +68,34 @@ int		ft_len_array_char(char **av)
 	return (i);
 }
 
+int		ft_usage_is_good(char *limitor, char *str)
+{
+	int		i;
+	int		j;
+	
+	i = 0;
+	j = -1;
+	if (ft_strlen(str) > 1)
+	{
+		if (str[0] == '-' && (i = i + 1))
+		{
+				while (limitor[++j])
+				{
+					while (str[i])
+					{
+						if (limitor[j] == str[i])
+							i++;
+						else
+							break ;
+					}
+				}
+		}
+		if (str[i])
+			return (1);
+	}
+	return (0);
+}
+
 /*
 *** - Aim of the function :
 *** - Function directs to the proper builtin
