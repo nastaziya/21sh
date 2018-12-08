@@ -201,11 +201,12 @@ int		error_exec_or_exec(char **paths, char **str,
 	else
 	{
 		dprintf(2, "4eme\n");
-		if ((res = exec(path, str, env) == 1))
-		{
-			in_env == 1 ? error_command("env: ", str, ": permission denied") : error_command("bash: ", str, ": is a directory");
-			res = 126;
-		}
+		res = exec(path, str, env);
+		// if ((res = exec(path, str, env) == 1))
+		// {
+		// 	in_env == 1 ? error_command("env: ", str, ": permission denied") : error_command("bash: ", str, ": is a directory");
+			// res = 126;
+		// }
 	}
 	if (path != NULL)
 		free(path);

@@ -91,6 +91,25 @@ static int	ft_builtin_env2(char **av, char **cp_c_env, int i, int ret)
 	return (ret);
 }
 
+int         ft_usage_env_builtin(char **av, int argc, int *i, char *p)
+{
+    // int     argc;
+
+    *i = (argc > 1 ? 1 : 0);
+    if (argc > 1)
+    {
+        while (av[*i] && !ft_strcmp(av[*i], "-i") && (*p = 'i'))
+            (*i)++;
+        // dprintf(2, "[%s]\n", av[*i]);
+        if (av[*i] && ft_strcmp(av[*i], "-") && av[*i][0] == '-')
+            return (ft_usage_error("env: illegal option -- ", av[*i], "\nusage: env [-i] [name=value ...] [utility [argument ...]]", 1));
+        else if (av[*i] && av[*i][0] == '-' && *i == argc)
+            return (2);
+    }
+    dprintf(2, "av[sortie]: |%s|\n", av[*i]);
+    return (0);
+}
+
 /*
 *** - Gérer -> env, env -i
 *** - Usage env => tant qu'il y a un "-", on vérifie si option du builtin
@@ -107,19 +126,30 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
 	char	**cp_c_env;
     int     i;
     int     ret;
+    char    p;
 
-    ret = 0;
-    i = 0;
+    // ret = 0;
+    p = 0;
+    // i = 0;
     // ajouter fonction gestion de l'usage + commencer au bon endroit
     // -> Après les -i, donc le i est set dans la fonction
 	// if (ft_norm_av(&av, &n.c, &n.begin))
     //     return (1);
     argc = ft_len_array_char(av);
+    if ((ret = ft_usage_env_builtin(av, argc, &i, &p)))
+        return (ret == 2 ? 0 : 1);
+    dprintf(2, "builtin env: %d - %c - %d\n", i, p, argc);
     // gérer avec le -i
 	ft_cp_env(&cp_c_env, *c_env);
-	if (argc == 1)
+	if (argc == 1)//  || i == argc ------ //i == argc - 1
 		ft_print_env(c_env);
 	else
+    {
+        ////////Gérer env -i PIPI=POPO => Affiche PIPI=POPO
+    //////// Gérer env PIPI=POPO => Affiche env + PIPI=POPO
+    //////// gérer env ls -> ne fonctionne pas
+    /////// Gérer option -i => copie vide
+        --i;
 		while (av[++i] && ret == 0)
 		{
 			if (ft_strchr(av[i], '='))
@@ -131,6 +161,7 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
 			else if (i != argc - 1 ? ft_strcmp(av[i], "env") : 1)
 			    ret = ft_builtin_env2(av, cp_c_env, i, 0);
 		}
+    }
 	ft_free_av(cp_c_env);
 	return (ret);
 }

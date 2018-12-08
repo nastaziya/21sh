@@ -58,7 +58,7 @@ static int  ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
 *** - enfin, du dernier lu car la boucle ne lit que jusqu'au "-", s'il y en a un
 */
 
-int   ft_normalize_av(char ***av, char *c, int *begin)
+static int   ft_normalize_av(char ***av, char *c, int *begin)
 {
     int     i;
     int     count;
