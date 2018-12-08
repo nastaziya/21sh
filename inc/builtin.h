@@ -2,8 +2,6 @@
 # define BUILTIN_H
 # include "sh.h"
 # include "../libft/libft.h"
-# include <sys/stat.h>
-# include <sys/types.h>
 # include <unistd.h>
 
 /*
@@ -113,5 +111,10 @@ void	ft_print_env(char ***c_env);
 */
 
 int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env);
+char	    **ft_find_path_and_split(char **c_env);
+
+
+// void	    path_str(char **envs, char ***paths);
+
 
 #endif

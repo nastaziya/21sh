@@ -8,6 +8,7 @@
 # include	<stdlib.h>
 # include	<stdio.h>
 # include	<string.h>
+# include <sys/stat.h>
 // # include  	"../libft/libft.h"
 // # include   "lexer.h"
 # include   "parser.h"
@@ -29,7 +30,7 @@ void	set_path(char *str, char ***paths);
 void	path_str(char **envs, char ***paths);
 int		exec(char *path, char **str, char **env);
 // int		error_exec_or_exec(char **paths, char *path, char **str, char **env);
-int		error_exec_or_exec(char **paths, char **str, char **env);
+int		error_exec_or_exec(char **paths, char **str, char **env, int in_env);
 void	free_str(char **str);
 void	free_struct(t_command *cmd, t_lexer lex);
 void	free_str_2(char **str, int size);

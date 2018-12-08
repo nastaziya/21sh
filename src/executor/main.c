@@ -17,7 +17,7 @@ void check_op(t_command cmd, t_env_tools *env)
 //	print_array(cmd.command[0].used_space, cmd_expended);
 	if (cmd_expended != NULL && cmd.used_space > 0 && !is_built_in(cmd_expended))
 		// env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
-		env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy);
+		env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
 	else if (cmd_expended && is_built_in(cmd_expended))
 	{
 		dprintf(2, "[%s]\n", cmd.command[0].cmd_simple[0]);
@@ -40,7 +40,7 @@ void check_op(t_command cmd, t_env_tools *env)
 			//check_path(env->paths, &path,  cmd.command[i].cmd_simple) == 0 &&
 			if (env->g_return_value > 0)
 				// env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
-				env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy);
+				env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
 		}
 		else if (cmd.command[i].tok == T_DBLAND && !is_built_in(cmd_expended))
 		{
@@ -48,12 +48,12 @@ void check_op(t_command cmd, t_env_tools *env)
 			if ( env->g_return_value == 0)
 			{
 				// env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
-				env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy);
+				env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
 			}
 		}
 		else if (cmd.command[i].tok == T_SEMI && is_built_in(cmd_expended) == 0)
 			// env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
-			env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy);
+			env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
 		//free(path);
 		free_str(cmd_expended);
 	}

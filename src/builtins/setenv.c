@@ -118,7 +118,7 @@ void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths,
 			: ft_strdup(tmp + 5));
 	// modify the copy of the path -> we execute on this copy
 	if (!ft_strncmp(tmp, "PATH=", 5) && !ft_free_av(*paths))
-		*paths = ft_strsplit(ft_strchr(tmp, '='), ':');
+		*paths = ft_strsplit(ft_strchr(tmp, '=') + 1, ':');
 	if ((*c_env)[i]) // if we have found the env
 		ft_builtin_setenv_2_norm(i, c_env, tmp);
 	else //if the env is not present here

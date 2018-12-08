@@ -35,8 +35,35 @@ static void         ft_copy_and_stat(t_norm_pwd *n, char *av)
     }
     else
         n->s2 = ft_strdup(av);
+    // dprintf(2, "ft_copy_and_stat: |%s|\n", n->s2);
     // stat pour regarder si là ou ça pointe est un dossier -> erreur not a directory
     stat(n->s2, &n->buf2);
+}
+
+/*
+*** - Aim of the function :
+*** - Modify if str == " cd ////tmp/////test////" => it should work
+*** - finds the current PATH and writes it
+*/
+static void         ft_multiple_slash_av(char **av)
+{
+    int     i;
+    int     j;
+    char    buf[ft_strlen(*av)];
+
+    i = -1;
+    j = -1;
+    ft_bzero(buf, ft_strlen(*av));
+    while ((*av)[++i])
+    {
+        if ((*av)[i] == '/' && (i >= 1 ? (*av)[i - 1] != '/' : 1))
+            buf[++j] = (*av)[i];
+        else if ((*av)[i] != '/')
+            buf[++j] = (*av)[i];
+    }
+    free(*av);
+    *av = ft_strdup(buf);
+    // dprintf(2, "ft_multiple_slash_av: |%s|\n", *av);
 }
 
 /*
@@ -91,6 +118,8 @@ static void         ft_norm_change_dir_and_pwds(char *av, char ***c_env, t_env_t
     // on remplace l'OLDPWD par là où on est -> LE PWD ACTUEL OU LE OLDPWD SI
     // PWD A ETE UNSETENV
     ft_manage_oldpwd_and_prepare_pwd(av, c_env, env, n);
+    // dprintf(2, "ft_manage_oldpwd_and_prepare_pwd: |%d - %s - %s|\n", n->dash, n->tmp2, av);
+    n->dash == 0 ? ft_multiple_slash_av(&av) : 1;
     // lstat sur le path correct
     n->dash == 0 ? lstat(n->tmp2, &n->buf2) : lstat(av, &n->buf2);
     if (!S_ISLNK(n->buf2.st_mode) || n->p == 0) // p == Gérer le -P && lien non symboliques
@@ -129,11 +158,11 @@ int	    	        ft_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *en
     n.dash = n_cd->dash;
     n.p = n_cd->p;
     ft_copy_and_stat(&n, av);
-	if ((access(av, F_OK)) == -1)
+	if ((access(av, F_OK)) == -1 && !ft_free(n.s2))
 		return(ft_print_error(av, ": No such file or directory.\n"));
-	else if (ft_strcmp(av, "..") && !S_ISDIR(n.buf2.st_mode) && ft_free(n.s2))
-        return (ft_print_dir_error("bash: cd:", av, ": Not a directory", 1));
-    else if ((access(av, X_OK)) == -1 && ft_free(n.s2))
+	else if (ft_strcmp(av, "..") && !S_ISDIR(n.buf2.st_mode) && !ft_free(n.s2))
+        return (ft_print_dir_error("bash: cd: ", av, ": Not a directory", 1));
+    else if ((access(av, X_OK)) == -1 && !ft_free(n.s2))
 		return (ft_print_error(av, ": Permission denied.\n"));
 	else //process the cd command
         ft_norm_change_dir_and_pwds(av, c_env, env, &n);
