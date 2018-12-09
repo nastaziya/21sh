@@ -47,8 +47,7 @@ int		ft_int_error(char *str, int fd, int ret);
 int		ft_int_print_error(char *str, char *str2, char *str3, int fd);
 int		ft_len_array_char(char **av);
 int		ft_exec_builtin(t_env_tools *env, char **cmd);
-
-
+// --> nouvelle feuille
 int		ft_usage_is_good(char *limitor, char *str);
 
 
@@ -120,5 +119,10 @@ char	    **ft_find_path_and_split(char **c_env);
 
 // void	    path_str(char **envs, char ***paths);
 
+/*
+*** - exit.c
+*/
+
+int         ft_builtin_exit(char **cmd, t_env_tools *env);
 
 #endif

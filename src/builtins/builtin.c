@@ -115,7 +115,7 @@ int		ft_exec_builtin(t_env_tools *env, char **cmd)
 	else if (!ft_strcmp("env", cmd[0]))
 		return (ft_builtin_env(cmd, &(env->env_cpy), &(env->paths), env));
 	else if (!ft_strcmp("exit", cmd[0]))
-	// REGARDER COMMENT GERER les frees
-		return (5);
+		return (ft_builtin_exit(cmd, env));
+		// return (5);
 	return (0);
 }
