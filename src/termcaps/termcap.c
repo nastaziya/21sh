@@ -51,8 +51,8 @@ int		ft_clean(void *s, size_t n)
 
 void		ft_initialize_get_line(t_tab **ttab, char *str, t_term *term, t_dlist **history)
 {
-	terminal_data(term);
-	modify_terminos(term);
+	// terminal_data(term);
+	// modify_terminos(term);
 // Initialisation du tableau de pointeurs sur fonction
 	*ttab = tab_termcaps();
 // Initialisation de la struct caps
@@ -68,7 +68,10 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 	t_tab		*tmp_tab;
 	t_term		term;
 
+	terminal_data(&term);
+	modify_terminos(&term);
 	ft_initialize_get_line(&ttab, str, &term, history);
+	////
 // Itérer sur infini
 	while ((tmp_tab = (ttab - 1)) && !ft_clean(caps.buf, 2048) && (read(0, caps.buf, 2047) >= 0))
 	{
@@ -90,8 +93,17 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 	}
 	*res = caps.str[0];
 	// dprintf(2, "tmp_str: %s\n", caps.tmp_str);
+	// FIRST FREES
 	if (caps.tmp_str && caps.tmp_str[0])
 		free(caps.tmp_str);
+	if (caps.copy_str)
+		free(caps.copy_str);
+	if (caps.tmp_str)
+		free(caps.tmp_str);
+	free(caps.str);
+	// if (caps.prompt)
+	// 	free(caps.prompt);
+	///
 	reset_termios(&term);
 return (0);
 }

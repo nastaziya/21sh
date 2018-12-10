@@ -36,7 +36,8 @@ void		initialize_caps(t_tcap *caps, char *prompt)
 	caps->size_prompt = ft_strlen(prompt);
 	// if (caps->prompt)
 	// 	free(caps->prompt);
-	caps->prompt = ft_strdup(prompt);
+	if (!caps->prompt)
+		caps->prompt = ft_strdup(prompt);
 	caps->sz_str = caps->size_prompt;
 	caps->cursor =  caps->size_prompt;
 	cursor_position(tmp);
@@ -50,6 +51,7 @@ void		initialize_caps(t_tcap *caps, char *prompt)
 	// A free
 	if (!(caps->str = (char**)malloc(sizeof(char*))))
 		return ;
+	caps->str[0] = NULL;
 }
 
 /*

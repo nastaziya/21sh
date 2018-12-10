@@ -109,7 +109,10 @@ static void     print_middle_line(t_tcap *caps, char *string, char *tmp, char *t
 
 static void            print_normal_char_initialization_first_passage(t_tcap *caps, char *string)
 {
+    // if (caps->str[0])
+        // free(caps->str[0]);
     caps->str[0] = string;
+    // free(string);
     ++(caps->i);
     caps->sz_str++;
     caps->cursor++;
@@ -128,6 +131,7 @@ int			     print_normal_char(t_tcap *caps)
 
     tmp = NULL;
     tmp2 = NULL;
+    string = NULL; //fonctionne sans
 	size_windows(caps);
     position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0);
 	if (((caps->buf[0] >= 32 && caps->buf[0] <= 127) || caps->buf[0] == 10) && caps->buf[1] == 0
@@ -141,8 +145,17 @@ int			     print_normal_char(t_tcap *caps)
             print_middle_line(caps, string, tmp, tmp2);
 		else
             print_end_line(caps, string, tmp);
+        // if (caps->i != 0)
+            // free(string);
 	}
     else if (caps->buf[0] != 9) // escape the tab char
         tputs(tgetstr("bl", NULL), 1, ft_outc);
+    // if (string)
+    //     free(string);
+    // if (tmp)
+    //     free(tmp);
+    // if (tmp2)
+    //     free(tmp2);
+    
 	return (0);
 }

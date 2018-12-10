@@ -19,7 +19,7 @@ char	*ft_strndup(const char *s1, size_t len)
 	char	*dest;
 	size_t	i;
 
-	if ((dest = (char*)malloc(sizeof(char) * (len + 1))) == NULL)
+	if ((dest = (char*)malloc(sizeof(char) * (len) + 1)) == NULL)
 		return (0);
 	i = 0;
 	while (i < len)

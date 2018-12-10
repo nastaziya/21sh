@@ -54,8 +54,8 @@ int     modify_terminos(t_term *term)
 
 int		reset_termios(t_term *term)
 {
-  	// term->c_lflag |= (ECHO | ICANON);
-	term->c_lflag = (ICANON | ECHO);
+  	term->c_lflag |= (ECHO | ICANON);
+	// term->c_lflag = (ICANON | ECHO);
 	if (tcsetattr(0, TCSADRAIN, term) == -1)
     	return (-1);
 	return (0);
