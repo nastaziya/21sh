@@ -230,8 +230,12 @@ int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer, char ***here
 		while (h->k < h->i_words)
 		{
 			h->obool > 0 ? ft_putstr_fd("\nHeredoc > ", 1) : ft_putstr_fd("Heredoc > ", 1); 
+			// if (h->cmd)
+			// 	free(h->cmd);
 			h->obool > 0 ? get_line_term(&h->cmd, "\nHeredoc > ", history)
 				: get_line_term(&h->cmd, "Heredoc > ", history);
+			// if (h->cmd)
+			// free(h->cmd);
 			//si mot clé c'est pas le dernier, free ce que l'on get_line et passer au suivant
 			if (h->k < h->i_words - 1)
 			{

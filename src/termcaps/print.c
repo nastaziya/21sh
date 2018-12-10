@@ -111,8 +111,8 @@ static void            print_normal_char_initialization_first_passage(t_tcap *ca
 {
     // if (caps->str[0])
         // free(caps->str[0]);
-    caps->str[0] = string;
-    // free(string);
+    caps->str[0] = ft_strdup(string);
+    free(string);
     ++(caps->i);
     caps->sz_str++;
     caps->cursor++;

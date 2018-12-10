@@ -64,10 +64,10 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 			*cmd = ft_strjoin(tmp, line);
 			free(tmp);
 		}
+		free(line);
 		if (!(type_quote = ft_count_quote(*cmd))
 				|| (ft_strlen(line) == 0 && type_quote == '\\'))
 			break ;
-		free(line);
 	}
 }
 
