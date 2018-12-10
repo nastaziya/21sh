@@ -124,6 +124,8 @@ int		ft_initialize_heredoc(t_lexer *lexer, char ***heredoc, int other_command, i
 			else if (lexer->tokens[i].type == T_DBL_LESS && (other_command != previous_command) && (previous_command = other_command))
 				nb_to_malloc++;
 		}
+		if (heredoc[0])
+			free(heredoc[0]);
 		if (!(heredoc[0] = (char**)malloc(sizeof(char*) * (nb_to_malloc + 1))))
 			return (1);
 		i = -1;
