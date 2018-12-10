@@ -174,6 +174,7 @@ int		realloc_heredoc(t_hdoc *h, char ***heredoc)
 	tmp = heredoc[0][h->command];
 	heredoc[0][h->command] = ft_strjoin(tmp, h->cmd);
 	free(tmp);
+	free(h->cmd);
 	tmp = heredoc[0][h->command];
 	if ((heredoc[0][h->command] = ft_strjoin(tmp, "\n")))
 	{
