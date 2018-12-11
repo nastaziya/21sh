@@ -12,6 +12,7 @@
 /* ************************************************************************** */
 
 #include "../../inc/sh.h"
+#include "../../inc/builtin.h"
 
 /*
 *** - Aim of the function :
@@ -80,8 +81,13 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		{
 			// to avoid segfault when empty
 			if (((caps.sz_str - caps.size_prompt) == 0) && (*res = ft_memalloc(2)))
+			{
+				if (caps.str[0])
+					free(caps.str[0]);
+				free(caps.str);
 			// returns 2 when normal \n but empty str
 				return (2);
+			}
 			break ;
 		}
 		// dprintf(2, "buf: |%s|\n", caps.buf);

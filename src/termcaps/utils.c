@@ -49,6 +49,8 @@ void		initialize_caps(t_tcap *caps, char *prompt)
 	caps->copy_str = NULL;
 	caps->ct_arrow = 0;
 	// A free
+	// if (caps->str)
+	// 	free(caps->str);
 	if (!(caps->str = (char**)malloc(sizeof(char*))))
 		return ;
 	caps->str[0] = NULL;

@@ -52,5 +52,6 @@ void    win_resize(int sig)
 
 void     initialize_signals(void)
 {
-    signal(SIGWINCH, win_resize);   
+    signal(SIGWINCH, win_resize);
+    // signal(SIGINT, sighandler);
 }

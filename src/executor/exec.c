@@ -156,7 +156,7 @@ int		error_exec_or_exec(char **paths, char **str,
 	// // //////
 	struct stat buf;
 	dprintf(2, "|%s|\n", path);
-	dprintf(2, "stat: %d - %d - %d - %d - %d - %d\n", res, stat(path, &buf), S_ISDIR(buf.st_mode), access(path, F_OK), access(path, X_OK), in_env);
+	// dprintf(2, "stat: %d - %d - %d - %d - %d - %d\n", res, stat(path, &buf), S_ISDIR(buf.st_mode), access(path, F_OK), access(path, X_OK), in_env);
 	/// Quand dossier est chmod 000 -> sort erreur de l'error command
 	// Quand executable est chmod 000 -> execute quand même alors que devrait sortir erreur error command
 	// dprintf()
