@@ -47,30 +47,61 @@ void	manage_sq(char **str,  t_dynamic_array *final_array, int *j, int i)
 	(*j)++;
 }
 
-void	home_var_expand(char **str, int i, int *j, t_dynamic_array *final_array)//, char *home_cpy
+// void	home_var_expand(char **str, int i, int *j, t_dynamic_array *final_array)//, char *home_cpy
+void	home_var_expand(char **str, s_norm_exp	*n, t_dynamic_array *final_array, char *home)//, char *home_cpy
 {
 	//treat directory ~/
-	if (str[i][*j] == '~' && (*j == 0 && str[i][*j + 1] == '/'))
-		add_return_from_env(getenv("HOME"), final_array, j, 1);
+	if (str[n->i][n->j] == '~' && (n->j == 0 && str[n->i][n->j + 1] == '/'))
+		add_return_from_env(home, final_array, &n->j, 1);
 	//treat ~+ == PWD
-	 if (*j < ft_strlen(str[i]) && str[i][*j] == '~' && (str[i][*j + 1] == '+'
-	|| str[i][*j + 1] == '0'))
+	 if (n->j < ft_strlen(str[n->i]) && str[n->i][n->j] == '~' && (str[n->i][n->j + 1] == '+'
+	|| str[n->i][n->j + 1] == '0'))
 	{
-		add_return_from_env(getenv("PWD"), final_array, j, 1);
-		(*j)++;
+		add_return_from_env(getenv("PWD"), final_array, &n->j, 1);
+		(n->j)++;
 	}
-	else if (str[i][*j] == '~' && *j == 0 && (str[i][*j + 1] == ' '
-	|| str[i][*j + 1] == '\0'))
+	else if (str[n->i][n->j] == '~' && n->j == 0 && (str[n->i][n->j + 1] == ' '
+	|| str[n->i][n->j + 1] == '\0'))
 	{
 		//// Ici, j'expansionne sur la copie de l'env HOME
-		add_return_from_env(getenv("HOME"), final_array, j, 1);
+		add_return_from_env(home, final_array, &n->j, 1);
 	}
 	else
 	{
-		add_char_to_array(final_array, str[0][*j]);
-		(*j)++;
+		add_char_to_array(final_array, str[0][n->j]);
+		(n->j)++;
 	}
 }
+
+// void	home_var_expand(char **str, int i, int *j, t_dynamic_array *final_array)//, char *home_cpy
+// {
+// 	//treat directory ~/
+// 	if (str[i][*j] == '~' && (*j == 0 && str[i][*j + 1] == '/'))
+// 		add_return_from_env(getenv("HOME"), final_array, j, 1);
+// 	//treat ~+ == PWD
+// 	 if (*j < ft_strlen(str[i]) && str[i][*j] == '~' && (str[i][*j + 1] == '+'
+// 	|| str[i][*j + 1] == '0'))
+// 	{
+// 		add_return_from_env(getenv("PWD"), final_array, j, 1);
+// 		(*j)++;
+// 	}
+// 	else if (str[i][*j] == '~' && *j == 0 && (str[i][*j + 1] == ' '
+// 	|| str[i][*j + 1] == '\0'))
+// 	{
+// 		//// Ici, j'expansionne sur la copie de l'env HOME
+// 		add_return_from_env(getenv("HOME"), final_array, j, 1);
+// 	}
+// 	else
+// 	{
+// 		add_char_to_array(final_array, str[0][*j]);
+// 		(*j)++;
+// 	}
+// }
+
+
+
+
+
 
 void dollar_expand(char **str, int *j, t_dynamic_array *final_array, t_env_tools env)
 {

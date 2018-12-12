@@ -115,13 +115,15 @@ int		ft_initialize_heredoc(t_lexer *lexer, char ***heredoc, int other_command, i
 	{
 		while (++i < lexer->used_size)
 		{
-			if (lexer->tokens[i].type == T_DBL_LESS && other_command == 0 && (other_command++) && (nb_to_malloc++))
+			if (lexer->tokens[i].type == T_DBL_LESS
+			&& other_command == 0 && (other_command++) && (nb_to_malloc++))
 				previous_command++;
 			else if ((lexer->tokens[i].type == T_DBLOR
 				|| lexer->tokens[i].type == T_SEMI
 					|| lexer->tokens[i].type == T_DBLAND))
 				other_command++;
-			else if (lexer->tokens[i].type == T_DBL_LESS && (other_command != previous_command) && (previous_command = other_command))
+			else if (lexer->tokens[i].type == T_DBL_LESS
+			&& (other_command != previous_command) && (previous_command = other_command))
 				nb_to_malloc++;
 		}
 		if (heredoc[0])
@@ -197,6 +199,10 @@ int		realloc_heredoc(t_hdoc *h, char ***heredoc)
 int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 {
 	// quand c'est le mot clé fermant, on free et c'est tout
+	
+	// A FAIRE
+	// expansionner le lexer->tokens[h->words[h->k]].content sur les " et les /
+	//  mais pas $PWD
 	if (ft_strcmp(h->cmd, lexer->tokens[h->words[h->k]].content) == 0)
 	{
 		(h->k)++;
@@ -242,6 +248,7 @@ int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer, char ***here
 			//si mot clé c'est pas le dernier, free ce que l'on get_line et passer au suivant
 			if (h->k < h->i_words - 1)
 			{
+				// expansionner le lexer->tokens[h->words[h->k]].content sur les " et les /
 				if (ft_strcmp(lexer->tokens[h->words[h->k]].content, h->cmd) == 0)
 					(h->k)++;
 				free(h->cmd);

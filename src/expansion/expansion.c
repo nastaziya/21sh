@@ -41,29 +41,30 @@ char *str)
 
 void	treat_expansion_cases(char **str, int i, t_dynamic_array *final_array, t_env_tools env)
 {
-	int j;
+	s_norm_exp	n;
 
-	j = 0;
+	n.j = 0;
+	n.i = i;
 	tab_expansion_init(final_array);
-	while (j < ft_strlen(str[i]))
+	while (n.j < ft_strlen(str[n.i]))
 	{
-		if (str[i][j] == '\'')
-			manage_sq(str, final_array, &j, i);
-		else if (str[i][j] == '\"' && ++j)
+		if (str[n.i][n.j] == '\'')
+			manage_sq(str, final_array, &n.j, n.i);
+		else if (str[n.i][n.j] == '\"' && ++n.j)
 		{
-			dquote(&str[i], &j, final_array, env);
-			j++;
+			dquote(&str[n.i], &n.j, final_array, env);
+			n.j++;
 		}
-		else if (str[i][j] == '~') //envoyer la copie du home
-			home_var_expand(str, i, &j, final_array); //à normer
-		else if (str[i][j] == '\\') 
-			treat_backslash(str, i, &j, final_array);
-		else if (str[i][j] == '$')
-			dollar_expand(str, &j, final_array, env);	
+		else if (str[n.i][n.j] == '~') //envoyer la copie du home
+			home_var_expand(str, &n, final_array, env.home);
+		else if (str[n.i][n.j] == '\\') 
+			treat_backslash(str, n.i, &n.j, final_array);
+		else if (str[n.i][n.j] == '$')
+			dollar_expand(str, &n.j, final_array, env);	
 		else
 		{
-			add_char_to_array(final_array, str[i][j]);
-			j++;
+			add_char_to_array(final_array, str[n.i][n.j]);
+			n.j++;
 		}	
 	}
 }
