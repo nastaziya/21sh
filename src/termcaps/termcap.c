@@ -88,7 +88,21 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 			// returns 2 when normal \n but empty str
 				return (2);
 			}
-			break ;
+			// if (ENTER_KEY)
+				break ;
+		}
+		if (CTRL_D_KEY)
+		{
+					// dprintf(2, "passe dans le grand [%d - %d]\n", caps.sz_str, caps.size_prompt);	
+				if (((caps.sz_str - caps.size_prompt) == 0))
+			{
+				// dprintf(2, "passe\n");
+				free(caps.str[0]);
+				caps.str[0] = ft_strdup("exit");
+				break ;
+			}
+			else
+				tputs(tgetstr("bl", NULL), 1, ft_outc);
 		}
 		// dprintf(2, "buf: |%s|\n", caps.buf);
 		while ((++tmp_tab)->cmd)

@@ -31,6 +31,21 @@ int			ctrl_l(t_tcap *caps)
     return (0);
 }
 
+// int			ctrl_d(t_tcap *caps)
+// {
+//     if (((caps->sz_str - caps->size_prompt) == 0))
+//     {
+//         // if (caps->str[0])
+//         // {
+//             free(caps->str[0]);
+//             caps->str[0] = ft_strdup("exit");
+//         // }
+//     }
+//     else
+//         tputs(tgetstr("bl", NULL), 1, ft_outc);
+//     return (0);
+// }
+
 // int 		debug(t_tcap *caps)
 // {
 //     return (0);

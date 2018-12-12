@@ -132,6 +132,7 @@ int 		alt_p(t_tcap *caps);
 // control_commands.c
 int			ctrl_l(t_tcap *caps);
 // int 		debug(t_tcap *caps);
+int			ctrl_d(t_tcap *caps);
 
 // signals.c
 void     initialize_signals(void);
