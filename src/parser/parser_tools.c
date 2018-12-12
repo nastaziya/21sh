@@ -70,3 +70,30 @@ int		parse_errors(t_lexer lex)
 	}
 	return (1);
 }
+
+/*
+*** - Aim of the function :
+*** - Function that returns the int up until the heredoc function shall work.
+*** - This is used to manage these error cases :
+*** - ;; cat << EOF -> Shall not work
+*** - cat << EOF ;; << PU -> Shall heredoc for the EOF keyword
+*** - car << EOF << PU ;; -> Shall heredoc for the EOF and PU keywords
+*/
+
+int		ft_parse_error_for_heredoc(t_lexer lex)
+{
+	int	i;
+
+	i = -1;
+	while (++i < lex.used_size)
+	{
+		if ((is_op(lex, i) && i == 0) || lex.tokens[i].type == T_DBL_SEMI)
+			return (i);
+		if ((is_red(lex, i) && (is_red(lex, i + 1) || is_op(lex, i + 1))) ||
+		(is_op(lex, i) && is_op(lex, i + 1)))
+			return (i);
+		if (is_red(lex, i) && lex.tokens[i + 1].type != T_WORD)
+			return (i);
+	}
+	return (lex.used_size - 1);
+}

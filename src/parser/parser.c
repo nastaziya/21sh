@@ -148,7 +148,7 @@ int		ft_find_end_command_and_nb_kewyords(t_hdoc *h, t_lexer *lexer)
 	h->i = h->j - 1;
 	// find the limit of the current command (find separator -> && || ;)
 	while (lexer->tokens[h->j].type != T_DBLOR && lexer->tokens[h->j].type != T_DBLAND
-		&& lexer->tokens[h->j].type != T_SEMI && h->j < lexer->used_size - 1)
+		&& lexer->tokens[h->j].type != T_SEMI && h->j < ft_parse_error_for_heredoc(*lexer)) //&& h->j < lexer->used_size - 1
 		++(h->j);
 	// first passage to see how many heredoc there are in this current command
 	// + keep track of the index for each word after <<
@@ -304,11 +304,12 @@ void    add_simple_command(t_command *cmd, t_lexer lex, t_dlist **history, char 
 	i = -1;
 	j = 0;
 	size_simple_cmd = 0;
+	ft_manage_heredoc(&lex, heredoc, history);
 	if (parse_errors(lex))
 	{
 		add_token_val(cmd, lex, &size_simple_cmd);
 		while(++i < lex.used_size && j <= size_simple_cmd)
 			complete_simple_command_and_red(cmd, lex, i, &j);
-		ft_manage_heredoc(&lex, heredoc, history);
+		// ft_manage_heredoc(&lex, heredoc, history);
 	}
 }
