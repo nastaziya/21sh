@@ -8,7 +8,7 @@ expension treatement
 // echo $ USER / echo $\\$USER
 //this function add the return of bin commands/builtins and add to final expanded array
 void	add_return_from_env(char *ret_nr, t_dynamic_array *array_without_backslash,
-int *j, int add)
+			int *j, int add)
 {
 	int i;
 

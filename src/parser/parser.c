@@ -315,7 +315,7 @@ void    add_simple_command(t_command *cmd, t_lexer lex, t_dlist **history, char 
 	if (parse_errors(lex))
 	{
 		add_token_val(cmd, lex, &size_simple_cmd);
-		while(++i < lex.used_size && j <= size_simple_cmd)
+		while (++i < lex.used_size && j <= size_simple_cmd)
 			complete_simple_command_and_red(cmd, lex, i, &j);
 		// ft_manage_heredoc(&lex, heredoc, history);
 	}
