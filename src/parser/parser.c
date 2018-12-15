@@ -1,4 +1,6 @@
 #include "../../inc/sh.h"
+#include "../../inc/expansion.h"
+#include "../../inc/builtin.h"
 
 void    command_init(t_command *cmd)
 {
@@ -10,7 +12,7 @@ void    command_init(t_command *cmd)
 
 void assign_tok(t_command *cmd, t_lexer lex, int *j, int val_tok)
 {
-	(void)lex;// ATTENTION INUTILISE
+	// (void)lex;// ATTENTION INUTILISE
 	simple_cmd_assign(cmd, *cmd->command);
 	(*j)++;
 	tab_init(&cmd->command[*j]);
@@ -126,8 +128,8 @@ int		ft_initialize_heredoc(t_lexer *lexer, char ***heredoc, int other_command, i
 			&& (other_command != previous_command) && (previous_command = other_command))
 				nb_to_malloc++;
 		}
-		if (heredoc[0])
-			free(heredoc[0]);
+		// if (heredoc[0])
+		// 	free(heredoc[0]);
 		if (!(heredoc[0] = (char**)malloc(sizeof(char*) * (nb_to_malloc + 1))))
 			return (1);
 		i = -1;
@@ -175,14 +177,19 @@ int		realloc_heredoc(t_hdoc *h, char ***heredoc)
 {
 	char	*tmp;
 
+	dprintf(2, "avant: [[%s]]\n", heredoc[0][h->command]);
 	tmp = heredoc[0][h->command];
 	heredoc[0][h->command] = ft_strjoin(tmp, h->cmd);
 	free(tmp);
 	free(h->cmd);
 	tmp = heredoc[0][h->command];
+	// free(heredoc[0][h->command]);
 	if ((heredoc[0][h->command] = ft_strjoin(tmp, "\n")))
 	{
+		// dprintf(2, "heredoc complet: %s\n", heredoc[0][h->command]);
+		// heredoc[0][h->command] = ft_strjoin(tmp, "\n");
 		free(tmp);
+		dprintf(2, "après: [[%s]]\n", heredoc[0][h->command]);
 		return (1);
 	}
 	return (0);
@@ -198,30 +205,42 @@ int		realloc_heredoc(t_hdoc *h, char ***heredoc)
 
 int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 {
+	char *tmp;
+	char *res;
 	// quand c'est le mot clé fermant, on free et c'est tout
 	
-	// A FAIRE
-	// expansionner le lexer->tokens[h->words[h->k]].content sur les " et les /
-	//  mais pas $PWD
-	if (ft_strcmp(h->cmd, lexer->tokens[h->words[h->k]].content) == 0)
+	tmp = ft_strdup(lexer->tokens[h->words[h->k]].content);
+	expanded_dynamic_table_heredoc(&tmp, 0);
+	res = ft_strdup(tmp);
+	if (ft_strcmp(h->cmd, res) == 0)
 	{
 		(h->k)++;
 		free(h->cmd);
+		free(tmp);
+		free(res);
 	}
 	// là on realloc
 	else
 	{
+		dprintf(2, "passe iciavant if\n");
+		free(tmp);
+		free(res);
 		// // ici on initialise
 		if (heredoc[0][h->command] == NULL)//[0]
 		{
 			dprintf(2, "PLUS PRECCISEMENT [%s]\n", h->cmd);
+			// if (heredoc[0][h->command])
+			// 	free(heredoc[0][h->command]);
 			heredoc[0][h->command] = ft_strjoin(h->cmd, "\n");
 			free(h->cmd);
 		}
 		// // ici on realloc
 		else //// GERER les leaks, normalement pas bon
+		// {
+		// 	dprintf(2, "ici ausi\n");
 			if (realloc_heredoc(h, heredoc))
 				return (1);
+		// }
 	}
 	return (0);
 }
@@ -235,6 +254,9 @@ int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 
 int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer, char ***heredoc, t_dlist **history)
 {
+	char *tmp;
+	char *res;
+
 	if (h->i_words > 0)
 		while (h->k < h->i_words)
 		{
@@ -248,10 +270,16 @@ int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer, char ***here
 			//si mot clé c'est pas le dernier, free ce que l'on get_line et passer au suivant
 			if (h->k < h->i_words - 1)
 			{
+				//control expansion
+				tmp = ft_strdup(lexer->tokens[h->words[h->k]].content);
+				expanded_dynamic_table_heredoc(&tmp, 0);
+				res = ft_strdup(tmp);
 				// expansionner le lexer->tokens[h->words[h->k]].content sur les " et les /
-				if (ft_strcmp(lexer->tokens[h->words[h->k]].content, h->cmd) == 0)
+				if (ft_strcmp(res, h->cmd) == 0)
 					(h->k)++;
 				free(h->cmd);
+				free(tmp);
+				free(res);
 			}
 			// quand on arrive au dernier, on collecte les données dans le char***
 			else if (h->k == h->i_words - 1)
@@ -319,4 +347,5 @@ void    add_simple_command(t_command *cmd, t_lexer lex, t_dlist **history, char 
 			complete_simple_command_and_red(cmd, lex, i, &j);
 		// ft_manage_heredoc(&lex, heredoc, history);
 	}
+	// ft_free_av(*heredoc);
 }

@@ -98,11 +98,6 @@ void	home_var_expand(char **str, s_norm_exp	*n, t_dynamic_array *final_array, ch
 // 	}
 // }
 
-
-
-
-
-
 void dollar_expand(char **str, int *j, t_dynamic_array *final_array, t_env_tools env)
 {
 	int size_var_env;  

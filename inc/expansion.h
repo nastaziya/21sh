@@ -35,4 +35,11 @@ char *str);
 void	add_return_from_env(char *ret_nr, t_dynamic_array *array_without_backslash,
 int *j, int add);
 char **expense_cmd(t_command cmd, t_env_tools env, int i);
+
+/*
+*** - expanse_heredoc.c
+*/
+
+void expanded_dynamic_table_heredoc(char **str, int i);
+
 #endif

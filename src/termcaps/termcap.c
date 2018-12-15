@@ -120,6 +120,8 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		free(caps.copy_str);
 	if (caps.tmp_str)
 		free(caps.tmp_str);
+	// if (caps.prompt)
+	// 	free(caps.prompt);
 	free(caps.str);
 	// if (caps.prompt)
 	// 	free(caps.prompt);
