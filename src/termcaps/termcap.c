@@ -76,7 +76,7 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 // Itérer sur infini
 	while ((tmp_tab = (ttab - 1)) && !ft_clean(caps.buf, 2048) && (read(0, caps.buf, 2047) >= 0))
 	{
-		// dprintf(2, "LA: %d %d %d %d %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4]);
+		dprintf(2, "LA: %d %d %d %d %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4]);
 		if (ENTER_KEY && !end_key(&caps)) //|| CTRL_D_KEY
 		{
 			// to avoid segfault when empty
@@ -118,8 +118,8 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		free(caps.tmp_str);
 	if (caps.copy_str)
 		free(caps.copy_str);
-	if (caps.tmp_str)
-		free(caps.tmp_str);
+	// if (caps.tmp_str)
+	// 	free(caps.tmp_str);
 	// if (caps.prompt)
 	// 	free(caps.prompt);
 	free(caps.str);
@@ -129,3 +129,31 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 	reset_termios(&term);
 return (0);
 }
+
+
+
+
+// /*
+// *** - Aim of the function :
+// *** - Print the corresponding prompt according the corresponding error
+// */
+
+// char		*ft_manage_prompt(char type_quote)
+// {
+// 	if (type_quote == '"')
+// 	{
+// 		ft_putstr_fd("\ndquote > ", 1);
+// 		return ("dquote > ");
+// 	}
+// 	else if (type_quote == '\'')
+// 	{
+// 		ft_putstr_fd("\nsquote > ", 1);
+// 		return ("squote > ");
+// 	}
+// 	else if (type_quote == '\\')
+// 	{
+// 		ft_putstr_fd("\n> ", 1);
+// 		return ("> ");
+// 	}
+// 	return (NULL);
+// }

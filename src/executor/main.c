@@ -95,7 +95,11 @@ void	all_exec(char **environ, char ***heredoc)
 		// }
 		// debug
 		check_op(cmd, &env);
-		ft_free_av(*heredoc);
+		if (*heredoc)
+		{
+			ft_free_av(*heredoc);
+			*heredoc = NULL;
+		}
 		free_the_op_content_array_token(&lex);
 		free_struct(&cmd, lex);
 		//free(lex.tokens);
