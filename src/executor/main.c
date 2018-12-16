@@ -72,6 +72,7 @@ void	all_exec(char **environ, char ***heredoc)
 	path_str(env.env_cpy, &env.paths);
 	// cpy_home(&env);
 	history = ft_dlstnew(NULL);
+	keepRunning = 1;
 	while (42)
 	{
 		lex = final_tokens(&history);

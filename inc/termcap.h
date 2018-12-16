@@ -10,7 +10,7 @@
 
 typedef struct termios t_term;
 static char term_buffer[2048];
-
+int keepRunning;
 # define ENTER_KEY (caps.buf[0] == 10 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
 # define CTRL_L_KEY (caps.buf[0] == 12 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
 # define CTRL_D_KEY (caps.buf[0] == 4 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
@@ -135,7 +135,7 @@ int			ctrl_l(t_tcap *caps);
 int			ctrl_d(t_tcap *caps);
 
 // signals.c
-void     initialize_signals(void);
+int     initialize_signals(void);
 
 // print_buf.c
 int              print_buf(t_tcap *caps, char *buf);

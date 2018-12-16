@@ -65,6 +65,11 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 			free(tmp);
 		}
 		free(line);
+		//printf ("keepRunning : %d\n", keepRunning);
+		if (keepRunning == 0)
+		{
+			return;
+		}
 		if (!(type_quote = ft_count_quote(*cmd))
 				|| (line && ft_strlen(line) == 0 && type_quote == '\\'))
 			break ;

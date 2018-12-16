@@ -61,7 +61,8 @@ void    ctrl_c(int sig)
     // replacer correctement le prompt en pos y
     // pour ce faire :
     // Faire un end_key();
-    end_key(&caps);
+	keepRunning = 0;
+        end_key(&caps);
     // calculer les positions
     cursor_position(curs_pos);
     // dprintf(2, "%")
@@ -130,8 +131,10 @@ void    ctrl_c(int sig)
 *** Handles the resizing of the terminal window and the ctrl_c signal
 */
 
-void     initialize_signals(void)
+int     initialize_signals(void)
 {
     signal(SIGWINCH, win_resize);
     signal(SIGINT, ctrl_c);
+    return 1;
+
 }
