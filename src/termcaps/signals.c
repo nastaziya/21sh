@@ -127,7 +127,7 @@ void    ctrl_c(int sig)
 }
 
 /*
-** Handles the resizing of the terminal window.
+*** Handles the resizing of the terminal window and the ctrl_c signal
 */
 
 void     initialize_signals(void)
