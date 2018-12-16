@@ -104,8 +104,9 @@ int		error_exec_or_exec(char **paths, char *path, char **str,
 	else
 		res = check_path(paths, &path, str);
 	res = error_exit(env_struct, str, path, res);
-	if (path != NULL)
-		free(path);
+	//decomenter apres avoir resolu le reddir 
+	//if (path != NULL)
+		//free(path);
 	return (res);
 }
 

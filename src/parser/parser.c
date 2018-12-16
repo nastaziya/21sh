@@ -99,20 +99,23 @@ void	complete_simple_command_and_red(t_command *cmd, t_lexer lex, int i, int *j)
 	
 }
 /*(2)*/
-void    add_simple_command(t_command *cmd, t_lexer lex)
+int    add_simple_command(t_command *cmd, t_lexer lex)
 {
 	int size_simple_cmd;
 	int i;
 	int j;
+	int ret;
 
 	i = -1;
 	j = 0;
 	size_simple_cmd = 0;
-	if (parse_errors(lex))
+	ret = 0;
+	ret = parse_errors(lex);
+	if (ret == 1)
 	{
-		
 		add_token_val(cmd, lex, &size_simple_cmd);
 		while(++i < lex.used_size && j <= size_simple_cmd)
 			complete_simple_command_and_red(cmd, lex, i, &j);
 	}
+	return (ret);
 }
