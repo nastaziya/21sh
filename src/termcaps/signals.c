@@ -63,8 +63,7 @@ void    ctrl_c(int sig)
     // Faire un end_key();
 	keepRunning = 0;
     end_key(&caps);
-    char c = 10;
-    ioctl(0, TIOCSTI, &c);
+    
     // calculer les positions
     // cursor_position(curs_pos);
     // dprintf(2, "%")
@@ -74,7 +73,7 @@ void    ctrl_c(int sig)
     // if (caps.sz_str > caps.size_prompt)
     // {
     //     // free(caps.tmp_str);
-    //     tmp = ft_strdup(caps.str[0]);
+        // tmp = ft_strdup(caps.str[0]);
     //     dprintf(2, "tmp_signal: |%s|\n", tmp);
     //     // ft_bzero(caps.tmp_str, ft_strlen(caps.tmp_str));
     //     free(caps.tmp_str);
@@ -84,15 +83,18 @@ void    ctrl_c(int sig)
     // while (caps.history[0]->prev)
     //     down_key(&caps);
     // down_key(&caps);
-    //     while (caps.sz_str > caps.size_prompt)
-    //     {
-    //         dprintf(2, "ça passe");
-    //         del_key(&caps);
-    //     }
+        // while (caps.sz_str > caps.size_prompt)
+        // {
+        //     // dprintf(2, "ça passe");
+        //     del_key(&caps);
+        // }
     //     ft_putstr_fd(tmp, 1);
     //     free(tmp);
     // }
 
+    
+    char c = 10;
+    ioctl(0, TIOCSTI, &c);
         // down_key(&caps);
  
     
