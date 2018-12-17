@@ -66,10 +66,10 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 		}
 		free(line);
 		//printf ("keepRunning : %d\n", keepRunning);
-		if (keepRunning == 0)
-		{
-			return;
-		}
+		// if (keepRunning == 0)
+		// {
+		// 	return;
+		// }
 		if (!(type_quote = ft_count_quote(*cmd))
 				|| (line && ft_strlen(line) == 0 && type_quote == '\\'))
 			break ;
@@ -93,8 +93,8 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 	char	type_quote;
 
 	ft_putstr_fd(str, 1);
-	ret = get_line_term(cmd, str[0] == '\n' ? str + 1 : str, history);
-	if (ret != 2 && ret != 3)
+	ret = get_line_term(cmd, str, history); //str[0] == '\n' ? str + 1 : 
+	if (ret != 2)//  && ret != 3
 	{
 		if (ret != 0)
 		{

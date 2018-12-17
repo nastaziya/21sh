@@ -55,55 +55,57 @@ void    win_resize(int sig)
 void    ctrl_c(int sig)
 {
     (void)sig;
-    char *tmp;
-    int curs_pos[2];
+    // char *tmp;
+    // int curs_pos[2];
  
     // replacer correctement le prompt en pos y
     // pour ce faire :
     // Faire un end_key();
 	keepRunning = 0;
-        end_key(&caps);
+    end_key(&caps);
+    char c = 10;
+    ioctl(0, TIOCSTI, &c);
     // calculer les positions
-    cursor_position(curs_pos);
+    // cursor_position(curs_pos);
     // dprintf(2, "%")
-    size_windows(&caps);
-    dprintf(2, "ctrl_c: %d-%d\n", curs_pos[1], caps.window_size[0]);
+    // size_windows(&caps);
+    // dprintf(2, "ctrl_c: %d-%d\n", curs_pos[1], caps.window_size[0]);
     // faire une copie de la str et la print si nécessaire
-    if (caps.sz_str > caps.size_prompt)
-    {
-        // free(caps.tmp_str);
-        tmp = ft_strdup(caps.str[0]);
-        dprintf(2, "tmp_signal: |%s|\n", tmp);
-        // ft_bzero(caps.tmp_str, ft_strlen(caps.tmp_str));
-        free(caps.tmp_str);
-        caps.tmp_str = NULL;
-        // tmp = ft_strdup(caps.str[0]);
-        // remettre l'historique sur le pointeur de départ;
-    while (caps.history[0]->prev)
-        down_key(&caps);
-    down_key(&caps);
-        while (caps.sz_str > caps.size_prompt)
-        {
-            dprintf(2, "ça passe");
-            del_key(&caps);
-        }
-        ft_putstr_fd(tmp, 1);
-        free(tmp);
-    }
+    // if (caps.sz_str > caps.size_prompt)
+    // {
+    //     // free(caps.tmp_str);
+    //     tmp = ft_strdup(caps.str[0]);
+    //     dprintf(2, "tmp_signal: |%s|\n", tmp);
+    //     // ft_bzero(caps.tmp_str, ft_strlen(caps.tmp_str));
+    //     free(caps.tmp_str);
+    //     caps.tmp_str = NULL;
+    //     // tmp = ft_strdup(caps.str[0]);
+    //     // remettre l'historique sur le pointeur de départ;
+    // while (caps.history[0]->prev)
+    //     down_key(&caps);
+    // down_key(&caps);
+    //     while (caps.sz_str > caps.size_prompt)
+    //     {
+    //         dprintf(2, "ça passe");
+    //         del_key(&caps);
+    //     }
+    //     ft_putstr_fd(tmp, 1);
+    //     free(tmp);
+    // }
 
         // down_key(&caps);
  
     
     // 1. si je suis en milieu de fenêtre -> caps.y_prompt
     // 2. si je suis en fin, je garde le même y (if )
-    caps.y_prompt = (curs_pos[1] == caps.window_size[0] ? curs_pos[1] : curs_pos[1] + 1);
+    // caps.y_prompt = (curs_pos[1] == caps.window_size[0] ? curs_pos[1] : curs_pos[1] + 1);
     // calculer la pos.y
     
     // calculer taille fenêtre
     
     // dprintf(2, "ctrl_c: %d-%d\n", caps.curs_pos[1], caps.window_size[0]);
     // caps.y_prompt++;
-    dprintf(1, "\nbash > ");
+    // dprintf(1, "\nbash > ");
     // end_key(&caps);
     // tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
     // tputs(tgetstr("cd", NULL), 1, ft_outc);
