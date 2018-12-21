@@ -100,8 +100,12 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 		else if (*cmd && ft_strlen(*cmd) > 0)
 			if ((type_quote = ft_count_quote(*cmd)))
 			{
+				// add the string to the history
 				ft_dlstadd(history, ft_dlstnew(*cmd));
 				ft_new_prompt(cmd, type_quote, history);
+				// if during the ft_count_quote, no ctrl_c was used
+				// then, erase the string from the history, it will
+				// be managed later in the lexer
 				if (!keepRunning && ((*history) = (*history)->next))
 					ft_dlstdelone(&(*history)->prev);
 			}

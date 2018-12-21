@@ -58,7 +58,7 @@ void		ft_initialize_get_line(t_tab **ttab, char *str, t_term *term, t_dlist **hi
 	*ttab = tab_termcaps();
 // Initialisation de la struct caps
 	initialize_caps(&caps, str);
-	keepRunning = 0;
+	keepRunning = 3; // int to know if inside termcaps or not
 	initialize_signals();
 	//printf ("global : %d\n", keepRunning);
 //inclure un printf de prompt pour voir
@@ -129,6 +129,8 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 	// 	free(caps.prompt);
 	///
 	reset_termios(&term);
+	if (keepRunning == 3)
+		keepRunning = 0;
 return (0);
 }
 

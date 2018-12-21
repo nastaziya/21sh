@@ -58,11 +58,17 @@ void    ctrl_c(int sig)
     char c;
 
     c = 10;
- 
+    if (keepRunning != 3)
+    {
+        ft_putchar_fd('\n', 1);
+        return ;
+    }
 	keepRunning = 1;
     end_key(&caps);
     dprintf(2, "|%s|\n", caps.prompt);
-    // to manage bash > oui " -> string like that would launch the
+    // to manage bash > oui " -> the way I did it ...
+    // a string like that would launch the dquote shell
+    // That's my way of solving it
     if (caps.str[0])
         free(caps.str[0]);
     caps.str[0] = ft_memalloc(1);
@@ -70,7 +76,6 @@ void    ctrl_c(int sig)
     // caps.str[0] = ft_strdup("o");
     if (!ft_strcmp(caps.prompt, "dquote > "))
     {
-        dprintf(2, "passe dans le dquote");
         caps.sz_str = 10;
         free(caps.str[0]);
         caps.str[0] = ft_strdup("\"");
@@ -85,77 +90,12 @@ void    ctrl_c(int sig)
     }
     else if (!ft_strcmp(caps.prompt, "Missing arguments > "))
     {
-        // dprintf(2, "passe dans le Missing arguments");
         caps.sz_str = 10;
         free(caps.str[0]);
         caps.str[0] = ft_strdup("oui");
         keepRunning = 2;
     }
-    // calculer les positions
-    // cursor_position(curs_pos);
-    // dprintf(2, "%")
-    // size_windows(&caps);
-    // dprintf(2, "ctrl_c: %d-%d\n", curs_pos[1], caps.window_size[0]);
-    // faire une copie de la str et la print si nécessaire
-    // if (caps.sz_str > caps.size_prompt)
-    // {
-    //     // free(caps.tmp_str);
-        // tmp = ft_strdup(caps.str[0]);
-    //     dprintf(2, "tmp_signal: |%s|\n", tmp);
-    //     // ft_bzero(caps.tmp_str, ft_strlen(caps.tmp_str));
-    //     free(caps.tmp_str);
-    //     caps.tmp_str = NULL;
-    //     // tmp = ft_strdup(caps.str[0]);
-    //     // remettre l'historique sur le pointeur de départ;
-    // while (caps.history[0]->prev)
-    //     down_key(&caps);
-    // down_key(&caps);
-        // while (caps.sz_str > caps.size_prompt)
-        // {
-        //     // dprintf(2, "ça passe");
-        //     del_key(&caps);
-        // }
-    //     ft_putstr_fd(tmp, 1);
-    //     free(tmp);
-    // }
-
-    
     ioctl(0, TIOCSTI, &c);
-
-        // down_key(&caps);
- 
-    
-    // 1. si je suis en milieu de fenêtre -> caps.y_prompt
-    // 2. si je suis en fin, je garde le même y (if )
-    // caps.y_prompt = (curs_pos[1] == caps.window_size[0] ? curs_pos[1] : curs_pos[1] + 1);
-    // calculer la pos.y
-    
-    // calculer taille fenêtre
-    
-    // dprintf(2, "ctrl_c: %d-%d\n", caps.curs_pos[1], caps.window_size[0]);
-    // caps.y_prompt++;
-    // dprintf(1, "\nbash > ");
-    // end_key(&caps);
-    // tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
-    // tputs(tgetstr("cd", NULL), 1, ft_outc);
-    // size_windows(&caps);
-    // ft_putstr_fd(caps.prompt, 1);
-    // caps.cursor = caps.size_prompt + 1;
-    // position_char_in_window_print_inside_string(caps.cursor, &caps, caps.sz_str, 0);
-    // if ((caps.char_pos[0] < caps.window_size[1] && caps.char_pos[1] < caps.window_size[0]) 
-    //     && caps.window_size[1] > caps.size_prompt)
-    // {
-    //     if (caps.sz_str > caps.size_prompt)
-    //         ft_putstr_fd(caps.str[0],1);
-    // }
-    // else
-    // {
-    //     tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
-    //     tputs(tgetstr("cd", NULL), 1, ft_outc);
-    //     ft_putstr_fd("make a larger screen",1);
-    // }
-    // caps.y_prompt = 0;
-    // caps.cursor = caps.sz_str;
 }
 
 /*
