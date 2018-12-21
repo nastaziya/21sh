@@ -102,11 +102,8 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 			{
 				ft_dlstadd(history, ft_dlstnew(*cmd));
 				ft_new_prompt(cmd, type_quote, history);
-				if (!keepRunning)
-				{
-					(*history) = (*history)->next;
+				if (!keepRunning && ((*history) = (*history)->next))
 					ft_dlstdelone(&(*history)->prev);
-				}
 			}
 	}
 	ft_putchar_fd('\n', 1);
