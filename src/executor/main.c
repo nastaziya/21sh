@@ -72,7 +72,7 @@ void	all_exec(char **environ, char ***heredoc)
 	path_str(env.env_cpy, &env.paths);
 	// cpy_home(&env);
 	history = ft_dlstnew(NULL);
-	keepRunning = 1;
+	keepRunning = 0;
 	while (42)
 	{
 		lex = final_tokens(&history);
@@ -95,7 +95,10 @@ void	all_exec(char **environ, char ***heredoc)
 		// // 	// }
 		// }
 		// debug
-		check_op(cmd, &env);
+		if (keepRunning)
+			env.g_return_value = 1;
+		if (!keepRunning)
+			check_op(cmd, &env);
 		if (*heredoc)
 		{
 			ft_free_av(*heredoc);

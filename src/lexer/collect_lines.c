@@ -55,7 +55,7 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 	while (42)
 	{
 		ret = get_line_term(&line, ft_manage_prompt(type_quote), history);
-		dprintf(2, "line: |%s|\n", line);
+		// dprintf(2, "line: |%s|\n", line);
 		if (line && ft_strlen(line) > 0)
 		{
 			tmp = *cmd;
@@ -99,7 +99,15 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 		}
 		else if (*cmd && ft_strlen(*cmd) > 0)
 			if ((type_quote = ft_count_quote(*cmd)))
+			{
+				ft_dlstadd(history, ft_dlstnew(*cmd));
 				ft_new_prompt(cmd, type_quote, history);
+				if (!keepRunning)
+				{
+					(*history) = (*history)->next;
+					ft_dlstdelone(&(*history)->prev);
+				}
+			}
 	}
 	ft_putchar_fd('\n', 1);
 }

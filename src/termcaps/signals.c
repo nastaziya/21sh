@@ -59,7 +59,7 @@ void    ctrl_c(int sig)
 
     c = 10;
  
-	keepRunning = 0;
+	keepRunning = 1;
     end_key(&caps);
     dprintf(2, "|%s|\n", caps.prompt);
     // to manage bash > oui " -> string like that would launch the
@@ -74,12 +74,14 @@ void    ctrl_c(int sig)
         caps.sz_str = 10;
         free(caps.str[0]);
         caps.str[0] = ft_strdup("\"");
+        keepRunning = 2;
     }
     else if (!ft_strcmp(caps.prompt, "squote > "))
     {
         caps.sz_str = 10;
         free(caps.str[0]);
         caps.str[0] = ft_strdup("\'");
+        keepRunning = 2;
     }
     else if (!ft_strcmp(caps.prompt, "Missing arguments > "))
     {
@@ -87,6 +89,7 @@ void    ctrl_c(int sig)
         caps.sz_str = 10;
         free(caps.str[0]);
         caps.str[0] = ft_strdup("oui");
+        keepRunning = 2;
     }
     // calculer les positions
     // cursor_position(curs_pos);
