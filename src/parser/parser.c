@@ -258,7 +258,7 @@ int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer, char ***here
 	char *res;
 
 	if (h->i_words > 0)
-		while (h->k < h->i_words)
+		while (h->k < h->i_words && keepRunning)
 		{
 			h->obool > 0 ? ft_putstr_fd("\nHeredoc > ", 1) : ft_putstr_fd("Heredoc > ", 1); 
 			// if (h->cmd)
@@ -310,7 +310,7 @@ int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 	ft_initialize_heredoc(lexer, heredoc, 0, 0);
 	
 	// loop on the different commands (with separators : && || ;)
-	while (h.j < lexer->used_size - 1)
+	while (h.j < lexer->used_size - 1 && keepRunning)
 	{
 		ft_find_end_command_and_nb_kewyords(&h, lexer);
 		ft_collect_line_and_realloc_heredoc(&h, lexer, heredoc, history);

@@ -36,7 +36,6 @@ static void	ft_manage_string_to_lexer_realloc_arguments(t_lexer *lexer, t_dlist 
 {
 	char	*cmd;
 	char	*tmp;
-	// t_dlist **copy;
 
 	ft_get_entire_line(&cmd, "Missing arguments > ", history);
 	if (cmd && ft_strlen(cmd) > 0)
@@ -52,10 +51,8 @@ static void	ft_manage_string_to_lexer_realloc_arguments(t_lexer *lexer, t_dlist 
 		free(cmd);
 	if (keepRunning == 0)
 	{
-		// copy = &((*history)->next);
 		(*history) = (*history)->next;
 		ft_dlstdelone(&(*history)->prev);
-		// history = copy;
 	}
 }
 
