@@ -55,15 +55,39 @@ void    win_resize(int sig)
 void    ctrl_c(int sig)
 {
     (void)sig;
-    // char *tmp;
-    // int curs_pos[2];
+    char c;
+
+    c = 10;
  
-    // replacer correctement le prompt en pos y
-    // pour ce faire :
-    // Faire un end_key();
 	keepRunning = 0;
     end_key(&caps);
-    
+    dprintf(2, "|%s|\n", caps.prompt);
+    // to manage bash > oui " -> string like that would launch the
+    if (caps.str[0])
+        free(caps.str[0]);
+    caps.str[0] = ft_memalloc(1);
+    caps.sz_str = ft_strlen(caps.prompt);
+    // caps.str[0] = ft_strdup("o");
+    if (!ft_strcmp(caps.prompt, "dquote > "))
+    {
+        dprintf(2, "passe dans le dquote");
+        caps.sz_str = 10;
+        free(caps.str[0]);
+        caps.str[0] = ft_strdup("\"");
+    }
+    else if (!ft_strcmp(caps.prompt, "squote > "))
+    {
+        caps.sz_str = 10;
+        free(caps.str[0]);
+        caps.str[0] = ft_strdup("\'");
+    }
+    else if (!ft_strcmp(caps.prompt, "Missing arguments > "))
+    {
+        // dprintf(2, "passe dans le Missing arguments");
+        caps.sz_str = 10;
+        free(caps.str[0]);
+        caps.str[0] = ft_strdup("oui");
+    }
     // calculer les positions
     // cursor_position(curs_pos);
     // dprintf(2, "%")
@@ -93,8 +117,8 @@ void    ctrl_c(int sig)
     // }
 
     
-    char c = 10;
     ioctl(0, TIOCSTI, &c);
+
         // down_key(&caps);
  
     

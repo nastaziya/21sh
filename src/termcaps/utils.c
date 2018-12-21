@@ -33,11 +33,16 @@ int			ft_outc(int c)
 void		initialize_caps(t_tcap *caps, char *prompt)
 {
 	int 	tmp[2];
-	caps->size_prompt = ft_strlen(prompt);
 	// if (caps->prompt)
 	// 	free(caps->prompt);
 	if (!caps->prompt)
 		caps->prompt = ft_strdup(prompt);
+	else if (caps->prompt)
+	{
+		free(caps->prompt);
+		caps->prompt = ft_strdup(prompt);
+	}
+	caps->size_prompt = ft_strlen(prompt);
 	caps->sz_str = caps->size_prompt;
 	caps->cursor =  caps->size_prompt;
 	cursor_position(tmp);

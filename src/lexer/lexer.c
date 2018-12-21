@@ -36,19 +36,27 @@ static void	ft_manage_string_to_lexer_realloc_arguments(t_lexer *lexer, t_dlist 
 {
 	char	*cmd;
 	char	*tmp;
+	// t_dlist **copy;
 
 	ft_get_entire_line(&cmd, "Missing arguments > ", history);
 	if (cmd && ft_strlen(cmd) > 0)
 		if (!string_to_lexer(cmd, lexer))
 			ft_putendl_fd("error !", 1);
 	// History add, if arguments are missing (realloc)
-	tmp = (*history)->content;
-	(*history)->content = ft_strjoin(tmp, " ");
-	free(tmp);
-	tmp = (*history)->content;
-	(*history)->content = ft_strjoin(tmp, cmd);
-	free(tmp);
-	free(cmd);
+		tmp = (*history)->content;
+		(*history)->content = ft_strjoin(tmp, " ");
+		free(tmp);
+		tmp = (*history)->content;
+		(*history)->content = ft_strjoin(tmp, cmd);
+		free(tmp);
+		free(cmd);
+	if (keepRunning == 0)
+	{
+		// copy = &((*history)->next);
+		(*history) = (*history)->next;
+		ft_dlstdelone(&(*history)->prev);
+		// history = copy;
+	}
 }
 
 /*
@@ -69,7 +77,8 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 	while (history[0]->prev)
 		history[0] = history[0]->prev;
 	// ajouter ici historique
-	ft_dlstadd(history, ft_dlstnew(s));
+	if (keepRunning != 0)
+		ft_dlstadd(history, ft_dlstnew(s));
 	while (42)
 	{
 		if (lexer->used_size > 0 && lexer->tokens[lexer->used_size - 1].content
