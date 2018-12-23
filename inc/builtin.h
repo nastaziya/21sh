@@ -125,4 +125,10 @@ char	    **ft_find_path_and_split(char **c_env);
 
 int         ft_builtin_exit(char **cmd, t_env_tools *env);
 
+/*
+*** - ctrl_d.c
+*/
+
+int			ctrl_d_management(t_tcap *caps);
+
 #endif
