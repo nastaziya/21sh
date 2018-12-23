@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   ft_strstr.c                                      .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
+/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
+
 #include "../../inc/sh.h"
 #include "../../inc/expansion.h"
 #include "../../inc/builtin.h"
@@ -77,7 +90,8 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 	and redirections if existes*/
 /*(1)*/
 
-void	complete_simple_command_and_red(t_command *cmd, t_lexer lex, int i, int *j)
+void	complete_simple_command_and_red(t_command *cmd, t_lexer lex, int i,
+			 int *j)
 {
 	if (i == 0 && lex.tokens[i].type == T_WORD)
 		tab_assign(&cmd->command[*j], lex, i);
@@ -98,15 +112,27 @@ void	complete_simple_command_and_red(t_command *cmd, t_lexer lex, int i, int *j)
 
 ////////////////// HEREDOC
 
-// /*
-// *** - Aim of the function :
-// *** - Function that counts the number of commands that have an heredoc then mallocs it
-// *** - If a other_command != previous command, it means that we met a ; || &&
-// *** - so we have to malloc the heredoc for the new command. The first if is for 
-// *** - the initialization the first time we meet a <<
+static void		ft_initialize_heredoc_norm(char ***heredoc, int nb_to_malloc)
+{
+	int	i;
+
+	i = -1;
+	if (!(heredoc[0] = (char**)malloc(sizeof(char*) * (nb_to_malloc + 1))))
+		return ;
+	while (++i <= nb_to_malloc)
+		heredoc[0][i] = NULL;
+}
+
+/*
+*** - Aim of the function :
+*** - Function that counts the number of commands that have an heredoc then mallocs it
+*** - If a other_command != previous command, it means that we met a ; || &&
+*** - so we have to malloc the heredoc for the new command. The first if is for 
+*** - the initialization the first time we meet a <<
 // */
 
-int		ft_initialize_heredoc(t_lexer *lexer, char ***heredoc, int other_command, int previous_command)
+int				ft_initialize_heredoc(t_lexer *lexer, char ***heredoc,
+					 int other_command, int previous_command)
 {
 	int		nb_to_malloc;
 	int		i;
@@ -125,16 +151,18 @@ int		ft_initialize_heredoc(t_lexer *lexer, char ***heredoc, int other_command, i
 					|| lexer->tokens[i].type == T_DBLAND))
 				other_command++;
 			else if (lexer->tokens[i].type == T_DBL_LESS
-			&& (other_command != previous_command) && (previous_command = other_command))
+			&& (other_command != previous_command)
+				&& (previous_command = other_command))
 				nb_to_malloc++;
 		}
 		// if (heredoc[0])
 		// 	free(heredoc[0]);
-		if (!(heredoc[0] = (char**)malloc(sizeof(char*) * (nb_to_malloc + 1))))
-			return (1);
-		i = -1;
-		while (++i <= nb_to_malloc)
- 			heredoc[0][i] = NULL;
+		ft_initialize_heredoc_norm(heredoc, nb_to_malloc);
+		// if (!(heredoc[0] = (char**)malloc(sizeof(char*) * (nb_to_malloc + 1))))
+		// 	return (1);
+		// i = -1;
+		// while (++i <= nb_to_malloc)
+ 		// 	heredoc[0][i] = NULL;
 	}
 	return (0);
 }
@@ -151,14 +179,17 @@ int		ft_find_end_command_and_nb_kewyords(t_hdoc *h, t_lexer *lexer)
 	ft_memset(h->words, -1, 50);
 	h->i = h->j - 1;
 	// find the limit of the current command (find separator -> && || ;)
-	while (lexer->tokens[h->j].type != T_DBLOR && lexer->tokens[h->j].type != T_DBLAND
-		&& lexer->tokens[h->j].type != T_SEMI && h->j < ft_parse_error_for_heredoc(*lexer)) //&& h->j < lexer->used_size - 1
+	while (lexer->tokens[h->j].type != T_DBLOR
+		&& lexer->tokens[h->j].type != T_DBLAND
+			&& lexer->tokens[h->j].type != T_SEMI
+				&& h->j < ft_parse_error_for_heredoc(*lexer)) //&& h->j < lexer->used_size - 1
 		++(h->j);
 	// first passage to see how many heredoc there are in this current command
 	// + keep track of the index for each word after <<
 	h->i_words = 0;
 	while (++(h->i) < h->j)
-		if (lexer->tokens[h->i].type == T_DBL_LESS && h->words[h->i_words] == -1)			
+		if (lexer->tokens[h->i].type == T_DBL_LESS
+			&& h->words[h->i_words] == -1)			
 		{
 			h->words[h->i_words] = h->i + 1;
 			(h->i_words)++;
@@ -203,6 +234,8 @@ int		realloc_heredoc(t_hdoc *h, char ***heredoc)
 // *** - the else if for when the user typed another keyword -> realloc
 // */
 
+////// NORME :-)
+
 int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 {
 	char *tmp;
@@ -212,23 +245,23 @@ int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 	tmp = ft_strdup(lexer->tokens[h->words[h->k]].content);
 	expanded_dynamic_table_heredoc(&tmp, 0);
 	res = ft_strdup(tmp);
-	if (ft_strcmp(h->cmd, res) == 0)
+	if (ft_strcmp(h->cmd, res) == 0 && !ft_free(h->cmd))
 	{
 		(h->k)++;
-		free(h->cmd);
+		// free(h->cmd);
 		free(tmp);
 		free(res);
 	}
 	// là on realloc
-	else
+	else if (!ft_free(tmp) && !ft_free(res))
 	{
-		dprintf(2, "passe iciavant if\n");
-		free(tmp);
-		free(res);
+		// dprintf(2, "passe iciavant if\n");
+		// free(tmp);
+		// free(res);
 		// // ici on initialise
 		if (heredoc[0][h->command] == NULL)//[0]
 		{
-			dprintf(2, "PLUS PRECCISEMENT [%s]\n", h->cmd);
+			// dprintf(2, "PLUS PRECCISEMENT [%s]\n", h->cmd);
 			// if (heredoc[0][h->command])
 			// 	free(heredoc[0][h->command]);
 			heredoc[0][h->command] = ft_strjoin(h->cmd, "\n");
@@ -252,7 +285,10 @@ int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 // *** - else if -> manage when last keyword
 // */
 
-int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer, char ***heredoc, t_dlist **history)
+////// NORME :-)
+
+int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer,
+			char ***heredoc, t_dlist **history)
 {
 	char *tmp;
 	char *res;
@@ -260,7 +296,8 @@ int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer, char ***here
 	if (h->i_words > 0)
 		while (h->k < h->i_words && !keepRunning)
 		{
-			h->obool > 0 ? ft_putstr_fd("\nHeredoc > ", 1) : ft_putstr_fd("Heredoc > ", 1); 
+			h->obool > 0 ? ft_putstr_fd("\nHeredoc > ", 1)
+				: ft_putstr_fd("Heredoc > ", 1); 
 			// if (h->cmd)
 			// 	free(h->cmd);
 			h->obool > 0 ? get_line_term(&h->cmd, "\nHeredoc > ", history)
@@ -268,12 +305,12 @@ int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer, char ***here
 			// if (h->cmd)
 			// free(h->cmd);
 			//si mot clé c'est pas le dernier, free ce que l'on get_line et passer au suivant
-			if (h->k < h->i_words - 1)
+			if (h->k < h->i_words - 1 && (res = ft_strdup(tmp)))
 			{
 				//control expansion
 				tmp = ft_strdup(lexer->tokens[h->words[h->k]].content);
 				expanded_dynamic_table_heredoc(&tmp, 0);
-				res = ft_strdup(tmp);
+				// res = ft_strdup(tmp);
 				// expansionner le lexer->tokens[h->words[h->k]].content sur les " et les /
 				if (ft_strcmp(res, h->cmd) == 0)
 					(h->k)++;
@@ -327,6 +364,7 @@ int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 		ft_putstr_fd("\n", 1);
 	return (0);
 }
+
 ////////////////// HEREDOC
 
 /*(2)*/

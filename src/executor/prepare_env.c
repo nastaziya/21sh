@@ -49,6 +49,7 @@ void	free_str_2(char **str, int size)
 *** - Bash works with copies (if you unset the HOME),
 *** - Because of the copy, the expansion will still work
 *** - => same management as the PATH (works with copies)
+*** - Added later : clicolor=1 -> to have a nice "ls"
 */
 
 char	**copy_env(char **environ, int size, t_env_tools *envi)
@@ -59,9 +60,10 @@ char	**copy_env(char **environ, int size, t_env_tools *envi)
 
 	i = 0;
 	j = 0;
-	if (!(env = (char**)malloc(sizeof(*env) * (size))))
+	if (!(env = (char**)malloc(sizeof(*env) * (size + 1))))
 		return (NULL);
-	env[size - 1] = NULL;
+	env[size] = NULL;
+	env[size - 1] = ft_strdup("CLICOLOR=1");
 	while (environ[i] != NULL)
 	{
 		if (ft_strncmp(environ[i], "OLDPWD=", 7))

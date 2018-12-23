@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   ft_strstr.c                                      .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
+/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
+
 #include "../../inc/sh.h"
 
 void    tab_init(t_simp_com *simple_cmd)
@@ -51,7 +64,7 @@ void    tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 	int i;
 
 	i = -1;
-	if (redir->used_space == redir->av_space)
+	if (redir->used_space == redir->av_space)//&& (temp = redir->red)
 	{
 		temp = redir->red;
 		temp1 = redir->file;
@@ -60,7 +73,7 @@ void    tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 			return ;
 		if (!(redir->file = malloc(sizeof(char*) * redir->av_space + 1)))
 			return ;
-		if (redir->red == NULL || redir->file == NULL)
+		if ((redir->red == NULL || redir->file == NULL))
 			exit(EXIT_FAILURE);
 		while(++i < redir->used_space)
 		{
