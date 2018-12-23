@@ -95,9 +95,15 @@ void	all_exec(char **environ, char ***heredoc)
 		// // 	// }
 		// }
 		// debug
-		if (keepRunning)
+		if (keepRunning == 1 || keepRunning == 2)
 			env.g_return_value = 1;
-		if (!keepRunning)
+		else if (keepRunning == 5)
+			env.g_return_value = 258;
+			// keepRunning = 5 -> 
+
+	 	// si je n'ai ni fait ctrl_c, de ctrl_d, ou j'ai fait ctrl_d pendant le heredoc 
+		//  -> Exécute les commandes
+		if (!keepRunning || keepRunning == 4)
 			check_op(cmd, &env);
 		if (*heredoc)
 		{

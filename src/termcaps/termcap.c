@@ -96,11 +96,65 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		if (CTRL_D_KEY)
 		{
 					// dprintf(2, "passe dans le grand [%d - %d]\n", caps.sz_str, caps.size_prompt);	
-				if (((caps.sz_str - caps.size_prompt) == 0))
+			if (((caps.sz_str - caps.size_prompt) == 0))
 			{
-				// dprintf(2, "passe\n");
-				free(caps.str[0]);
-				caps.str[0] = ft_strdup("exit");
+				if (!ft_strcmp(caps.prompt, "bash > "))
+				{
+					free(caps.str[0]);
+					caps.str[0] = ft_strdup("exit");
+				}
+				else
+				{
+					caps.sz_str = 10;
+					// if (ft_strcmp(caps.prompt, "Heredoc > "))
+					free(caps.str[0]);
+					// if (ft_strcmp(caps.prompt, "bash > "))
+					keepRunning = 5;
+					if (!ft_strcmp(caps.prompt, "dquote > ") ||
+						!ft_strcmp(caps.prompt, "squote > "))
+					{
+						ft_putstr_fd("bash: unexpected EOF while looking for matching `\"\'\n", 2);
+						caps.str[0] = !ft_strcmp(caps.prompt, "dquote > ") ? ft_strdup("\"") : ft_strdup("\'");
+					}
+					else if (!ft_strcmp(caps.prompt, "Missing arguments > "))
+						caps.str[0] = ft_strdup("oui");
+					else if (!ft_strcmp(caps.prompt, "Heredoc > "))
+					{
+						keepRunning = 4;
+						caps.str[0] = ft_memalloc(1);
+    					caps.sz_str = ft_strlen(caps.prompt);
+					}
+					if (ft_strcmp(caps.prompt, "Heredoc > "))
+						ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
+					// else if (!ft_strcmp(caps.prompt, "squote > "))
+				}
+				// if (!ft_strcmp(caps.prompt, "dquote > "))
+				// {
+				// 	caps.sz_str = 10;
+				// 	free(caps.str[0]);
+				// 	caps.str[0] = ft_strdup("\"");
+				// 	keepRunning = 2;
+				// }
+				// else if (!ft_strcmp(caps.prompt, "squote > "))
+				// {
+				// 	caps.sz_str = 10;
+				// 	free(caps.str[0]);
+				// 	caps.str[0] = ft_strdup("\'");
+				// 	keepRunning = 2;
+				// }
+				// else if (!ft_strcmp(caps.prompt, "Missing arguments > "))
+				// {
+				// 	caps.sz_str = 10;
+				// 	free(caps.str[0]);
+				// 	caps.str[0] = ft_strdup("oui");
+				// 	keepRunning = 2;
+				// }
+				// else
+				// {
+				// 	// dprintf(2, "passe\n");
+				// 	free(caps.str[0]);
+				// 	caps.str[0] = ft_strdup("exit");
+				// }
 				break ;
 			}
 			else
@@ -129,6 +183,9 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 	// 	free(caps.prompt);
 	///
 	reset_termios(&term);
+	// keeprunning == 3 to differenciate the signal when inside termcap
+	// and when i give the control to the system
+	// (ls -Rl /, then ctrl_c for example)
 	if (keepRunning == 3)
 		keepRunning = 0;
 return (0);

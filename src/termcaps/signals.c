@@ -58,8 +58,12 @@ void    ctrl_c(int sig)
     char c;
 
     c = 10;
+    // keeprunning == 3 to differenciate the signal when inside termcap
+	// and when i give the control to the system
+	// (ls -Rl /, then ctrl_c for example)
     if (keepRunning != 3)
     {
+        // Add the \n in order to keep the termcaps properly
         ft_putchar_fd('\n', 1);
         return ;
     }
