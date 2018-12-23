@@ -47,9 +47,19 @@ void    win_resize(int sig)
 }
 
 /*
-** Handles the resizing of the terminal window.
-** do not forget to free the copy of the prompt when exit termcaps
-** TO MANAGE -> when the process is running, or quit the canonical mode, do nothing (return)
+*** - Aim of the function : int function to use putchar_fd inside if
+*/
+
+static int     ft_putc_if(char c, int fd)
+{
+    ft_putchar_fd(c, 1);
+    return (0);
+}
+
+/*
+*** - Aim of the function : manage the ctrl_c signal
+*** - Handles the resizing of the terminal window.
+*** - do not forget to free the copy of the prompt when exit termcaps
 */
 
 void    ctrl_c(int sig)
@@ -61,15 +71,15 @@ void    ctrl_c(int sig)
     // keeprunning == 3 to differenciate the signal when inside termcap
 	// and when i give the control to the system
 	// (ls -Rl /, then ctrl_c for example)
-    if (keepRunning != 3)
-    {
-        // Add the \n in order to keep the termcaps properly
-        ft_putchar_fd('\n', 1);
+    // ft_putc_if -> Add the \n in order to keep the termcaps properly
+    if (keepRunning != 3 && !ft_putc_if('\n', 1))
+    // {
+        // ft_putc_if('\n', 1)
+        // ft_putchar_fd('\n', 1);
         return ;
-    }
+    // }
 	keepRunning = 1;
     end_key(&caps);
-    dprintf(2, "|%s|\n", caps.prompt);
     // to manage bash > oui " -> the way I did it ...
     // a string like that would launch the dquote shell
     // That's my way of solving it
@@ -78,26 +88,17 @@ void    ctrl_c(int sig)
     caps.str[0] = ft_memalloc(1);
     caps.sz_str = ft_strlen(caps.prompt);
     // caps.str[0] = ft_strdup("o");
-    if (!ft_strcmp(caps.prompt, "dquote > "))
+    if (ft_strcmp(caps.prompt, "bash > ") && (caps.sz_str = 10))
     {
-        caps.sz_str = 10;
+        // caps.sz_str = 10;
         free(caps.str[0]);
-        caps.str[0] = ft_strdup("\"");
         keepRunning = 2;
-    }
-    else if (!ft_strcmp(caps.prompt, "squote > "))
-    {
-        caps.sz_str = 10;
-        free(caps.str[0]);
-        caps.str[0] = ft_strdup("\'");
-        keepRunning = 2;
-    }
-    else if (!ft_strcmp(caps.prompt, "Missing arguments > "))
-    {
-        caps.sz_str = 10;
-        free(caps.str[0]);
-        caps.str[0] = ft_strdup("oui");
-        keepRunning = 2;
+        if (!ft_strcmp(caps.prompt, "dquote > "))
+            caps.str[0] = ft_strdup("\"");
+        else if (!ft_strcmp(caps.prompt, "squote > "))
+            caps.str[0] = ft_strdup("\'");
+        else if (!ft_strcmp(caps.prompt, "Missing arguments > "))
+            caps.str[0] = ft_strdup("oui");
     }
     ioctl(0, TIOCSTI, &c);
 }

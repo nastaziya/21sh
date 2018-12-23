@@ -106,9 +106,7 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 				else
 				{
 					caps.sz_str = 10;
-					// if (ft_strcmp(caps.prompt, "Heredoc > "))
 					free(caps.str[0]);
-					// if (ft_strcmp(caps.prompt, "bash > "))
 					keepRunning = 5;
 					if (!ft_strcmp(caps.prompt, "dquote > ") ||
 						!ft_strcmp(caps.prompt, "squote > "))
@@ -126,35 +124,7 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 					}
 					if (ft_strcmp(caps.prompt, "Heredoc > "))
 						ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
-					// else if (!ft_strcmp(caps.prompt, "squote > "))
 				}
-				// if (!ft_strcmp(caps.prompt, "dquote > "))
-				// {
-				// 	caps.sz_str = 10;
-				// 	free(caps.str[0]);
-				// 	caps.str[0] = ft_strdup("\"");
-				// 	keepRunning = 2;
-				// }
-				// else if (!ft_strcmp(caps.prompt, "squote > "))
-				// {
-				// 	caps.sz_str = 10;
-				// 	free(caps.str[0]);
-				// 	caps.str[0] = ft_strdup("\'");
-				// 	keepRunning = 2;
-				// }
-				// else if (!ft_strcmp(caps.prompt, "Missing arguments > "))
-				// {
-				// 	caps.sz_str = 10;
-				// 	free(caps.str[0]);
-				// 	caps.str[0] = ft_strdup("oui");
-				// 	keepRunning = 2;
-				// }
-				// else
-				// {
-				// 	// dprintf(2, "passe\n");
-				// 	free(caps.str[0]);
-				// 	caps.str[0] = ft_strdup("exit");
-				// }
 				break ;
 			}
 			else
@@ -174,14 +144,7 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		free(caps.tmp_str);
 	if (caps.copy_str)
 		free(caps.copy_str);
-	// if (caps.tmp_str)
-	// 	free(caps.tmp_str);
-	// if (caps.prompt)
-	// 	free(caps.prompt);
 	free(caps.str);
-	// if (caps.prompt)
-	// 	free(caps.prompt);
-	///
 	reset_termios(&term);
 	// keeprunning == 3 to differenciate the signal when inside termcap
 	// and when i give the control to the system
