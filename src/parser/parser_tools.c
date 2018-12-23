@@ -42,11 +42,8 @@ int		is_op(t_lexer lex, int i)
 	return(0);
 }
 
-int		parse_errors(t_lexer lex)
+int		parse_errors(t_lexer lex, int i)
 {
-	int i;
-
-	i = -1;
 	while(++i < lex.used_size)
 	{
 		if ((is_op(lex, i) && i == 0) || lex.tokens[i].type == T_DBL_SEMI)

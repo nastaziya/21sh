@@ -111,7 +111,7 @@ void	all_exec(char **environ, char ***heredoc)
 			*heredoc = NULL;
 		}
 		free_the_op_content_array_token(&lex);
-		free_struct(&cmd, lex);
+		free_struct(&cmd);//, lex
 		//free(lex.tokens);
 		// to do -> free heredoc
 		
