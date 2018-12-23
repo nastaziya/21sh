@@ -114,7 +114,8 @@ int         ft_usage_env_builtin(char **av, int argc, int *i, char *p)
 
 int     ft_manage_option_i_env(char	***cp_c_env)
 {
-    cp_c_env[0] = (char**)malloc(sizeof(char*) * 2);
+    if (!(cp_c_env[0] = (char**)malloc(sizeof(char*) * 2)))
+		return (1);
     cp_c_env[0][0] = NULL;
     // cp_c_env[0][0] = (char*)malloc(sizeof(char) * 2);
     cp_c_env[0][1] = NULL;
