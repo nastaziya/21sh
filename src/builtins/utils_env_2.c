@@ -20,6 +20,18 @@
 *** - an if statement
 */
 
+int		ft_free_char_char(char **av)
+{
+	free(av);
+	return (0);
+}
+
+/*
+*** - Aim of the function : 
+*** - Free with return to include inside
+*** - an if statement
+*/
+
 int		ft_free(char *av)
 {
 	free(av);

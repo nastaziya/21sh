@@ -98,6 +98,7 @@ int		ft_print_dir_error(char *command, char *btwn, char *after, int i);
 int		ft_free(char *av);
 char	*ft_strdup_without_quotes(char *av);
 char	*ft_array_char_to_str(char **c_env, int avoid);
+int		ft_free_char_char(char **av);
 
 /*
 *** - utils_env.c
