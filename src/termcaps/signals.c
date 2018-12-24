@@ -73,11 +73,7 @@ void    ctrl_c(int sig)
 	// (ls -Rl /, then ctrl_c for example)
     // ft_putc_if -> Add the \n in order to keep the termcaps properly
     if (keepRunning != 3 && !ft_putc_if('\n', 1))
-    // {
-        // ft_putc_if('\n', 1)
-        // ft_putchar_fd('\n', 1);
         return ;
-    // }
 	keepRunning = 1;
     end_key(&caps);
     // to manage bash > oui " -> the way I did it ...
