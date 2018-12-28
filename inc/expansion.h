@@ -42,4 +42,19 @@ char **expense_cmd(t_command cmd, t_env_tools env, int i);
 
 void expanded_dynamic_table_heredoc(char **str, int i);
 
+/*
+*** - exec_err_return.c
+*/
+
+void    print_errors(char *error, char *file_name);
+int     manage_sig_term_ret_1(int ret);
+
+/*
+*** - expansion.c
+*/
+
+char **expense_red_files(t_command cmd, t_env_tools env,  int i);
+
+
+
 #endif

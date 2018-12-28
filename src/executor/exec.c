@@ -1,5 +1,6 @@
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
+#include "../../inc/expansion.h"
 
 /*
 *** - Initial copy of the home environment
@@ -103,6 +104,7 @@ int		exec(char *path, char **str, char **env)
 	pid_t	pid;
 	int 	status;
 	int		res;
+	// int		ret_signal;
 
 	res = 0;
 	if ((pid = fork()))
@@ -110,7 +112,11 @@ int		exec(char *path, char **str, char **env)
 		if (pid == -1)
 			return (-1);
 		waitpid(pid, &status, 0);
-		res = WEXITSTATUS(status);
+		// res = WEXITSTATUS(status);
+		if (WIFEXITED(status))
+			res = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			res = manage_sig_term_ret_1(WTERMSIG(status));
 		if (res > 0)
 			return(res);	
 	}

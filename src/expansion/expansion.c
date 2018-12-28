@@ -98,3 +98,23 @@ char **expense_cmd(t_command cmd, t_env_tools env, int i)
 	}
 	return (res);
 }
+
+char **expense_red_files(t_command cmd, t_env_tools env,  int i)
+{
+	int j;
+	char **res;
+	char *temp;
+	
+	res = (char**)malloc(sizeof(char*) * (cmd.command[i].redirection.used_space + 1));
+	j = -1;
+	temp = NULL;
+	res[cmd.command[i].redirection.used_space] = NULL;
+	while (++j < cmd.command[i].redirection.used_space)
+	{
+		temp = ft_strdup(cmd.command[i].redirection.file[j]);
+		expanded_dynamic_table(&temp, env, 0);
+		res[j] = ft_strdup(temp);
+		free(temp);
+	}
+	return (res);
+}
