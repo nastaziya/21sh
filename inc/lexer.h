@@ -29,6 +29,7 @@ typedef enum
     T_DBL_GREAT,
     T_LESS,
     T_DBL_LESS,
+    T_TRL_LESS,
     T_REDIR,
     T_IO_NUMB,
     T_OP_CMD,
@@ -76,6 +77,7 @@ typedef struct  s_norm
 static const t_oplist existing_token[] =
   {
     {"$((", 3, T_OP_ARITHM},
+    {"<<<", 3, T_TRL_LESS},
     {"$(", 2, T_OP_CMD},
     {"${", 2, T_OP_CURLY},
     {">>", 2, T_DBL_GREAT},

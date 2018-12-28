@@ -54,77 +54,6 @@ int		out_red(t_command cmd, t_env_tools *env, int i, int *aux)
 	return (saved_stdout);
 }
 
-// void check_op(t_command cmd, t_env_tools *env, int res)
-// {
-// 	int i;
-// 	char	*path;
-// 	char **cmd_expended;
-// 	int out =-1;
-// 	int aux = 0;
-	
-	
-// 	cmd_expended = NULL;
-// 	i = -1;
-// 	env->g_return_value = res;
-// 	if (cmd.used_space > 0)
-// 		cmd_expended = expense_cmd(cmd, *env, 0);
-// 	if (cmd.command[0].redirection.used_space > 0)
-// 	{
-// 		out = out_red(cmd, env, 0, &aux);
-// 		if (out == -2)
-// 			return;
-// 	}
-// 	if (cmd_expended != NULL && cmd.used_space > 0 && !is_built_in(cmd, 0))
-// 		env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended,  env);
-// 	else if (cmd_expended && is_built_in(cmd, 0))
-// 	{
-// 		printf("builtin\n");
-// 	}
-// 	if (out > -1)
-// 	{
-// 		dup2(out, cmd.command[0].redirection.fd[aux]);
-// 		close(out);
-// 	}
-// 	while(++i < cmd.used_space && cmd.command[i].tok != -1)
-// 	{
-// 		if (i  == cmd.used_space -1)
-// 			break;
-// 		cmd_expended = expense_cmd(cmd, *env, i + 1);
-// 		if (cmd.command[i + 1].redirection.used_space > 0)
-// 		{
-// 			out = out_red(cmd, env, i + 1, &aux);
-// 			if (out == -2)
-// 				return;
-// 		}
-// 		if (is_built_in(cmd, i + 1) == 1)
-// 			printf("privet\n");
-// 		else if (cmd.command[i].tok == T_DBLOR && !is_built_in(cmd, i))
-// 		{
-// 			if (env->g_return_value > 0)
-// 				env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended,  env);
-// 		}
-// 		else if (cmd.command[i].tok == T_DBLAND && !is_built_in(cmd, i))
-// 		{
-// 			if ( env->g_return_value == 0)
-// 				env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended,  env);
-// 		}
-// 		else if (cmd.command[i].tok == T_SEMI && is_built_in(cmd, i) == 0)
-// 		{
-// 			env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended,  env);
-// 		}
-// 		//free(path);
-// 		free_str(cmd_expended);
-// 		if (out > -1)
-// 		{
-// 			dup2(out,  cmd.command[i + 1].redirection.fd[aux]);
-// 			close(out);
-// 		}
-// 	}
-// 	//printf ("ret : %d\n", env->g_return_value);
-// }
-
-/////////////////////////////////
-
 void check_op(t_command cmd, t_env_tools *env)
 {
 	int 	i;
@@ -140,9 +69,11 @@ void check_op(t_command cmd, t_env_tools *env)
 	// ret = 0;
 	if (cmd.used_space > 0)
 		cmd_expended = expense_cmd(cmd, *env, 0);
+	// dprintf(2, "redirection_used_space: %d\n", cmd.command[0].redirection.used_space);
 //	print_array(cmd.command[0].used_space, cmd_expended);
 	if (cmd.command[0].redirection.used_space > 0)
 	{
+		// dprintf(2, "ENTRE DANS LE OUTRED\n");
 		out = out_red(cmd, env, 0, &aux);
 		if (out == -2)
 			return;
@@ -163,15 +94,18 @@ void check_op(t_command cmd, t_env_tools *env)
 		dup2(out, cmd.command[0].redirection.fd[aux]);
 		close(out);
 	}
-	while(++i < cmd.used_space && cmd.command[i].tok != -1)
+	dprintf(2, "INFOS_boucle: %d - %d\n", i, cmd.used_space);
+	while (++i < cmd.used_space && cmd.command[i].tok != -1)
 	{
+		dprintf(2, "RENTRE MA POULE\n");
 		//print_array(cmd.command[i].used_space, cmd_expended);
 		if (i  == cmd.used_space -1)
 			break;
 		cmd_expended = expense_cmd(cmd, *env, i + 1);
 		if (is_built_in(cmd_expended) == 1)
 			// env->g_return_value = ;
-			dprintf(2, "privet\n");
+			// dprintf(2, "privet\n");
+			env->g_return_value = ft_exec_builtin(env, cmd_expended);
 		else if (cmd.command[i].tok == T_DBLOR && !is_built_in(cmd_expended))
 		{
 			//check_path(env->paths, &path,  cmd.command[i].cmd_simple) == 0 &&
