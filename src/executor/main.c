@@ -98,35 +98,54 @@ void check_op(t_command cmd, t_env_tools *env)
 	while (++i < cmd.used_space && cmd.command[i].tok != -1)
 	{
 		dprintf(2, "RENTRE MA POULE\n");
-		if (cmd.command[i + 1].redirection.used_space > 0)
-		{
-		// dprintf(2, "ENTRE DANS LE OUTRED\n");
-			out = out_red(cmd, env, i + 1, &aux);
-			if (out == -2)
-				return;
-		}
+		
 		//print_array(cmd.command[i + 1].used_space, cmd.command[i + 1].cmd_simple);
 		if (i == cmd.used_space - 1 || cmd.command[i + 1].used_space == 0)
 			break;
 		cmd_expended = expense_cmd(cmd, *env, i + 1);
 		if (cmd.command[i].tok == T_DBLOR)// && !is_built_in(cmd_expended))
 		{
-			if (env->g_return_value > 0 && is_built_in(cmd_expended))
-				env->g_return_value = ft_exec_builtin(env, cmd_expended);
-			else if (env->g_return_value > 0)
-				env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
+			if (env->g_return_value > 0)
+			{
+				if (cmd.command[i + 1].redirection.used_space > 0)
+				{
+					out = out_red(cmd, env, i + 1, &aux);
+					if (out == -2)
+						return;
+				}
+				if (is_built_in(cmd_expended))
+					env->g_return_value = ft_exec_builtin(env, cmd_expended);
+				else
+					env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
+			}
+			
+			
 		}
 		else if (cmd.command[i].tok == T_DBLAND)// && !is_built_in(cmd_expended))
 		{
-			if (env->g_return_value == 0 && is_built_in(cmd_expended))
-				env->g_return_value = ft_exec_builtin(env, cmd_expended);
-			else if (env->g_return_value == 0)
+			if (env->g_return_value == 0)
 			{
-				env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
+				if (cmd.command[i + 1].redirection.used_space > 0)
+				{
+					out = out_red(cmd, env, i + 1, &aux);
+					if (out == -2)
+						return;
+				}
+				if (is_built_in(cmd_expended))
+					env->g_return_value = ft_exec_builtin(env, cmd_expended);
+				else
+					env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
 			}
+			
 		}
 		else if (cmd.command[i].tok == T_SEMI)// && is_built_in(cmd_expended) == 0)
 		{
+			if (cmd.command[i + 1].redirection.used_space > 0)
+			{
+					out = out_red(cmd, env, i + 1, &aux);
+					if (out == -2)
+						return;
+			}
 			if (is_built_in(cmd_expended))
 				env->g_return_value = ft_exec_builtin(env, cmd_expended);
 			else
