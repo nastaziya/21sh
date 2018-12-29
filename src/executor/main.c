@@ -98,33 +98,33 @@ void check_op(t_command cmd, t_env_tools *env)
 	while (++i < cmd.used_space && cmd.command[i].tok != -1)
 	{
 		dprintf(2, "RENTRE MA POULE\n");
-		//print_array(cmd.command[i].used_space, cmd_expended);
-		if (i  == cmd.used_space -1)
+		//print_array(cmd.command[i + 1].used_space, cmd.command[i + 1].cmd_simple);
+		if (i == cmd.used_space - 1 || cmd.command[i + 1].used_space == 0)
 			break;
 		cmd_expended = expense_cmd(cmd, *env, i + 1);
-		if (is_built_in(cmd_expended) == 1)
-			// env->g_return_value = ;
-			// dprintf(2, "privet\n");
-			env->g_return_value = ft_exec_builtin(env, cmd_expended);
-		else if (cmd.command[i].tok == T_DBLOR && !is_built_in(cmd_expended))
+		if (cmd.command[i].tok == T_DBLOR)// && !is_built_in(cmd_expended))
 		{
-			//check_path(env->paths, &path,  cmd.command[i].cmd_simple) == 0 &&
-			if (env->g_return_value > 0)
-				// env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
+			if (env->g_return_value > 0 && is_built_in(cmd_expended))
+				env->g_return_value = ft_exec_builtin(env, cmd_expended);
+			else if (env->g_return_value > 0)
 				env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
 		}
-		else if (cmd.command[i].tok == T_DBLAND && !is_built_in(cmd_expended))
+		else if (cmd.command[i].tok == T_DBLAND)// && !is_built_in(cmd_expended))
 		{
-			//check_path(env->paths, &path,  cmd.command[i].cmd_simple) > 0 &&
-			if ( env->g_return_value == 0)
+			if (env->g_return_value == 0 && is_built_in(cmd_expended))
+				env->g_return_value = ft_exec_builtin(env, cmd_expended);
+			else if (env->g_return_value == 0)
 			{
-				// env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
 				env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
 			}
 		}
-		else if (cmd.command[i].tok == T_SEMI && is_built_in(cmd_expended) == 0)
-			// env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
-			env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
+		else if (cmd.command[i].tok == T_SEMI)// && is_built_in(cmd_expended) == 0)
+		{
+			if (is_built_in(cmd_expended))
+				env->g_return_value = ft_exec_builtin(env, cmd_expended);
+			else
+				env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
+		}
 		//free(path);
 		free_str(cmd_expended);
 		if (out > -1)

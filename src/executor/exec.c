@@ -61,7 +61,7 @@ void	check_path_loop(char **path_env, char **path, char **str, int *count)
 	int		j;
 	char	*join_slash;
 	char	*join_cmd;
-
+	
 	j = 0;
 	while (path_env[j])
 	{
@@ -154,6 +154,7 @@ int		error_exec_or_exec(char **paths, char **str,
 	}
 	else
 		res = check_path(paths, &path, str);
+	dprintf(2,"dsf : %d\n", res);
 	/////////
 	// int j = -1;
 	// while (paths[++j])
@@ -180,6 +181,7 @@ int		error_exec_or_exec(char **paths, char **str,
 		res = 127;
 		in_env != 1 ? error_command("bash: ", str, ": No such file or directory") : error_command("env: ", str, ": No such file or directory");
 	}
+	//ici error "> ioo" 
 	else if ((res > 1 && access(path, X_OK) == 0) || ((res == 1 || res == 0) && access(path, X_OK) == -1))// && S_ISDIR(buf.st_mode) // || (res == 0 && stat(path, &buf) == -1) || (res == 1 && stat(path, &buf) == -1)
 	{
 		res = 126;
