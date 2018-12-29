@@ -98,6 +98,13 @@ void check_op(t_command cmd, t_env_tools *env)
 	while (++i < cmd.used_space && cmd.command[i].tok != -1)
 	{
 		dprintf(2, "RENTRE MA POULE\n");
+		if (cmd.command[i + 1].redirection.used_space > 0)
+		{
+		// dprintf(2, "ENTRE DANS LE OUTRED\n");
+			out = out_red(cmd, env, i + 1, &aux);
+			if (out == -2)
+				return;
+		}
 		//print_array(cmd.command[i + 1].used_space, cmd.command[i + 1].cmd_simple);
 		if (i == cmd.used_space - 1 || cmd.command[i + 1].used_space == 0)
 			break;
