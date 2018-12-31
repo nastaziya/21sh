@@ -24,16 +24,21 @@ int		out_red(t_command cmd, t_env_tools *env, int i, int *aux)
 		}
 		if ((*aux = dup(cmd.command[i].redirection.fd[j])))
 		{
+			// ecrit dans le dernier fd valide :  ls 1> oui 8> po 7> pi 9> lolo -> ecrit dans oui
+
+			// le fd existe, dup a fonctionne : ls > file
 			if (*aux > -1)
 			{
 				saved_stdout = *aux;
-				out = open(files[j], O_WRONLY | O_CREAT | O_TRUNC,
+				// O_TRUNC pour redirection ">" et pour ">>" sans O_TRUNC
+				out = open(files[j], O_WRONLY | O_APPEND | O_CREAT ,
    	    		S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 				*aux = j;
 			}
+			// ca n'a pas fonctionne : le fd nexiste pas : ls 8> file
 			else
 			{
-				test = open(files[j], O_WRONLY | O_CREAT | O_TRUNC,
+				test = open(files[j], O_WRONLY | O_APPEND | O_CREAT ,
    	   			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 				close(test);
 				if (j > 0)
@@ -78,6 +83,12 @@ void check_op(t_command cmd, t_env_tools *env)
 		if (out == -2)
 			return;
 	}
+
+	//
+	// PIPE - idee Anastasia : rajouter un elsif : 
+	// else if (cmd.command[i].tok == T_PIPE)
+	//
+
 	if (cmd_expended != NULL && cmd.used_space > 0 && !is_built_in(cmd_expended))
 		// env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
 		env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
@@ -140,7 +151,7 @@ void check_op(t_command cmd, t_env_tools *env)
 		}
 		else if (cmd.command[i].tok == T_SEMI)// && is_built_in(cmd_expended) == 0)
 		{
-			if (cmd.command[i + 1].redirection.used_space > 0)
+			if (cmd.command[i + 1].redirection.used_space > 0)//cmd.command[i].tok == T_GREAT <= a rajouter de partout
 			{
 					out = out_red(cmd, env, i + 1, &aux);
 					if (out == -2)
@@ -161,6 +172,8 @@ void check_op(t_command cmd, t_env_tools *env)
 	}
 }
 
+
+
 void	all_exec(char **environ, char ***heredoc)
 {
 	t_dlist		*history;
@@ -179,7 +192,7 @@ void	all_exec(char **environ, char ***heredoc)
 	{
 		lex = final_tokens(&history);
 		// final_tokens(&lex);
-		// print(&lex);
+		//print(&lex);
 		command_init(&cmd);
 		add_simple_command(&cmd, lex, &history, heredoc);
 		//print_struct(cmd);
