@@ -156,7 +156,7 @@ int       ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **his
 
 
 /////////A enlever plus tard 
-// void		print(const t_lexer *lexer);
+void		print(const t_lexer *lexer);
 
 
   #endif

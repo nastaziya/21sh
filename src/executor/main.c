@@ -84,22 +84,8 @@ void check_op(t_command cmd, t_env_tools *env)
 			return;
 	}
 
-	//
-	// PIPE - idee Anastasia : rajouter un elsif : 
-	// else if (cmd.command[i].tok == T_PIPE)
-	//
-
-	if (cmd_expended != NULL && cmd.used_space > 0 && !is_built_in(cmd_expended))
-		// env->g_return_value = error_exec_or_exec(env->paths, path, cmd_expended, env->env_cpy);
-		env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
-	else if (cmd_expended && is_built_in(cmd_expended))
-	{
-		dprintf(2, "[%s]\n", cmd.command[0].cmd_simple[0]);
-		env->g_return_value = ft_exec_builtin(env, cmd_expended);
-		// env->g_return_value = ft_exec_builtin(env, cmd_expended);
-		//stocker valeur de retour : env->g_return_value
-		dprintf(2, "builtin\n");
-	}
+	if (cmd_expended != NULL && cmd.used_space > 0)
+		env->g_return_value = ft_exec_command(env, cmd_expended);
 	if (out > -1)
 	{
 		dup2(out, cmd.command[0].redirection.fd[aux]);
@@ -124,13 +110,17 @@ void check_op(t_command cmd, t_env_tools *env)
 					if (out == -2)
 						return;
 				}
-				if (is_built_in(cmd_expended))
-					env->g_return_value = ft_exec_builtin(env, cmd_expended);
-				else
-					env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
+				env->g_return_value = ft_exec_command(env, cmd_expended);
 			}
 			
 			
+		}
+		else if (cmd.command[i].tok == T_PIPE)
+		{
+			// FAIRE UNE GESTION D'ERREUR COMME POUR LES REDIR -> ls | /oo/sss"
+			// bash: /oo/sss: No such file or directory
+			
+			// A CONSTRUIRE
 		}
 		else if (cmd.command[i].tok == T_DBLAND)// && !is_built_in(cmd_expended))
 		{
@@ -142,10 +132,7 @@ void check_op(t_command cmd, t_env_tools *env)
 					if (out == -2)
 						return;
 				}
-				if (is_built_in(cmd_expended))
-					env->g_return_value = ft_exec_builtin(env, cmd_expended);
-				else
-					env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
+				env->g_return_value = ft_exec_command(env, cmd_expended);
 			}
 			
 		}
@@ -157,10 +144,7 @@ void check_op(t_command cmd, t_env_tools *env)
 					if (out == -2)
 						return;
 			}
-			if (is_built_in(cmd_expended))
-				env->g_return_value = ft_exec_builtin(env, cmd_expended);
-			else
-				env->g_return_value = error_exec_or_exec(env->paths, cmd_expended, env->env_cpy, 0);
+			env->g_return_value = ft_exec_command(env, cmd_expended);
 		}
 		//free(path);
 		free_str(cmd_expended);

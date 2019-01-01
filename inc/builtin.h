@@ -46,7 +46,7 @@ int		ft_usage_error(char *command, char *btwn, char *after, int i);
 int		ft_int_error(char *str, int fd, int ret);
 int		ft_int_print_error(char *str, char *str2, char *str3, int fd);
 int		ft_len_array_char(char **av);
-int		ft_exec_builtin(t_env_tools *env, char **cmd);
+int		ft_exec_command(t_env_tools *env, char **cmd);
 // --> nouvelle feuille
 int		ft_usage_is_good(char *limitor, char *str);
 
