@@ -5,30 +5,44 @@
 
 #define TAB_INITIAL_CAPACITY 60
 
-typedef struct  s_red
+typedef struct      s_exec_redir
+{
+    int         out;
+	// struct stat s;
+	int         saved_stdout;
+	char        **files;
+	int         j;
+	int         test;
+    
+    // function check_op
+    int 	    aux;
+    int         f_out;
+}                   t_exec_redir;
+
+typedef struct      s_red
 {
     int          *fd; //io numb
     e_token_type *red;  
     char         **file; // save the name of the file for the >, >>, < operand but also the fd_out in the case of the aggregator
     int          used_space;
     int          av_space;    
-}        t_red;
+}                   t_red;
 
-typedef struct s_simp_com
+typedef struct      s_simp_com
 {
     char  **cmd_simple;
     int   av_space; //capacity
     int   used_space; 
     int   tok;
     t_red redirection; // dynamic array of redirections
-}       t_simp_com;
+}                   t_simp_com;
 
-typedef struct  s_command
+typedef struct      s_command
 {
     t_simp_com *command;
     int av_space;
     int used_space;
-}       t_command;
+}                   t_command;
 
 /*
 *** - struct only built for the norm of
