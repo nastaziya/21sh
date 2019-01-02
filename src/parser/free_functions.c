@@ -22,11 +22,16 @@ void	free_struct(t_command *cmd)
 	i = 0;
 	while (i < cmd->used_space)
 	{
-		if (cmd->command[i].cmd_simple && cmd->command[i].used_space > 0)
+		if (cmd->command[i].used_space > 0)
+		{
+			dprintf(2, "cmd->command[i].cmd_simple[0]: |%s| - %d\n", cmd->command[i].cmd_simple[1], cmd->command[i].redirection.red[0]);
 			free_str(cmd->command[i].cmd_simple);
+		}
+
 		// free_str_2(cmd->command[i].redirection.red,
 		// cmd->command[i].redirection.used_space);
-		free(cmd->command[i].redirection.red);
+
+		// free(cmd->command[i].redirection.red);
 		free_str_2(cmd->command[i].redirection.file, 
 		cmd->command[i].redirection.used_space);
 		free(cmd->command[i].redirection.fd);

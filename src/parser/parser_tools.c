@@ -4,7 +4,7 @@ int		is_red(t_lexer lex, int i)
 {
 	if ((lex.tokens[i].type == T_GREAT || lex.tokens[i].type == T_LESS ||
 		lex.tokens[i].type == T_DBL_GREAT || lex.tokens[i].type == T_DBL_LESS)
-		|| lex.tokens[i].type == T_TRL_LESS)
+		|| lex.tokens[i].type == T_TRL_LESS || lex.tokens[i].type == T_REDIR)
 		return (1); 
 	return (0);
 }
