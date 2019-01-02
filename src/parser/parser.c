@@ -79,25 +79,6 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 	}
 }
 
-// function tells if the word after the >& && <& is a redir number
-
-int		ft_isnumber_redir(char *str)
-{
-	dprintf(2, "rentre dans ft_isnumber_redir\n");
-	int i;
-
-	i = -1;
-	if (!ft_strcmp(str, "-"))
-		return (0);
-	while (str[++i])
-		if (!ft_isdigit(str[i]))
-			return (1);
-	return (0);
-}
-// Place it somewhere else for the norm
-
-///////////
-
 /* (1) and (2) below take dynamic array created in "add_token_val" function 
 	and complete array of commands giving values to cmd_simple 
 	and redirections if existes*/

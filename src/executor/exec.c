@@ -132,6 +132,26 @@ int		exec(char *path, char **str, char **env)
 	return (0);
 }
 
+
+// function tells if the word after the >& && <& is a redir number
+
+int		ft_isnumber_redir(char *str)
+{
+	dprintf(2, "rentre dans ft_isnumber_redir\n");
+	int i;
+
+	i = -1;
+	if (!ft_strcmp(str, "-"))
+		return (0);
+	while (str[++i])
+		if (!ft_isdigit(str[i]))
+			return (1);
+	return (0);
+}
+// Place it somewhere else for the norm
+
+///////////
+
 // str == command
 // char *path -> error_exec_or_exec
 // int		error_exec_or_exec(char **paths, char *path, char **str,
