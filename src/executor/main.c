@@ -176,7 +176,7 @@ void	all_exec(char **environ, char ***heredoc)
 	{
 		lex = final_tokens(&history);
 		// final_tokens(&lex);
-		//print(&lex);
+		print(&lex);
 		command_init(&cmd);
 		add_simple_command(&cmd, lex, &history, heredoc);
 		//print_struct(cmd);

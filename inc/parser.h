@@ -7,11 +7,11 @@
 
 typedef struct  s_red
 {
-    int  *fd; //io numb
-    char **red;  
-    char **file;
-    int  used_space;
-    int  av_space;    
+    int          *fd; //io numb
+    e_token_type *red;  
+    char         **file; // save the name of the file for the >, >>, < operand but also the fd_out in the case of the aggregator
+    int          used_space;
+    int          av_space;    
 }        t_red;
 
 typedef struct s_simp_com
