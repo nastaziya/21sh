@@ -111,14 +111,6 @@ void	complete_simple_command_and_red(t_command *cmd, t_lexer lex, int i,
 	else if (lex.tokens[i].type == T_WORD && !is_red(lex, i - 1) &&
 			lex.tokens[i - 1].type != T_IO_NUMB)
 			tab_assign(&cmd->command[*j], lex, i);
-	//
-	// else if (lex.tokens[i].type == T_REDIR && lex.tokens[i + 1].type == T_WORD && !ft_isnumber_redir(lex.tokens[i + 1].content))
-	// {
-	// 	tab_io_assign(&cmd->command[*j].redirection, lex, i - 1);
-	// 	tab_red_assign(&cmd->command[*j].redirection, lex, i, i + 1);
-	// 	dprintf(2, "rentre ma poule dans le T_REDIR\n");
-	// }
-	//
 	else if (is_red(lex, i) && lex.tokens[i + 1].type == T_WORD)
 	{
 		tab_io_assign(&cmd->command[*j].redirection, lex, i - 1);
