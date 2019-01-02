@@ -54,7 +54,7 @@ int		out_red(t_command cmd, t_env_tools *env, int i, int *aux)
 
 	if (dup2(out, cmd.command[i].redirection.fd[*aux]) == -1)
 		return -1;
-	if (out)	
+	if (out)
 		close(out);
 	return (saved_stdout);
 }

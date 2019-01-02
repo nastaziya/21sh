@@ -78,6 +78,23 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 			assign_tok(cmd, lex, j, -1);
 	}
 }
+
+// function tells if the word after the >& && <& is a redir number
+
+int		ft_isnumber_redir(char *str)
+{
+	dprintf(2, "rentre dans ft_isnumber_redir\n");
+	int i;
+
+	i = -1;
+	if (!ft_strcmp(str, "-"))
+		return (0);
+	while (str[++i])
+		if (!ft_isdigit(str[i]))
+			return (1);
+	return (0);
+}
+
 /* (1) and (2) below take dynamic array created in "add_token_val" function 
 	and complete array of commands giving values to cmd_simple 
 	and redirections if existes*/
@@ -91,6 +108,13 @@ void	complete_simple_command_and_red(t_command *cmd, t_lexer lex, int i,
 	else if (lex.tokens[i].type == T_WORD && !is_red(lex, i - 1) &&
 			lex.tokens[i - 1].type != T_IO_NUMB)
 			tab_assign(&cmd->command[*j], lex, i);
+		//
+	else if (lex.tokens[i].type == T_REDIR && lex.tokens[i + 1].type == T_WORD && !ft_isnumber_redir(lex.tokens[i + 1].content))
+	{
+		//test
+		dprintf(2, "rentre ma poule dans le T_REDIR\n");
+	}
+	//
 	else if (is_red(lex, i) && lex.tokens[i + 1].type == T_WORD)
 	{
 		tab_io_assign(&cmd->command[*j].redirection, lex, i - 1);
