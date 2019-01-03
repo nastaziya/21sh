@@ -2,27 +2,6 @@
 #include "../../inc/builtin.h"
 #include "../../inc/expansion.h"
 
-/*
-*** - Initial copy of the home environment
-*** - same management as the PATH (works with copies)
-*/
-
-// void	cpy_home(t_env_tools *env)
-// {
-// 	env->home = ft_strdup(getenv("HOME"));
-// }
-
-// void	set_path(char *str, char ***paths)
-// {
-// 	if (str != NULL)
-// 	{
-// 		*paths = ft_strsplit(str, ':');
-// 		free(str);
-// 	}
-// 	else
-// 		*paths = NULL;
-// }
-
 void	path_str(char **envs, char ***paths)
 {
 	// int		i;
