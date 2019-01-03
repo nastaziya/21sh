@@ -202,7 +202,7 @@ int		error_exec_or_exec(char **paths, char **str,
 		in_env != 1 ? error_command("bash: ", str, ": No such file or directory") : error_command("env: ", str, ": No such file or directory");
 	}
 	//ici error "> ioo" ft_strcmp(str[0], ">")
-	else if (str && ((res > 1 && access(path, X_OK) == 0) || ((res == 1 || res == 0) && access(path, X_OK) == -1)))// && S_ISDIR(buf.st_mode) // || (res == 0 && stat(path, &buf) == -1) || (res == 1 && stat(path, &buf) == -1)
+	else if (str && *str && ((res > 1 && access(path, X_OK) == 0) || ((res == 1 || res == 0) && access(path, X_OK) == -1)))// && S_ISDIR(buf.st_mode) // || (res == 0 && stat(path, &buf) == -1) || (res == 1 && stat(path, &buf) == -1)
 	{
 		res = 126;
 			dprintf(2, "3eme %d - %d - %d - %d\n", access(path, F_OK), access(path, R_OK), access(path, X_OK), lstat(path, &buf));
