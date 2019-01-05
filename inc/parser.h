@@ -5,19 +5,19 @@
 
 #define TAB_INITIAL_CAPACITY 60
 
-typedef struct      s_exec_redir
-{
-    int         out;
-	// struct stat s;
-	int         saved_stdout;
-	char        **files;
-	int         j;
-	int         test;
+// typedef struct      s_exec_redir
+// {
+//     int         out;
+// 	// struct stat s;
+// 	int         saved_stdout;
+// 	char        **files;
+// 	int         j;
+// 	int         test;
     
-    // function check_op
-    int 	    aux;
-    int         f_out;
-}                   t_exec_redir;
+//     // function check_op
+//     int 	    aux;
+//     int         f_out;
+// }                   t_exec_redir;
 
 typedef struct      s_red
 {

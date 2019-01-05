@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   lexer.c                                          .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
+/*   Updated: 2018/09/07 17:58:18 by gurival-    ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
+
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
 #include "../../inc/expansion.h"
@@ -30,30 +43,34 @@ void check_op(t_command cmd, t_env_tools *env)
 {
 	t_exec_redir t;
 	int 	i;
-	// int		ret;
 
 	i = -1;
-	ft_first_exec(env, cmd, i &t);
+	save_original_fd(&t);
+	ft_first_exec(env, cmd, i, &t);
+	restore_original_fd(&t);
 // j'itere sur le reste des commandes
 	while (++i < cmd.used_space && cmd.command[i].tok != -1)
 	{
 		// break de ma boucle quand c'est fini
 		if (i == cmd.used_space - 1 || cmd.command[i + 1].used_space == 0)
 			break;
+		save_original_fd(&t);
 		// gestion ||
 		if (cmd.command[i].tok == T_DBLOR)
 			ft_or_exec(env, cmd, i, &t);
 		// gestion |
 		else if (cmd.command[i].tok == T_PIPE)
-		{			
-			// bash: /oo/sss: No such file or directory
-		}
+			;
+		// {			
+		// 	// bash: /oo/sss: No such file or directory
+		// }
 		// gestion &&
 		else if (cmd.command[i].tok == T_DBLAND)
 			ft_and_exec(env, cmd, i, &t);
 		// gestion ;
 		else if (cmd.command[i].tok == T_SEMI)
 			ft_semi_exec(env, cmd, i, &t);
+		restore_original_fd(&t);
 	}
 }
 

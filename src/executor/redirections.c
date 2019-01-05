@@ -1,4 +1,3 @@
-
 /* ************************************************************************** */
 /*                                                          LE - /            */
 /*                                                              /             */
@@ -12,38 +11,21 @@
 /*                                                        /                   */
 /* ************************************************************************** */
 
-#include "../../inc/expansion.h"
+#include "../../inc/sh.h"
+#include "../../inc/exec.h"
 
-void    tab_expansion_init(t_dynamic_array *arr)
-{
-	arr->used_size = 0;
-	arr->capacity = TAB_INITIAL_CAPACITY;
-	if (!(arr->array_expanded =(char*)malloc(sizeof(char) * (arr->capacity + 1))))
-		return;
-	arr->array_expanded[arr->used_size] = '\0';
-	
-}
+/*
+**	Performs redirections from the redirlst
+**	Removes the no more useful REDIR nodes from the tokens
+*/
 
-void		add_char_to_array(t_dynamic_array *arr, char item)
+int			process_redirections(t_exec_redir *t, t_simp_com cmd)
 {
-    char            *temp;
-	int				i;
+    int     i;
+	int		ret;
 
 	i = -1;
-	if (arr->used_size == arr->capacity)
-	{
-		temp = arr->array_expanded;
-		arr->capacity = (arr->used_size * 3) / 2 + 1;
-		if (!(arr->array_expanded = malloc(sizeof(char) * arr->capacity + 1)))
-			return ;
-		if (arr->array_expanded == NULL)
-			exit(EXIT_FAILURE);
-		while (++i < arr->used_size)
-			arr->array_expanded[i] = temp[i];
-		free(temp);
-	}
-	arr->array_expanded[arr->used_size] = item;
-	++arr->used_size;
-	arr->array_expanded[arr->used_size] = '\0';
-
+    ret = 0;
+    // loop here to do the proper redirections
+	return (ret);
 }
