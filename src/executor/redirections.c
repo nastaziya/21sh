@@ -77,6 +77,7 @@ static int	handle_file(t_simp_com cmd, int i, t_exec_redir *t)
         dprintf(2, "passe ici merce\n");
         // return (file_error(cmd.redirection.file[i], OPEN_ERR));
     }
+    dprintf(2, "DEBUUG, HandleFile: %d - %d\n", t->fdoutred[i], cmd.redirection.fd[i]);
 	if (dup2(t->fdoutred[i], cmd.redirection.fd[i]) < 0)
 	{
         dprintf(2, "passe ici merce\n");
@@ -119,29 +120,29 @@ static int	handle_file(t_simp_com cmd, int i, t_exec_redir *t)
 *** - if the command is : ls < oui => I shall redirect the fd 0 to the fd of the file oui
 */
 
-int			copy_fds(t_exec_redir *t, t_simp_com cmd)
+int			copy_fds(t_exec_redir *t, t_simp_com *cmd)
 {
     int i;
 
     i = -1;
     // tableau d'int qui va contenir les fds créés
-    if (!(t->fdoutred = (int*)malloc(sizeof(int) * cmd.redirection.used_space)))
+    if (!(t->fdoutred = (int*)malloc(sizeof(int) * cmd->redirection.used_space)))
         return (1);
     // Que j'initialise à -1, car si ça plante après, les dup2 pèteront avec les -1
-    ft_memset(t->fdoutred, -1, cmd.redirection.used_space);
+    ft_memset(t->fdoutred, -1, cmd->redirection.used_space);
     //
-    dprintf(1, "gros test ma gueule: %d\n", t->fdoutred[cmd.redirection.used_space - 1]);
+    // dprintf(1, "gros test ma gueule: %d\n", t->fdoutred[cmd->redirection.used_space - 1]);
     //
-    while (++i < cmd.redirection.used_space)
+    while (++i < cmd->redirection.used_space)
     {
-        dprintf(1, "cmd.redirection.fd[i]: %d\n", cmd.redirection.fd[i]);
-        if (cmd.redirection.fd[i] == -1)
+        dprintf(1, "cmd.redirection.fd[i]: %d\n", cmd->redirection.fd[i]);
+        if (cmd->redirection.fd[i] == 1)
         {
-            if (cmd.redirection.red[i] == T_LESS || cmd.redirection.red[i] == T_DBL_LESS
-            || cmd.redirection.red[i] == T_DBL_LESS_DASH || cmd.redirection.red[i] == T_REDIR_LESS)
-                t->fdoutred[i] = 0;
+            if (cmd->redirection.red[i] == T_LESS || cmd->redirection.red[i] == T_DBL_LESS
+            || cmd->redirection.red[i] == T_DBL_LESS_DASH || cmd->redirection.red[i] == T_REDIR_LESS)
+                cmd->redirection.fd[i] = 0;
             else
-                t->fdoutred[i] = 1;
+                cmd->redirection.fd[i] = 1;
         }
     }
     return (0);
@@ -179,8 +180,9 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd)
 	i = -1;
     ret = 0;
     // fd = -1;
+    // dprintf(1, "cmd.redirection.used_space: %d\n", cmd.redirection.used_space);
     // 1. Copier tous les fds
-	copy_fds(t, cmd);
+	copy_fds(t, &cmd);
     while (++i < cmd.redirection.used_space && ret == 0)
 	{
 		if (cmd.redirection.red[i] == T_REDIR_LESS || cmd.redirection.red[i] == T_REDIR_GREAT)

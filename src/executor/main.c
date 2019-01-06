@@ -44,13 +44,15 @@ void check_op(t_command cmd, t_env_tools *env)
 	t_exec_redir t;
 	int 	i;
 
-	i = -1;
+	i = 0;
 	save_original_fd(&t);
+	// dprintf(1, "array: %d - %d\n", cmd.command[0].tok, cmd.command[1].tok);
 	ft_first_exec(env, cmd, i, &t);
 	restore_original_fd(&t);
 // j'itere sur le reste des commandes
 	while (++i < cmd.used_space && cmd.command[i].tok != -1)
 	{
+		// dprintf(1, "array: %d\n", cmd.command[i].tok);
 		// break de ma boucle quand c'est fini
 		if (i == cmd.used_space - 1 || cmd.command[i + 1].used_space == 0)
 			break;
