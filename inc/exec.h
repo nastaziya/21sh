@@ -16,7 +16,7 @@ typedef struct      s_exec_redir
     
     // save original states of the fds
     int				fd_orig[3];
-    int             fd_redir;
+    int             *fdoutred;
 
     // function check_op
     // int 	    aux;
