@@ -22,14 +22,16 @@ void	save_original_fd(t_exec_redir *t)
 
 	i = -1;
 	while (++i < 3)
-		t->fd_orig[i] = dup(i);
+        // t->fd_orig[i] = i;
+		// t->fd_orig[i] = dup(i);
+        t->fd_orig[i] = dup2(i, 1500 + i);
 }
 
 void	restore_original_fd(t_exec_redir *t)
 {
 	int		i;
-
-	i = -1;
+    
+    i = -1;
 	while (++i < 3)
 	{
 		dup2(t->fd_orig[i], i);

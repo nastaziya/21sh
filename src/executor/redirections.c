@@ -130,9 +130,6 @@ int			copy_fds(t_exec_redir *t, t_simp_com *cmd)
         return (1);
     // Que j'initialise à -1, car si ça plante après, les dup2 pèteront avec les -1
     ft_memset(t->fdoutred, -1, cmd->redirection.used_space);
-    //
-    // dprintf(1, "gros test ma gueule: %d\n", t->fdoutred[cmd->redirection.used_space - 1]);
-    //
     while (++i < cmd->redirection.used_space)
     {
         dprintf(1, "cmd.redirection.fd[i]: %d\n", cmd->redirection.fd[i]);
@@ -158,6 +155,7 @@ void	clear_fd(t_exec_redir *t, int end)
 		if (t->fdoutred[i] > 2)
 			close(t->fdoutred[i]);
 	}
+    free(t->fdoutred);
 }
 
 /*
