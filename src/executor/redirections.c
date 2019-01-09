@@ -56,33 +56,82 @@
 
 static int	handle_file(t_simp_com cmd, int i, t_exec_redir *t)
 {
+    struct stat buf;
+    char        pbuf[1024];
+    char        *tmp;
+    char        *tmp2;
+
+    getcwd(pbuf, sizeof(pbuf));
+    tmp = ft_strjoin(pbuf, "/");
+    tmp2 = ft_strjoin(tmp, cmd.redirection.file[i]);
+    free(tmp);
+    lstat(tmp2, &buf);
+    dprintf(3, "tmp2: |%s|", tmp2);
 	if (cmd.redirection.red[i] == T_GREAT)
 	{
-		// if (ft_is_dir(redir->filename))
-		// 	return (file_error(redir->filename, IS_DIR));
+        dprintf(3, "lstat: %d \n", lstat(tmp2, &buf) && S_ISDIR(buf.st_mode));
+		if (S_ISDIR(buf.st_mode))
+		{
+            // return (file_error(redir->filename, IS_DIR));
+            // ft_putstr_fd("PERMIEEERR", 2);
+            ft_putstr_fd("bash: ", 2);
+            ft_putstr_fd(cmd.redirection.file[i], 2);
+            ft_putendl_fd(": Is a directory", 2);
+            return (1);
+        }
 		t->fdoutred[i] = open(cmd.redirection.file[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	}
 	else if (cmd.redirection.red[i] == T_DBL_GREAT)
 	{
-		// if (ft_is_dir(redir->filename))
-		// 	return (file_error(redir->filename, IS_DIR));
+		if (S_ISDIR(buf.st_mode))
+		{
+            // return (file_error(redir->filename, IS_DIR));
+            // ft_putstr_fd("DEUXIEMME", 2);
+            ft_putstr_fd("bash: ", 2);
+            ft_putstr_fd(cmd.redirection.file[i], 2);
+            ft_putendl_fd(": Is a directory", 2);
+            return (1);
+        }
 		t->fdoutred[i] = open(cmd.redirection.file[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
 	}
 	else if (cmd.redirection.red[i] == T_LESS)
-		t->fdoutred[i] = open(cmd.redirection.file[i], O_RDONLY);
+	{
+        t->fdoutred[i] = open(cmd.redirection.file[i], O_RDONLY);
+        if (t->fdoutred[i] < 0)
+        {
+            ft_putstr_fd("bash: ", 2);
+            ft_putstr_fd(cmd.redirection.file[i], 2);
+            ft_putendl_fd(": No such file or directory", 2);
+        }
+        return (1);
+    }
 	else if (cmd.redirection.red[i] == T_REDIR_LESSGREAT)
 		t->fdoutred[i] = open(cmd.redirection.file[i], O_RDWR);
 	if (t->fdoutred[i] < 0)
 	{
-        dprintf(2, "passe ici merce\n");
+        // ft_putstr_fd("TROISIIEEEME", 2);
+        // dprintf(3, "3- lstat: %d - %d\n", lstat(tmp2, &buf), S_ISDIR(buf.st_mode));
+        if (!S_ISDIR(buf.st_mode))
+        {
+            ft_putstr_fd("bash: ", 2);
+            ft_putstr_fd(cmd.redirection.file[i], 2);
+            ft_putendl_fd(": Permission Denied", 2);
+        }
+        return (1);
+        // dprintf(2, "passe ici merce\n");
         // return (file_error(cmd.redirection.file[i], OPEN_ERR));
     }
-    dprintf(2, "DEBUUG, HandleFile: %d - %d\n", t->fdoutred[i], cmd.redirection.fd[i]);
+    // dprintf(2, "DEBUUG, HandleFile: %d - %d\n", t->fdoutred[i], cmd.redirection.fd[i]);
 	if (dup2(t->fdoutred[i], cmd.redirection.fd[i]) < 0)
 	{
-        dprintf(2, "passe ici merce\n");
+        // ft_putstr_fd("DERRNIEERR", 2);
+        ft_putstr_fd("bash: ", 2);
+            ft_putstr_fd(cmd.redirection.file[i], 2);
+            ft_putendl_fd(": Is a directory", 2);
+            return (1);
         // return (file_error(redir->filename, 0));
     }
+    free(tmp2);
 	return (0);
 }
 
@@ -132,7 +181,7 @@ int			copy_fds(t_exec_redir *t, t_simp_com *cmd)
     ft_memset(t->fdoutred, -1, cmd->redirection.used_space);
     while (++i < cmd->redirection.used_space)
     {
-        dprintf(1, "cmd.redirection.fd[i]: %d\n", cmd->redirection.fd[i]);
+        dprintf(3, "cmd.redirection.fd[i]: %d\n", cmd->redirection.fd[i]);
         if (cmd->redirection.fd[i] == 1)
         {
             if (cmd->redirection.red[i] == T_LESS || cmd->redirection.red[i] == T_DBL_LESS
@@ -158,10 +207,26 @@ void	clear_fd(t_exec_redir *t, int end)
     free(t->fdoutred);
 }
 
+int     ft_calcul_pos_last_heredoc(t_simp_com cmd)
+{
+    int     i;
+    int     count;
+
+    i = -1;
+    count = -1;
+    while (++i < cmd.redirection.used_space)
+    {
+        if (cmd.redirection.red[i] == T_DBL_LESS ||
+            cmd.redirection.red[i] == T_DBL_LESS_DASH)
+            count++;
+    }
+    return (count);
+}
+
 /*
 ***	- Aim of the function : to redirect to the proper redirection
 */
-// cmd.redirection.fd => stocke les anciens fds, avec -1 quand
+// cmd.redirection.fd => stocke les anciens fds, avec 1 quand
 // il n'y en a pas. Cependant, 
 ////////////
 ////////
@@ -173,6 +238,7 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd)
 {
     int     i;
 	int		ret;
+    int     pos_heredoc;
     // int     fd;
 
 	i = -1;
@@ -181,6 +247,8 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd)
     // dprintf(1, "cmd.redirection.used_space: %d\n", cmd.redirection.used_space);
     // 1. Copier tous les fds
 	copy_fds(t, &cmd);
+    pos_heredoc = ft_calcul_pos_last_heredoc(cmd);
+    dprintf(3, "POS_HEREDOC: %d\n", pos_heredoc);
     while (++i < cmd.redirection.used_space && ret == 0)
 	{
 		if (cmd.redirection.red[i] == T_REDIR_LESS || cmd.redirection.red[i] == T_REDIR_GREAT)

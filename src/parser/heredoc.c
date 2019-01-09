@@ -92,6 +92,8 @@ static int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer,
 			//si mot clé c'est pas le dernier, free ce que l'on get_line et passer au suivant
 			if (h->k < h->i_words - 1 && (res = ft_strdup(tmp)))
 			{
+				///DEBUG HEREDOC///
+				dprintf(3, "DEBUG HEREDOC: |%s|-|%s|-|%s|\n", res, tmp);
 				//control expansion
 				tmp = ft_strdup(lexer->tokens[h->words[h->k]].content);
 				expanded_dynamic_table_heredoc(&tmp, 0);

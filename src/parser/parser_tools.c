@@ -22,7 +22,7 @@ int		is_red(t_lexer lex, int i)
 
 int is_built_in(char **cmd)
 {
-	dprintf(2, "||%s||\n", cmd[0]);
+	dprintf(3, "||%s||\n", cmd[0]);
 	if (cmd && cmd[0])
 	{
 		if (!ft_strcmp("echo", cmd[0]) ||

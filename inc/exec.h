@@ -18,6 +18,8 @@ typedef struct      s_exec_redir
     int				fd_orig[3];
     int             *fdoutred;
 
+    char            ***heredoc;
+
     // function check_op
     // int 	    aux;
     // int         f_out;

@@ -129,7 +129,7 @@ int		exec(char *path, char **str, char **env)
 
 int		ft_isnumber_redir(char *str)
 {
-	dprintf(2, "rentre dans ft_isnumber_redir\n");
+	dprintf(3, "rentre dans ft_isnumber_redir\n");
 	int i;
 
 	i = -1;
@@ -166,7 +166,7 @@ int		error_exec_or_exec(char **paths, char **str,
 	}
 	else
 		res = check_path(paths, &path, str);
-	dprintf(2,"dsf : %d\n", res);
+	dprintf(3,"dsf : %d\n", res);
 	/////////
 	// int j = -1;
 	// while (paths[++j])
@@ -174,7 +174,7 @@ int		error_exec_or_exec(char **paths, char **str,
 	// dprintf(2, "path: |%s - %d|\n", path, res);
 	// // //////
 	struct stat buf;
-	dprintf(2, "|%s|\n", path);
+	dprintf(3, "|%s|\n", path);
 	// dprintf(2, "stat: %d - %d - %d - %d - %d - %d\n", res, stat(path, &buf), S_ISDIR(buf.st_mode), access(path, F_OK), access(path, X_OK), in_env);
 	/// Quand dossier est chmod 000 -> sort erreur de l'error command
 	// Quand executable est chmod 000 -> execute quand même alors que devrait sortir erreur error command
@@ -182,14 +182,14 @@ int		error_exec_or_exec(char **paths, char **str,
 	if (in_env != 1 && res == 0 && i == 0 && (access(path, X_OK) == -1) && ft_strncmp(str[0], "./", 2) && str[0][0] != '/')// faire en sorte que cette erreur ne s'affiche pas quand env
 	// FAUX QUAND dossier est inaccessible !! devrait être permission denied
 	{
-		dprintf(2, "1er\n");
+		dprintf(3, "1er\n");
 		res = 127;
 		error_command("bash: ", str, ": command not found");
 	} // ((stat(path, &buf) >= 0) && (buf.st_mode > 0) && (S_IEXEC & buf.st_mode)) //(in_env == 1 ? lstat(ft_strsub(path, 0, ft_strrchr(path, '/') - path), &buf) == -1 :
 	else if (res == 0 && i == 0 && access(path, X_OK) == -1 && !ft_strncmp(str[0], "./", 2))// faire en sorte que cette erreur ne s'affiche pas quand env
 	// FAUX QUAND dossier est inaccessible !! devrait être permission denied
 	{
-		dprintf(2, "2eme\n");
+		dprintf(3, "2eme\n");
 		res = 127;
 		in_env != 1 ? error_command("bash: ", str, ": No such file or directory") : error_command("env: ", str, ": No such file or directory");
 	}
@@ -197,18 +197,18 @@ int		error_exec_or_exec(char **paths, char **str,
 	else if (str && *str && ((res > 1 && access(path, X_OK) == 0) || ((res == 1 || res == 0) && access(path, X_OK) == -1)))// && S_ISDIR(buf.st_mode) // || (res == 0 && stat(path, &buf) == -1) || (res == 1 && stat(path, &buf) == -1)
 	{
 		res = 126;
-			dprintf(2, "3eme %d - %d - %d - %d\n", access(path, F_OK), access(path, R_OK), access(path, X_OK), lstat(path, &buf));
-		dprintf(2, "3eme\n");
+			dprintf(3, "3eme %d - %d - %d - %d\n", access(path, F_OK), access(path, R_OK), access(path, X_OK), lstat(path, &buf));
+		dprintf(3, "3eme\n");
 		if (in_env != 1)
 			error_command("bash: ", str, ": permission denied");
 		else if (in_env == 1 && ft_strchr(path, '/') ? !access(ft_strsub(path, 0, ft_strrchr(path, '/') - path), X_OK) && access(path, X_OK) : 1 == 2)
 		{
 			error_command("env: ", str, ": permission denied");
-			dprintf(2, "YES JAI TROUVE\n");
+			dprintf(3, "YES JAI TROUVE\n");
 		}
 		else if (in_env == 1 && ft_strchr(path, '/') ? access(ft_strsub(path, 0, ft_strrchr(path, '/') - path), X_OK) : 1 == 2)
 		{
-			dprintf(2, "YES JAI TROUVE- le 2eme\n");
+			dprintf(3, "YES JAI TROUVE- le 2eme\n");
 			// dprintf(2, "DEBUG: %d - %d\n", access(path, X_OK), lstat(path, &buf));
 			error_command("env: ", str, ": permission denied");
 		}
@@ -220,7 +220,7 @@ int		error_exec_or_exec(char **paths, char **str,
 	}
 	else
 	{
-		dprintf(2, "4eme\n");
+		dprintf(3, "4eme\n");
 		res = exec(path, str, env);
 		// if ((res = exec(path, str, env) == 1))
 		// {
@@ -230,6 +230,6 @@ int		error_exec_or_exec(char **paths, char **str,
 	}
 	if (path != NULL)
 		free(path);
-	dprintf(2, "return res: %d\n", res);
+	dprintf(3, "return res: %d\n", res);
 	return (res);
 }

@@ -150,7 +150,7 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
     argc = ft_len_array_char(av);
     if ((ret = ft_usage_env_builtin(av, argc, &i, &p)))
         return (ret == 2 ? 0 : 1);
-    dprintf(2, "builtin env: %d - %c - %d\n", i, p, argc);
+    dprintf(3, "builtin env: %d - %c - %d\n", i, p, argc);
     // gérer avec le -i
 	p == 0 ? ft_cp_env(&cp_c_env, *c_env) : ft_manage_option_i_env(&cp_c_env);
 	if (argc == 1)//  || i == argc ------ //i == argc - 1

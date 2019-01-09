@@ -39,12 +39,13 @@
 // FAIRE UNE GESTION D'ERREUR COMME POUR LES REDIR -> ls | /oo/sss"
 // => dans ma fonction d'execution je pense
 // bash: /oo/sss: No such file or directory
-void check_op(t_command cmd, t_env_tools *env)
+void check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 {
 	t_exec_redir t;
 	int 	i;
 
 	i = 0;
+	t.heredoc = heredoc;
 	save_original_fd(&t);
 	// dprintf(1, "array: %d - %d\n", cmd.command[0].tok, cmd.command[1].tok);
 	ft_first_exec(env, cmd, i, &t);
@@ -107,7 +108,7 @@ void	all_exec(char **environ, char ***heredoc)
 	 	// si je n'ai ni fait ctrl_c, de ctrl_d, ou j'ai fait ctrl_d pendant le heredoc 
 		//  -> Exécute les commandes
 		if (!keepRunning || keepRunning == 4)
-			check_op(cmd, &env);
+			check_op(cmd, &env, heredoc);
 		if (*heredoc)
 		{
 			ft_free_av(*heredoc);
