@@ -76,7 +76,7 @@ static int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer,
 			char ***heredoc, t_dlist **history)
 {
 	char *tmp;
-	char *res;
+	// char *res;
 
 	if (h->i_words > 0)
 		while (h->k < h->i_words && !keepRunning)
@@ -90,20 +90,22 @@ static int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer,
 			// if (h->cmd)
 			// free(h->cmd);
 			//si mot clé c'est pas le dernier, free ce que l'on get_line et passer au suivant
-			if (h->k < h->i_words - 1 && (res = ft_strdup(tmp)))
+			// dprintf(3, "DEBUG HEREDOC_NB: [%d]-[%d]-[%d]\n", h->i_words, h->words[h->k], h->k);
+			if (h->k < h->i_words - 1)// && (res = ft_strdup(h->cmd))
 			{
 				///DEBUG HEREDOC///
-				dprintf(3, "DEBUG HEREDOC: |%s|-|%s|-|%s|\n", res, tmp);
+				// dprintf(3, "DEBUG HEREDOC: [|%d|]-[|%s|]\n", h->k, tmp);
+				// dprintf(3, "DEBUG HEREDOC: [|%d|]\n", h->k);
 				//control expansion
 				tmp = ft_strdup(lexer->tokens[h->words[h->k]].content);
 				expanded_dynamic_table_heredoc(&tmp, 0);
 				// res = ft_strdup(tmp);
 				// expansionner le lexer->tokens[h->words[h->k]].content sur les " et les /
-				if (ft_strcmp(res, h->cmd) == 0)
+				if (ft_strcmp(tmp, h->cmd) == 0)
 					(h->k)++;
 				free(h->cmd);
 				free(tmp);
-				free(res);
+				// free(res);
 			}
 			// quand on arrive au dernier, on collecte les données dans le char***
 			else if (h->k == h->i_words - 1)

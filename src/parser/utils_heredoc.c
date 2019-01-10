@@ -95,6 +95,7 @@ int		ft_find_end_command_and_nb_kewyords(t_hdoc *h, t_lexer *lexer)
 			&& h->words[h->i_words] == -1)			
 		{
 			h->words[h->i_words] = h->i + 1;
+			// dprintf(3, "h->words: %d\n", h->words[h->i_words]);
 			(h->i_words)++;
 		}
 	// set k value at 0 not after for the norm (gain space for next function)

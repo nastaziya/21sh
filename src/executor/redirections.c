@@ -227,12 +227,6 @@ int     ft_calcul_pos_last_heredoc(t_simp_com cmd)
 ***	- Aim of the function : to redirect to the proper redirection
 */
 // cmd.redirection.fd => stocke les anciens fds, avec 1 quand
-// il n'y en a pas. Cependant, 
-////////////
-////////
-//////// REGLER PROBLEME FD 3,4,5 avec les dups
-////////
-///////
 
 int			process_redirections(t_exec_redir *t, t_simp_com cmd)
 {
