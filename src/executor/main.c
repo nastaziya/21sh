@@ -47,6 +47,7 @@ void check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 	t.heredoc = heredoc;
 	save_original_fd(&t);
 	// dprintf(1, "array: %d - %d\n", cmd.command[0].tok, cmd.command[1].tok);
+	t.i_hdoc = 0;
 	ft_first_exec(env, cmd, 0, &t);
 	restore_original_fd(&t);
 	i = -1;

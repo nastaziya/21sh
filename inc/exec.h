@@ -19,6 +19,7 @@ typedef struct      s_exec_redir
     int             *fdoutred;
 
     char            ***heredoc;
+    int             i_hdoc;
     // char            *tmp2;
 
     // function check_op
