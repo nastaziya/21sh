@@ -44,23 +44,29 @@ void check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 	t_exec_redir t;
 	int 	i;
 
-	i = 0;
 	t.heredoc = heredoc;
 	save_original_fd(&t);
 	// dprintf(1, "array: %d - %d\n", cmd.command[0].tok, cmd.command[1].tok);
-	ft_first_exec(env, cmd, i, &t);
+	ft_first_exec(env, cmd, 0, &t);
 	restore_original_fd(&t);
+	i = -1;
 // j'itere sur le reste des commandes
+	// dprintf(3, "check_op: i: %d - %d-%d\n", i, cmd.used_space, cmd.command[i].tok);
+	// while (++i <= cmd.used_space && cmd.command[i].tok != -1)
 	while (++i < cmd.used_space && cmd.command[i].tok != -1)
 	{
+		dprintf(3, "rentre dans la loop\n");
 		// dprintf(1, "array: %d\n", cmd.command[i].tok);
 		// break de ma boucle quand c'est fini
+		// if (i == cmd.used_space - 1 || cmd.command[i + 1].used_space == 0)
+		// if (i == cmd.used_space || cmd.command[i + 1].used_space == 0)
+		// 	break;
 		if (i == cmd.used_space - 1 || cmd.command[i + 1].used_space == 0)
 			break;
 		save_original_fd(&t);
 		// gestion ||
 		if (cmd.command[i].tok == T_DBLOR)
-			ft_or_exec(env, cmd, i, &t);
+			ft_or_exec(env, cmd, i + 1, &t);
 		// gestion |
 		else if (cmd.command[i].tok == T_PIPE)
 			;
@@ -69,10 +75,10 @@ void check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 		// }
 		// gestion &&
 		else if (cmd.command[i].tok == T_DBLAND)
-			ft_and_exec(env, cmd, i, &t);
+			ft_and_exec(env, cmd, i + 1, &t);
 		// gestion ;
 		else if (cmd.command[i].tok == T_SEMI)
-			ft_semi_exec(env, cmd, i, &t);
+			ft_semi_exec(env, cmd, i + 1, &t);
 		restore_original_fd(&t);
 	}
 }

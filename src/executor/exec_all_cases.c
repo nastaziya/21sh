@@ -43,10 +43,10 @@ int		ft_or_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
     int     ret;
 
     ret = 0;
-    cmd_expended = expense_cmd(cmd, *env, i + 1);
+    cmd_expended = expense_cmd(cmd, *env, i);
     if (env->g_return_value > 0)
     {
-        if (cmd.command[i + 1].redirection.used_space > 0)
+        if (cmd.command[i].redirection.used_space > 0)
             ret = process_redirections(t,cmd.command[i]);
         if (!ret)
             env->g_return_value = ft_exec_command(env, cmd_expended);
@@ -61,10 +61,10 @@ int		ft_and_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
     int     ret;
 
     ret = 0;
-    cmd_expended = expense_cmd(cmd, *env, i + 1);
+    cmd_expended = expense_cmd(cmd, *env, i);
     if (env->g_return_value == 0)
     {
-        if (cmd.command[i + 1].redirection.used_space > 0)
+        if (cmd.command[i].redirection.used_space > 0)
             ret = process_redirections(t,cmd.command[i]);
         if (!ret)
             env->g_return_value = ft_exec_command(env, cmd_expended);
@@ -79,8 +79,8 @@ int		ft_semi_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
     int     ret;
 
     ret = 0;
-    cmd_expended = expense_cmd(cmd, *env, i + 1);
-    if (cmd.command[i + 1].redirection.used_space > 0)
+    cmd_expended = expense_cmd(cmd, *env, i);
+    if (cmd.command[i].redirection.used_space > 0)
         ret = process_redirections(t,cmd.command[i]);
     if (!ret)
         env->g_return_value = ft_exec_command(env, cmd_expended);
