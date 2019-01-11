@@ -44,9 +44,9 @@ static int	manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t)
 	pipe(fd);
 	if (t->heredoc && t->heredoc[0] && t->heredoc[0][t->i_hdoc])
 		write(fd[1], t->heredoc[0][t->i_hdoc],
-			ft_strlen(t->heredoc[0][t->i_hdoc]));
+			ft_strlen(t->heredoc[0][t->i_hdoc]));//WRITE_END
 	close(fd[1]);
-	ret = dup2(fd[0], cmd.redirection.fd[i]);
+	ret = dup2(fd[0], cmd.redirection.fd[i]);//READ_END
 	close(fd[0]);
     t->i_hdoc = t->i_hdoc + 1;
 	if (ret < 0)
