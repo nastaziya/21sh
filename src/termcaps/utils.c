@@ -39,7 +39,7 @@ void		initialize_caps(t_tcap *caps, char *prompt)
 		caps->prompt = ft_strdup(prompt);
 	else if (caps->prompt)
 	{
-		free(caps->prompt);
+		// free(caps->prompt);
 		caps->prompt = ft_strdup(prompt);
 	}
 	caps->size_prompt = ft_strlen(prompt);

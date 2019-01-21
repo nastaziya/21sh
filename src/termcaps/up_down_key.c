@@ -12,6 +12,7 @@
 /* ************************************************************************** */
 
 #include "../../inc/sh.h"
+#include "../../inc/builtin.h"
 
 static void     up_key_next_norm(t_tcap *caps, char *tmp, int i)
 {
@@ -44,7 +45,7 @@ int			     up_key(t_tcap *caps)
         if (caps->ct_arrow == 1 && caps->history[0]->next)
             caps->history[0] = caps->history[0]->next;
         tmp = caps->history[0]->content;
-        if (caps->history[0]->prev == NULL && !caps->tmp_str)
+        if (caps->history[0]->prev == NULL && !caps->tmp_str && !ft_free(caps->tmp_str))
             // Première initialisation de l'historique -> faire une sauvegarde de la str
             caps->tmp_str = caps->sz_str > caps->size_prompt ? ft_strdup(caps->str[0]) : ft_strnew(1);
         else if (caps->history[0]->prev == NULL && caps->tmp_str)

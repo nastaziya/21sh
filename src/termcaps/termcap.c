@@ -104,11 +104,17 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 	// for the norm
 	*res = caps.str[0];
 	// FIRST FREES
-	if (caps.tmp_str && caps.tmp_str[0])
+	if (caps.tmp_str)// && caps.tmp_str[0]
 		free(caps.tmp_str);
+	caps.tmp_str = NULL;
+	if (caps.prompt)
+		free(caps.prompt);
+	caps.prompt = NULL;
 	if (caps.copy_str)
 		free(caps.copy_str);
+	caps.copy_str = NULL;
 	free(caps.str);
+	caps.str = NULL;
 	// for the norm
 
 	// keeprunning == 3 to differenciate the signal when inside termcap
