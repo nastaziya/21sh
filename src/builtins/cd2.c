@@ -78,6 +78,8 @@ static void         ft_multiple_slash_av(char **av)
 static void         ft_manage_oldpwd_and_prepare_pwd(char *av, char ***c_env, t_env_tools *env,
                                             t_norm_pwd *n)
 {
+    if (n->tmp2)
+        free(n->tmp2);
     // on remplace l'OLDPWD par là où on est -> LE PWD ACTUEL OU LE OLDPWD SI
     while ((*c_env)[n->i] && ft_strncmp((*c_env)[n->i], "PWD=", 4))
         n->i++;
@@ -100,6 +102,7 @@ static void         ft_manage_oldpwd_and_prepare_pwd(char *av, char ***c_env, t_
         n->tmp = ft_strjoin(n->buf, "/");
         n->tmp2 = av[0] == '.' && av[1] == '/' ? ft_strjoin(n->tmp, ft_skip_slash(av)) : ft_strjoin(n->tmp, av);
         free(n->tmp);
+        n->tmp = NULL;
     }
 }
 
@@ -127,6 +130,8 @@ static void         ft_norm_change_dir_and_pwds(char **av, char ***c_env, t_env_
     {
         chdir(*av);
         getcwd(n->buf, sizeof(n->buf));
+        if (n->tmp)
+            free(n->tmp);
         n->tmp = ft_strjoin("PWD=", n->buf);
         ft_builtin_setenv_2(n->tmp, c_env, &(env->paths), env);
         // free(n->tmp);
@@ -158,6 +163,8 @@ int	    	        ft_change_dir_and_pwds(char **av, char ***c_env, t_env_tools *e
     n.i = 0;
     n.dash = n_cd->dash;
     n.p = n_cd->p;
+    n.tmp2 = NULL;
+    n.tmp = NULL;
     ft_copy_and_stat(&n, *av);
 	if ((access(*av, F_OK)) == -1 && !ft_free(n.s2))
 		return(ft_print_error(*av, ": No such file or directory.\n"));
@@ -167,5 +174,13 @@ int	    	        ft_change_dir_and_pwds(char **av, char ***c_env, t_env_tools *e
 		return (ft_print_error(*av, ": Permission denied.\n"));
 	else //process the cd command
         ft_norm_change_dir_and_pwds(av, c_env, env, &n);
+    if (n.tmp2)
+        free(n.tmp2);
+    if (n.tmp)
+        free(n.tmp);
+    // if (n.buf)
+    //     free (n.buf);
+    // if (n.buf2)
+    //     free(n.buf2);
     return (0);
 }

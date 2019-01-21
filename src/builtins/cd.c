@@ -150,8 +150,6 @@ int             ft_manage_cd_normal(char **av, char ***c_env, t_norm_cd *n,
 
     i = 0;
     n->dash = 0;
-    buf = ft_strnew(1024);
-    // n-> = 0;
     if (av[n->begin][0] == '/' && (n->dash = 1))
         return (ft_change_dir_and_pwds(&(av[n->begin]), c_env, env, n));
     else if (!ft_strcmp(av[n->begin], ".") && (n->dash = 1))
@@ -164,12 +162,16 @@ int             ft_manage_cd_normal(char **av, char ***c_env, t_norm_cd *n,
             free (tmp);
             return (ret);
         }
-        else if (getcwd(buf, sizeof(buf)))
-            return (ft_change_dir_and_pwds(&buf, c_env, env, n));
+        else if ((buf = ft_strnew(1024)) && getcwd(buf, sizeof(buf)))
+        {
+            ret = ft_change_dir_and_pwds(&buf, c_env, env, n);
+            free(buf);
+            return (ret);
+        }
+        free(buf);
     }
     else
         return (ft_change_dir_and_pwds(&(av[n->begin]), c_env, env, n));
-    free(buf);
     return (0);
 }
 

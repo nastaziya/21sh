@@ -34,7 +34,8 @@ int		ft_free_char_char(char **av)
 
 int		ft_free(char *av)
 {
-	free(av);
+	if (av)
+		free(av);
 	return (0);
 }
 
