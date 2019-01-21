@@ -178,9 +178,5 @@ int	    	        ft_change_dir_and_pwds(char **av, char ***c_env, t_env_tools *e
         free(n.tmp2);
     if (n.tmp)
         free(n.tmp);
-    // if (n.buf)
-    //     free (n.buf);
-    // if (n.buf2)
-    //     free(n.buf2);
     return (0);
 }

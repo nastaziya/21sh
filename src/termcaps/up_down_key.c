@@ -36,6 +36,8 @@ int			     up_key(t_tcap *caps)
     char *tmp;
     
     i = -1;
+    // if (caps->tmp_str)
+    //     free(caps->tmp_str);
     // si je suis bien dans bash et non un sous-shell et que 
     if (caps->size_prompt == 7 && caps->history[0]->next)
     {
