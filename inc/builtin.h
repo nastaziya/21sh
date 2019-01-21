@@ -73,7 +73,7 @@ int		    ft_builtin_setenv(char **av, char ***c_env, char ***paths, t_env_tools 
 *** - cd2.c
 */
 
-int	    	ft_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env, t_norm_cd *n);
+int	    	ft_change_dir_and_pwds(char **av, char ***c_env, t_env_tools *env, t_norm_cd *n);
 
 /*
 *** - cd.c

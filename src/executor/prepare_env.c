@@ -28,6 +28,9 @@ void	free_str(char **str)
 	int	i;
 
 	i = 0;
+	dprintf(3, "|%s|\n", str[0]);
+	dprintf(3, "|hey|\n");
+	dprintf(3, "|%s|\n", str[1]);
 	while (str[i])
 	{
 		free(str[i]);

@@ -62,7 +62,7 @@ static void         ft_multiple_slash_av(char **av)
             buf[++j] = (*av)[i];
     }
     free(*av);
-    *av = ft_strdup(buf);
+    *av = ft_strndup(buf, j + 1);
     // dprintf(2, "ft_multiple_slash_av: |%s|\n", *av);
 }
 
@@ -110,37 +110,38 @@ static void         ft_manage_oldpwd_and_prepare_pwd(char *av, char ***c_env, t_
 *** - symbolic links and physical links
 */
 
-static void         ft_norm_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env,
+static void         ft_norm_change_dir_and_pwds(char **av, char ***c_env, t_env_tools *env,
                                             t_norm_pwd *n)
 {
     // pour les leaks
     free (n->s2);
     // on remplace l'OLDPWD par là où on est -> LE PWD ACTUEL OU LE OLDPWD SI
     // PWD A ETE UNSETENV
-    ft_manage_oldpwd_and_prepare_pwd(av, c_env, env, n);
+    ft_manage_oldpwd_and_prepare_pwd(*av, c_env, env, n);
     // dprintf(2, "ft_manage_oldpwd_and_prepare_pwd: |%d - %s - %s|\n", n->dash, n->tmp2, av);
-    n->dash == 0 ? ft_multiple_slash_av(&av) : 1;
+    n->dash == 0 ? ft_multiple_slash_av(av) : 1;
     // lstat sur le path correct
-    n->dash == 0 ? lstat(n->tmp2, &n->buf2) : lstat(av, &n->buf2);
+    n->dash == 0 ? lstat(n->tmp2, &n->buf2) : lstat(*av, &n->buf2);
+    // n->dash == 0 ? lstat(av, &n->buf2) : lstat(av, &n->buf2);
     if (!S_ISLNK(n->buf2.st_mode) || n->p == 0) // p == Gérer le -P && lien non symboliques
     {
-        chdir(av);
+        chdir(*av);
         getcwd(n->buf, sizeof(n->buf));
         n->tmp = ft_strjoin("PWD=", n->buf);
         ft_builtin_setenv_2(n->tmp, c_env, &(env->paths), env);
-        free(n->tmp);
-        free(n->tmp2);
+        // free(n->tmp);
+        // free(n->tmp2);
     }
     else if (S_ISLNK(n->buf2.st_mode)) // Gérer les liens symboliques
     {
-        chdir(av);
+        chdir(*av);
         if (n->dash == 0)// quand il y a un / dans le path ou commande cd -
             n->tmp = ft_strjoin("PWD=", n->tmp2);
         else
-            n->tmp = ft_strjoin("PWD=", av);
-        free(n->tmp2);
+            n->tmp = ft_strjoin("PWD=", *av);
+        // free(n->tmp2);
         ft_builtin_setenv_2(n->tmp, c_env, &(env->paths), env);
-        free(n->tmp);
+        // free(n->tmp);
     }
 }
 
@@ -150,20 +151,20 @@ static void         ft_norm_change_dir_and_pwds(char *av, char ***c_env, t_env_t
 *** - if necessary. Otherwise, execute the following part of the function
 */
 
-int	    	        ft_change_dir_and_pwds(char *av, char ***c_env, t_env_tools *env, t_norm_cd *n_cd) // -> DASH == GESTION "-"
+int	    	        ft_change_dir_and_pwds(char **av, char ***c_env, t_env_tools *env, t_norm_cd *n_cd) // -> DASH == GESTION "-"
 {
     t_norm_pwd      n;
 
     n.i = 0;
     n.dash = n_cd->dash;
     n.p = n_cd->p;
-    ft_copy_and_stat(&n, av);
-	if ((access(av, F_OK)) == -1 && !ft_free(n.s2))
-		return(ft_print_error(av, ": No such file or directory.\n"));
-	else if (ft_strcmp(av, "..") && !S_ISDIR(n.buf2.st_mode) && !ft_free(n.s2))
-        return (ft_print_dir_error("bash: cd: ", av, ": Not a directory", 1));
-    else if ((access(av, X_OK)) == -1 && !ft_free(n.s2))
-		return (ft_print_error(av, ": Permission denied.\n"));
+    ft_copy_and_stat(&n, *av);
+	if ((access(*av, F_OK)) == -1 && !ft_free(n.s2))
+		return(ft_print_error(*av, ": No such file or directory.\n"));
+	else if (ft_strcmp(*av, "..") && !S_ISDIR(n.buf2.st_mode) && !ft_free(n.s2))
+        return (ft_print_dir_error("bash: cd: ", *av, ": Not a directory", 1));
+    else if ((access(*av, X_OK)) == -1 && !ft_free(n.s2))
+		return (ft_print_error(*av, ": Permission denied.\n"));
 	else //process the cd command
         ft_norm_change_dir_and_pwds(av, c_env, env, &n);
     return (0);

@@ -36,7 +36,7 @@ static int  ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
 	{
 		tmp = ft_strdup(ft_strchr((*c_env)[count], '=') + 1);
         n->dash = 1;
-		ft_change_dir_and_pwds(tmp, c_env, env, n);
+		ft_change_dir_and_pwds(&tmp, c_env, env, n);
 		if (c == '-')
             ft_putendl_fd(tmp, 1);
         free(tmp);
@@ -98,20 +98,33 @@ static int   ft_normalize_av(char ***av, char *c, int *begin)
 int                 ft_manage_cd_p_xxx(char **av, char ***c_env, t_norm_cd *n,
                         t_env_tools *env)
 {
-    char	    buf[1024];
+    // char	    buf[1024];
+    char	    *buf;
+    int         ret;
     
     n->p = 0;
     n->dash = 0;
+    buf = ft_strnew(1024);
     if (av[n->begin][0] == '/' && (n->dash = 1))
-        return (ft_change_dir_and_pwds(av[n->begin], c_env, env, n));
+    {
+        ret = ft_change_dir_and_pwds(&(av[n->begin]), c_env, env, n);
+        return (ret);
+    }
+        // return (ft_change_dir_and_pwds(&(av[n->begin]), c_env, env, n));
     else if (!ft_strcmp(av[n->begin], "."))
     {
         getcwd(buf, sizeof(buf));
         n->dash = 1;
-        return (ft_change_dir_and_pwds(buf, c_env, env, n));
+        ret = ft_change_dir_and_pwds(&buf, c_env, env, n);
+        // return (ft_change_dir_and_pwds(&buf, c_env, env, n));
+        return (ret);
     }
     else
-        return (ft_change_dir_and_pwds(av[n->begin], c_env, env, n));
+    {
+        ret = ft_change_dir_and_pwds(&(av[n->begin]), c_env, env, n);
+        return (ret);
+    }
+        // return (ft_change_dir_and_pwds(&(av[n->begin]), c_env, env, n));
 }
 
 
@@ -133,27 +146,30 @@ int             ft_manage_cd_normal(char **av, char ***c_env, t_norm_cd *n,
     char    *tmp;
     int     i;
     int     ret;
-    char    buf[1024];
+    char    *buf;
 
     i = 0;
     n->dash = 0;
+    buf = ft_strnew(1024);
+    // n-> = 0;
     if (av[n->begin][0] == '/' && (n->dash = 1))
-        return (ft_change_dir_and_pwds(av[n->begin], c_env, env, n));
+        return (ft_change_dir_and_pwds(&(av[n->begin]), c_env, env, n));
     else if (!ft_strcmp(av[n->begin], ".") && (n->dash = 1))
     {
         while ((*c_env)[i] && ft_strncmp("PWD=", (*c_env)[i], 4))
             i++;
         if ((*c_env)[i] && (tmp = ft_strdup(ft_strchr((*c_env)[i], '=') + 1)))
         {
-            ret = ft_change_dir_and_pwds(tmp, c_env, env, n);
+            ret = ft_change_dir_and_pwds(&tmp, c_env, env, n);
             free (tmp);
             return (ret);
         }
         else if (getcwd(buf, sizeof(buf)))
-            return (ft_change_dir_and_pwds(buf, c_env, env, n));
+            return (ft_change_dir_and_pwds(&buf, c_env, env, n));
     }
     else
-        return (ft_change_dir_and_pwds(av[n->begin], c_env, env, n));
+        return (ft_change_dir_and_pwds(&(av[n->begin]), c_env, env, n));
+    free(buf);
     return (0);
 }
 

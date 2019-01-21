@@ -28,6 +28,7 @@ int     terminal_data (t_term *term)
      return (-1);
   if (tcgetattr(0, term) == -1)
      return (-1);
+  // free(name_term);
   return (0);
 }
 
