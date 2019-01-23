@@ -16,26 +16,6 @@
 #include "../../inc/expansion.h"
 #include "../../inc/exec.h"
 
-// typedef struct		s_shell
-// {
-// 	t_input			input;
-// 	t_headlst		env;
-// 	t_headlst		local_var;
-// 	t_erm			terminal;
-// 	t_hash_table	*bin_table;
-// 	t_history		*history;
-// 	t_tokenlst		*tokenlst;
-// 	t_cmds			*cmds;
-// 	short			sigint;
-// 	int				fd_orig[3];
-// 	int				nb_binaries;
-// 	char			*process_name;
-// 	pid_t			last_process_id;
-// 	int				exit;
-// 	int				exit_status;
-// }					t_shell;
-
-
 // FAIRE UNE GESTION D'ERREUR COMME POUR LES REDIR -> ls | /oo/sss"
 // => dans ma fonction d'execution je pense
 // bash: /oo/sss: No such file or directory
@@ -70,7 +50,7 @@ void check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 			ft_or_exec(env, cmd, i + 1, &t);
 		// gestion |
 		else if (cmd.command[i].tok == T_PIPE)
-			;
+			ft_and_exec(env, cmd, i + 1, &t);
 		// {			
 		// 	// bash: /oo/sss: No such file or directory
 		// }
