@@ -14,6 +14,7 @@
 #include "../../inc/sh.h"
 #include "../../inc/exec.h"
 #include "../../inc/builtin.h"
+#include "../../inc/parser.h"
 
 // properly clear the Pipe fds
 void	manage_pipe_fds(t_pipe *p)
@@ -52,23 +53,23 @@ static int	pipe_cmd(t_cmds *cmd, t_pipe p, t_shell *shell)
 	exit(ret);
 }
 
-static int	pipeline(t_cmds *cmds, t_shell *shell)
+static int	pipeline(t_command cmd, t_env_tools *env, t_exec_redir *t, int i)
 {
 	t_pipe	p;
 	pid_t	pid;
 	int		status;
 
 	status = 0;
-	p.first = STDIN_FILENO;
-	while (cmds && cmds->type == S_CMD)
+	p.first = 0;//STDIN_FILENO
+	while (i < cmd.used_space && (cmd.command[i].tok == T_PIPE || cmd.command[i].tok == -1))
 	{
-		p.input = STDIN_FILENO;
-		p.output = STDOUT_FILENO;
+		p.input = 0; //STDIN_FILENO;
+		p.output = 1; //STDOUT_FILENO;
 		if (pipe(p.fds) < 0)
 			return (pipe_error());
 		if ((pid = fork()) < 0)
 			return (fork_error());
-		if (pid == CHILD)
+		if (pid == 0)//CHILD
 			pipe_cmd(cmds, p, shell);
 		manage_pipe_fds(&p);
 		cmds = cmds->next;
@@ -88,10 +89,10 @@ int			ft_pipe_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 	cmd_expended = expense_cmd(cmd, *env, 0);
 	copy_fds(t, &cmd);
 	
-	ret = pipeline((*cmds), shell);
+	ret = pipeline(cmd, env, t, i);
 	
 	// passer au suivant, sûrement avancer le i
-	forward_pipes(cmds);
+	// forward_pipes(cmds);
 	
 	clear_fd(t, cmd.command[i].redirection.used_space);
 	free_str(cmd_expended);
