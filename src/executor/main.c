@@ -50,7 +50,7 @@ void check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 			ft_or_exec(env, cmd, i + 1, &t);
 		// gestion |
 		else if (cmd.command[i].tok == T_PIPE)
-			ft_pipe_exec(env, cmd, i + 1, &t);
+			ft_pipe_exec(env, cmd, &i, &t);
 		// {			
 		// 	// bash: /oo/sss: No such file or directory
 		// }

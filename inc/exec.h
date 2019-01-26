@@ -4,6 +4,14 @@
 #include "parser.h"
 # include <fcntl.h>
 
+typedef struct	s_pipe
+{
+	int			fds[2];
+	int			first;
+	int			input;
+	int			output;
+}				t_pipe;
+
 // struct for the execution of all commands
 typedef struct      s_exec_redir
 {
@@ -20,12 +28,11 @@ typedef struct      s_exec_redir
 
     char            ***heredoc;
     int             i_hdoc;
-    int             fd[2];
-    // char            *tmp2;
+    
+    // for the pipe management
+    t_pipe          p;
+    pid_t           pid;
 
-    // function check_op
-    // int 	    aux;
-    // int         f_out;
 }                   t_exec_redir;
 
 /*
@@ -45,7 +52,7 @@ void	restore_original_fd(t_exec_redir *t);
 */
 int			process_redirections(t_exec_redir *t, t_simp_com cmd);
 
-int			ft_pipe_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t);
+int			ft_pipe_exec(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t);
 
 
 #endif
