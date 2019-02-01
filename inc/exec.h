@@ -1,7 +1,7 @@
 #ifndef EXEC_H
 # define EXEC_H
 # include  	"../libft/libft.h"
-#include "parser.h"
+# include "parser.h"
 # include <fcntl.h>
 
 typedef struct	s_pipe
@@ -53,6 +53,10 @@ void	restore_original_fd(t_exec_redir *t);
 int			process_redirections(t_exec_redir *t, t_simp_com cmd);
 
 int			ft_pipe_exec(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t);
+void	    clear_fd(t_exec_redir *t, int end);
+int			copy_fds(t_exec_redir *t, t_simp_com *cmd);
+
+
 
 
 #endif

@@ -28,6 +28,9 @@ void check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 	save_original_fd(&t);
 	// dprintf(1, "array: %d - %d\n", cmd.command[0].tok, cmd.command[1].tok);
 	t.i_hdoc = 0;
+	// 
+	// Gérer le Pipe pour la fonction first_exec
+	// 
 	ft_first_exec(env, cmd, 0, &t);
 	restore_original_fd(&t);
 	i = -1;
@@ -49,8 +52,11 @@ void check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 		if (cmd.command[i].tok == T_DBLOR)
 			ft_or_exec(env, cmd, i + 1, &t);
 		// gestion |
-		else if (cmd.command[i].tok == T_PIPE)
+		// Réfléchir sur le i à regarder i + 1 ou 1
+		else if (cmd.command[i].tok == T_PIPE && (i > 0 ? cmd.command[i - 1].tok != T_PIPE : 1))
 			ft_pipe_exec(env, cmd, &i, &t);
+		else if (cmd.command[i].tok == T_PIPE && (i > 0 ? cmd.command[i - 1].tok == T_PIPE : 0))
+			ft_semi_exec(env, cmd, i + 1, &t); // vérifier si c'est semi-exec ou non
 		// {			
 		// 	// bash: /oo/sss: No such file or directory
 		// }
