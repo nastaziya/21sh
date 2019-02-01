@@ -50,7 +50,7 @@ void    win_resize(int sig)
 *** - Aim of the function : int function to use putchar_fd inside if
 */
 
-static int     ft_putc_if(char c, int fd)
+static int     ft_putc_if(char c)
 {
     ft_putchar_fd(c, 1);
     return (0);
@@ -72,7 +72,7 @@ void    ctrl_c(int sig)
 	// and when i give the control to the system
 	// (ls -Rl /, then ctrl_c for example)
     // ft_putc_if -> Add the \n in order to keep the termcaps properly
-    if (keepRunning != 3 && !ft_putc_if('\n', 1))
+    if (keepRunning != 3 && !ft_putc_if('\n'))
         return ;
 	keepRunning = 1;
     end_key(&caps);

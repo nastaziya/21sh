@@ -107,9 +107,9 @@ int		ft_exec_command(t_env_tools *env, char **cmd)
 	if (cmd && cmd[0])
 	{
 		if (!ft_strcmp("echo", cmd[0])) // gérer le cas où VAR $HOME n'existe plus
-			return (ft_builtin_echo(cmd, &(env->env_cpy)));
+			return (ft_builtin_echo(cmd));
 		else if (!ft_strcmp("setenv", cmd[0]))
-			return (ft_builtin_setenv(cmd, &(env->env_cpy), &(env->paths), env));
+			return (ft_builtin_setenv(cmd, &(env->env_cpy), env));
 		else if (!ft_strcmp("unsetenv", cmd[0]))
 			return (ft_builtin_unsetenv(cmd, &(env->env_cpy), &(env->paths), env));
 		else if (!ft_strcmp("cd", cmd[0]))
@@ -117,7 +117,7 @@ int		ft_exec_command(t_env_tools *env, char **cmd)
 		else if (!ft_strcmp("env", cmd[0]))
 			return (ft_builtin_env(cmd, &(env->env_cpy), &(env->paths), env));
 		else if (!ft_strcmp("exit", cmd[0]))
-			return (ft_builtin_exit(cmd, env));
+			return (ft_builtin_exit(cmd));
 		else
 			return (error_exec_or_exec(env->paths, cmd, env->env_cpy, 0));
 	}

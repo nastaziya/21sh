@@ -55,8 +55,7 @@ static char		*ft_array_char_to_str_replace_env(char **c_env, int avoid,
 *** - For the norm
 */
 
-static void	ft_builtin_setenv_3(char ***c_env, int i, char *tmp,
-				char ***paths)
+static void	ft_builtin_setenv_3(char ***c_env, int i, char *tmp)
 {
 	char	*ret;
 	char	*ret2;
@@ -122,7 +121,7 @@ void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths,
 	if ((*c_env)[i]) // if we have found the env
 		ft_builtin_setenv_2_norm(i, c_env, tmp);
 	else //if the env is not present here
-		ft_builtin_setenv_3(c_env, i, tmp, paths);
+		ft_builtin_setenv_3(c_env, i, tmp);
 }
 
 /*
@@ -149,7 +148,7 @@ void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths,
 *** -// Mais quand unsetenv HOME -> COPY = getenv(HOME)
 */
 
-int			ft_builtin_setenv(char **av, char ***c_env, char ***paths,
+int			ft_builtin_setenv(char **av, char ***c_env,
 				t_env_tools *env)
 {
 	int		len;

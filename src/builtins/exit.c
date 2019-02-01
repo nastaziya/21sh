@@ -36,7 +36,7 @@ int             ft_check_num(char *str)
     return (0);
 }
 
-int             ft_builtin_exit(char **cmd, t_env_tools *env)
+int             ft_builtin_exit(char **cmd)
 {
     int argc;
 

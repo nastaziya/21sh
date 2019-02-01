@@ -27,7 +27,7 @@ static void	ft_builtin_echo2(char **av, int i)
 *** - Manage the option -n
 */
 
-int			ft_builtin_echo(char **av, char ***c_env)
+int			ft_builtin_echo(char **av)
 {
 	int		i;
 	int		len;

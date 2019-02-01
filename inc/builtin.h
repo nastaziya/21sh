@@ -60,14 +60,14 @@ int		ft_builtin_unsetenv(char **av, char ***c_env, char ***paths, t_env_tools *e
 *** - echo.c
 */
 
-int	    ft_builtin_echo(char **av, char ***c_env);
+int	    ft_builtin_echo(char **av);
 
 /*
 *** - setenv.c
 */
 
 void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths, t_env_tools *env);
-int		    ft_builtin_setenv(char **av, char ***c_env, char ***paths, t_env_tools *env);
+int		    ft_builtin_setenv(char **av, char ***c_env, t_env_tools *env);
 
 /*
 *** - cd2.c
@@ -124,7 +124,7 @@ char	    **ft_find_path_and_split(char **c_env);
 *** - exit.c
 */
 
-int         ft_builtin_exit(char **cmd, t_env_tools *env);
+int         ft_builtin_exit(char **cmd);
 
 /*
 *** - ctrl_d.c

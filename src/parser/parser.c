@@ -15,7 +15,7 @@
 #include "../../inc/expansion.h"
 #include "../../inc/builtin.h"
 
-void assign_tok(t_command *cmd, t_lexer lex, int *j, int val_tok)
+void assign_tok(t_command *cmd, int *j, int val_tok)
 {
 	// (void)lex;// ATTENTION INUTILISE
 	simple_cmd_assign(cmd, *cmd->command);
@@ -65,17 +65,17 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 	while (++i < lex.used_size)
 	{	
 		if (lex.tokens[i].type == T_SEMI)
-			assign_tok(cmd, lex, j, T_SEMI);
+			assign_tok(cmd, j, T_SEMI);
 		if (lex.tokens[i].type == T_PIPE)
-			assign_tok(cmd, lex, j, T_PIPE);
+			assign_tok(cmd, j, T_PIPE);
 		else if(lex.tokens[i].type == T_DBLAND)
-			assign_tok(cmd, lex, j, T_DBLAND);
+			assign_tok(cmd, j, T_DBLAND);
 		else if(lex.tokens[i].type == T_DBLOR)
-			assign_tok(cmd, lex, j, T_DBLOR);
+			assign_tok(cmd, j, T_DBLOR);
 		else if(lex.tokens[i].type == T_AND)
-			assign_tok(cmd, lex, j, T_AND);
+			assign_tok(cmd, j, T_AND);
 		else if (i + 1 == lex.used_size)
-			assign_tok(cmd, lex, j, -1);
+			assign_tok(cmd, j, -1);
 	}
 }
 
