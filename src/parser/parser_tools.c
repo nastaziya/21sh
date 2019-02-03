@@ -44,6 +44,7 @@ int		is_op(t_lexer lex, int i)
 	return(0);
 }
 
+
 int		parse_errors(t_lexer lex, int i)
 {
 	while(++i < lex.used_size)

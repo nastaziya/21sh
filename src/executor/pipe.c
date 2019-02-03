@@ -98,7 +98,7 @@ static int	pipe_cmd(t_command cmd, t_exec_redir *t, t_env_tools *env, int i)
 	// expansion cmd
 	cmd_expended = expense_cmd(cmd, *env, i);
 	// msh_expand(cmd, shell);
-	if ((ret = process_redirections(t,cmd.command[i])))
+	if ((ret = process_redirections(cmd.command[i])))
 		return (ret);
 	close(t->p.fds[0]); // READ_END
 	// fonction d'exec

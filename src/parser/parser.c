@@ -87,11 +87,14 @@ void    add_token_val(t_command *cmd, t_lexer lex, int *j)
 void	complete_simple_command_and_red(t_command *cmd, t_lexer lex, int i,
 			 int *j)
 {
-	if (i == 0 && lex.tokens[i].type == T_WORD)
+
+	if (i == 0 && (lex.tokens[i].type == T_WORD))
 		tab_assign(&cmd->command[*j], lex, i);
 	else if (lex.tokens[i].type == T_WORD && !is_red(lex, i - 1) &&
 			lex.tokens[i - 1].type != T_IO_NUMB)
 			tab_assign(&cmd->command[*j], lex, i);
+	else if(is_op(lex, i))
+			(*j)++;
 	else if (is_red(lex, i) && lex.tokens[i + 1].type == T_WORD)
 	{
 		tab_io_assign(&cmd->command[*j].redirection, lex, i - 1);
@@ -99,9 +102,6 @@ void	complete_simple_command_and_red(t_command *cmd, t_lexer lex, int i,
 	}
 	else if(lex.tokens[i + 1].type != T_WORD && is_op(lex,i))
 		*cmd->command[*j + 1].cmd_simple = NULL;
-	else if (!is_red(lex, i) && lex.tokens[i].type != T_IO_NUMB &&
-			lex.tokens[i].type != T_WORD)
-			(*j)++;
 }
 
 /*(2)*/

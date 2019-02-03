@@ -215,19 +215,20 @@ int     ft_calcul_pos_last_heredoc(t_simp_com cmd)
 */
 // cmd.redirection.fd => stocke les anciens fds, avec 1 quand
 
-int			process_redirections(t_exec_redir *t, t_simp_com cmd)
+int			process_redirections(t_simp_com cmd)
 {
     int     i;
 	int		ret;
     int     pos_heredoc;
     // int     fd;
+    t_exec_redir t;
 
 	i = -1;
     ret = 0;
     // fd = -1;
     // dprintf(1, "cmd.redirection.used_space: %d\n", cmd.redirection.used_space);
     // 1. Copier tous les fds
-	copy_fds(t, &cmd);
+	copy_fds(&t, &cmd);
     pos_heredoc = ft_calcul_pos_last_heredoc(cmd);
     // dprintf(3, "POS_HEREDOC: %d\n", pos_heredoc);
     // dprintf(3, "REDIR_TYPE: %d\n", cmd.redirection.red[i]);
@@ -236,19 +237,19 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd)
         // dprintf(3, "REDIR_TYPE: %d\n", cmd.redirection.red[i]);
 		if (cmd.redirection.red[i] == T_REDIR_LESS
             || cmd.redirection.red[i] == T_REDIR_GREAT)
-			ret = manage_aggreg(cmd, i, t);
+			ret = manage_aggreg(cmd, i, &t);
 		else if ((cmd.redirection.red[i] == T_DBL_LESS
             || cmd.redirection.red[i] == T_DBL_LESS_DASH))
 		{
             if (i == pos_heredoc)
-                ret = manage_here_doc(cmd, i, t);
+                ret = manage_here_doc(cmd, i, &t);
         }
 		else
-			ret = manage_file(cmd, i, t);
+			ret = manage_file(cmd, i, &t);
 	}
     // clear et close tous les fds && free ce que j'ai malloc (fdoutred)
     // dans copy_fds
-    clear_fd(t, cmd.redirection.used_space);
+    clear_fd(&t, cmd.redirection.used_space);
     // loop here to do the proper redirections
 	return (ret);
 }

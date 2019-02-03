@@ -16,51 +16,28 @@
 
 static int	manage_sig_term_ret_2(int ret)
 {
-	int new_ret;
-
-	new_ret = 0;
 	if(ret == 11)
-	{
 		ft_putendl_fd("Segmentation fault: 11", 2);
-		new_ret = 128 + ret;
-	}
 	else if(ret == 13)
-	{
 		ft_putendl_fd("Broken pipe: 13", 2);
-		new_ret = 128 + ret;
-	}
 	else if(ret == 16)
-	{
 		ft_putendl_fd("Stack fault: 16", 2);
-		new_ret = 128 + ret;
-	}
-	return (new_ret);
+	return (128 + ret);
 }
 
 
 int	    manage_sig_term_ret_1(int ret)
 {
-	int new_ret;
-
-	new_ret = 0;
 	if (ret == 6)
-	{
 		ft_putendl_fd("Abort trap: 6", 2);
-		new_ret = 128 + ret;
-	}
 	else if(ret == 7 || ret == 10)
-	{
 		ft_putendl_fd("Bus error: 10", 2);
-		new_ret = 128 + ret;
-	}
+	
 	else if(ret == 8)
-	{
 		ft_putendl_fd("Floating-point exception: 8", 2);
-		new_ret = 128 + ret;
-	}
 	else
- 		new_ret = manage_sig_term_ret_2(ret);
-	return (new_ret);
+ 		return (manage_sig_term_ret_2(ret));
+	return (ret + 128);
 }
 
 void    print_errors(char *error, char *file_name)
