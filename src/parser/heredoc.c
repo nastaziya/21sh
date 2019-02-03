@@ -32,7 +32,7 @@ static int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 	tmp = ft_strdup(lexer->tokens[h->words[h->k]].content);
 	expanded_dynamic_table_heredoc(&tmp, 0);
 	res = ft_strdup(tmp);
-	if (ft_strcmp(h->cmd, res) == 0 && !ft_free(h->cmd))
+	if (h->cmd && ft_strcmp(h->cmd, res) == 0 && !ft_free(h->cmd))
 	{
 		(h->k)++;
 		// free(h->cmd);
@@ -52,7 +52,8 @@ static int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 			// if (heredoc[0][h->command])
 			// 	free(heredoc[0][h->command]);
 			heredoc[0][h->command] = ft_strjoin(h->cmd, "\n");
-			free(h->cmd);
+			if (h->cmd)
+				free(h->cmd);		
 		}
 		// // ici on realloc
 		else //// GERER les leaks, normalement pas bon

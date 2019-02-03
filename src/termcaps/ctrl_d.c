@@ -40,7 +40,7 @@ static void     ctrl_d_management_norm(t_tcap *caps)
         caps->sz_str = ft_strlen(caps->prompt);
     }
     if (ft_strcmp(caps->prompt, "Heredoc > "))
-        ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
+        ft_putstr_fd("bash: syntax error: unexpected end of file", 2);
 }
 
 /*

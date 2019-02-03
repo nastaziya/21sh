@@ -73,9 +73,9 @@ int 		get_line_term_termcaps(char **res, char *str, t_dlist **history)
 		// dprintf(2, "LA: %d %d %d %d %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4]);
 		if (ENTER_KEY && !end_key(&caps)
 			&& ((caps.sz_str - caps.size_prompt) == 0)
-				&& (*res = ft_memalloc(2))
-					&& (caps.str[0] ? !ft_free(caps.str[0]) : 1)
-						&& !ft_free_char_char(caps.str))
+				&& (*res = ft_memalloc(2)) && (caps.str[0] ? 
+					!ft_free(caps.str[0]) : 1) && (keepRunning == 3 ?
+						0 : keepRunning) && !ft_free_char_char(caps.str))
 				return (2);
 		else if (ENTER_KEY && !end_key(&caps))// if (ENTER_KEY)
 				break ;

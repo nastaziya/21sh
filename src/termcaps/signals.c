@@ -95,6 +95,11 @@ void    ctrl_c(int sig)
             caps.str[0] = ft_strdup("\'");
         else if (!ft_strcmp(caps.prompt, "Missing arguments > "))
             caps.str[0] = ft_strdup("oui");
+        else if (!ft_strcmp(caps.prompt, "\nHeredoc > "))
+            caps.str[0] = ft_strdup("pppppp");
+        // premiere execution heredoc
+        else if (!ft_strcmp(caps.prompt, "Heredoc > "))
+            caps.str[0] = ft_strdup("pppppp");
     }
     ioctl(0, TIOCSTI, &c);
 }
