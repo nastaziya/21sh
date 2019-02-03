@@ -47,7 +47,7 @@ int		ft_or_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
     if (env->g_return_value > 0)
     {
         if (cmd.command[i].redirection.used_space > 0)
-            ret = process_redirections(cmd.command[i]);
+            ret = process_redirections(t, cmd.command[i]);
         if (!ret)
             env->g_return_value = ft_exec_command(env, cmd_expended);
     }
@@ -65,7 +65,7 @@ int		ft_and_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
     if (env->g_return_value == 0)
     {
         if (cmd.command[i].redirection.used_space > 0)
-            ret = process_redirections(cmd.command[i]);
+            ret = process_redirections(t, cmd.command[i]);
         if (!ret)
             env->g_return_value = ft_exec_command(env, cmd_expended);
     }
@@ -81,7 +81,7 @@ int		ft_semi_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
     ret = 0;
     cmd_expended = expense_cmd(cmd, *env, i);
     if (cmd.command[i].redirection.used_space > 0)
-        ret = process_redirections(cmd.command[i]);
+        ret = process_redirections(t, cmd.command[i]);
     if (!ret)
         env->g_return_value = ft_exec_command(env, cmd_expended);
     free_str(cmd_expended);
@@ -100,7 +100,7 @@ int		ft_first_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 	    dprintf(3, "redirection.used_space: %d\n", cmd.command[0].redirection.used_space);
         // premiere redirections
 	    if (cmd.command[0].redirection.used_space > 0)
-            ret = process_redirections(cmd.command[i]);
+            ret = process_redirections(t, cmd.command[i]);
 	    // execution de la premiere commande
 	    if (cmd_expended != NULL && cmd.used_space > 0 && !ret)
 		    env->g_return_value = ft_exec_command(env, cmd_expended);

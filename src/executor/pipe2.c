@@ -66,7 +66,7 @@ int ret_nr_pipe(t_command cmd)
 
 }
 
-int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt)
+int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt, t_exec_redir *t)
 {
     char **command;
     char *path;
@@ -98,7 +98,7 @@ int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt)
                 dup2(p[1], 1);
             if (cmd.command[*i].redirection.used_space )
             {
-                if ((ret = process_redirections(cmd.command[*i])))
+                if ((ret = process_redirections(t, cmd.command[*i])))
 		            return (ret);
             }
             close(p[0]);

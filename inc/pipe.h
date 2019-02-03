@@ -10,7 +10,7 @@ typedef struct  s_pipe_struct
     fd_index  pipe_end;
 }               t_pipe_struct;
 
-int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt);
+int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt, t_exec_redir *t);
 int		exec2(char *path, char **str, char **env, int fork_ret);
 int	    manage_sig_term_ret_1(int ret);
 

@@ -25,13 +25,14 @@ void check_op(t_command cmd, t_env_tools *env, char ***heredoc, t_pipe_struct p)
 {
 	t_exec_redir t;
 	int 	i;
+	
 	i = 0;
-
+	t.i_hdoc = 0;
 	t.heredoc = heredoc;
-		save_original_fd(&t);
+	save_original_fd(&t);
 	if (cmd.command[i].tok == T_PIPE)
 	{
-		ft_pipe_exec2(env, cmd, &i, &p);
+		ft_pipe_exec2(env, cmd, &i, &p, &t);
 		i--;
 
 	}
@@ -43,7 +44,6 @@ void check_op(t_command cmd, t_env_tools *env, char ***heredoc, t_pipe_struct p)
 	}
 		
 	// dprintf(1, "array: %d - %d\n", cmd.command[0].tok, cmd.command[1].tok);
-	t.i_hdoc = 0;
 	// 
 	// Gérer le Pipe pour la fonction first_exec
 	
@@ -74,7 +74,7 @@ void check_op(t_command cmd, t_env_tools *env, char ***heredoc, t_pipe_struct p)
 		// Réfléchir sur le i à regarder i + 1 ou 1
 		else if (cmd.command[i].tok == T_PIPE )
 		{
-			ft_pipe_exec2(env, cmd, &i, &p);
+			ft_pipe_exec2(env, cmd, &i, &p, &t);
 			i--;
 		}
 			
