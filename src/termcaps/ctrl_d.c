@@ -39,8 +39,8 @@ static void     ctrl_d_management_norm(t_tcap *caps)
         caps->str[0] = ft_memalloc(1);
         caps->sz_str = ft_strlen(caps->prompt);
     }
-    if (ft_strcmp(caps->prompt, "Heredoc > "))
-        ft_putstr_fd("bash: syntax error: unexpected end of file", 2);
+    // if (!(!ft_strcmp(caps->prompt, "Heredoc > ") || !ft_strcmp(caps->prompt, "\nHeredoc > ")))
+    //     ft_putstr_fd("bash: syntax error: unexpected end of file", 2);
 }
 
 /*

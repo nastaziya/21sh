@@ -135,7 +135,6 @@ int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 	h.obool = 0;
 
 	ft_initialize_heredoc(lexer, heredoc, 0, 0);
-	
 	// loop on the different commands (with separators : && || ;)
 	while (h.j < lexer->used_size - 1 && !keepRunning)
 	{
@@ -150,7 +149,10 @@ int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 				(h.command)++;
 		}
 	}
-	if (h.obool > 0)
+	if (h.obool > 0 && keepRunning == 2)
+		ft_putstr_fd("\n", 1);
+	else if (h.obool > 0 && heredoc[0][h.command]
+		&& ft_strcmp(heredoc[0][h.command], "\n"))
 		ft_putstr_fd("\n", 1);
 	return (0);
 }
