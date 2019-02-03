@@ -123,7 +123,7 @@ void	all_exec(char **environ, char ***heredoc)
 		else if (keepRunning == 5)
 			env.g_return_value = 258;
 			// keepRunning = 5 -> 
-
+		// dprintf(1, "check heredoc: |%s|%d|\n", heredoc[0][0], keepRunning);
 	 	// si je n'ai ni fait ctrl_c, de ctrl_d, ou j'ai fait ctrl_d pendant le heredoc 
 		//  -> Exécute les commandes
 		if (!keepRunning || keepRunning == 4)

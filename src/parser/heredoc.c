@@ -42,16 +42,17 @@ static int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 	// là on realloc
 	else if (!ft_free(tmp) && !ft_free(res))
 	{
-		// dprintf(2, "passe iciavant if\n");
-		// free(tmp);
-		// free(res);
+		
 		// // ici on initialise
 		if (heredoc[0][h->command] == NULL)//[0]
 		{
 			// dprintf(2, "PLUS PRECCISEMENT [%s]\n", h->cmd);
 			// if (heredoc[0][h->command])
 			// 	free(heredoc[0][h->command]);
-			heredoc[0][h->command] = ft_strjoin(h->cmd, "\n");
+			if (keepRunning != 4)
+				heredoc[0][h->command] = ft_strjoin(h->cmd, "\n");
+			else
+				heredoc[0][h->command] = ft_strdup(h->cmd);
 			if (h->cmd)
 				free(h->cmd);		
 		}
@@ -149,10 +150,10 @@ int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 				(h.command)++;
 		}
 	}
-	if (h.obool > 0 && keepRunning == 2)
+	if (h.obool > 0) //  && keepRunning == 2
 		ft_putstr_fd("\n", 1);
-	else if (h.obool > 0 && heredoc[0][h.command]
-		&& ft_strcmp(heredoc[0][h.command], "\n"))
-		ft_putstr_fd("\n", 1);
+	// else if (h.obool > 0 && heredoc[0][h.command]
+	// 	&& ft_strcmp(heredoc[0][h.command], "\n"))
+		// ft_putstr_fd("\n", 1);
 	return (0);
 }

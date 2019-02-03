@@ -33,7 +33,8 @@ static void     ctrl_d_management_norm(t_tcap *caps)
     }
     else if (!ft_strcmp(caps->prompt, "Missing arguments > "))
         caps->str[0] = ft_strdup("oui");
-    else if (!ft_strcmp(caps->prompt, "Heredoc > "))
+    else if (!ft_strcmp(caps->prompt, "Heredoc > ")
+        || !ft_strcmp(caps->prompt, "\nHeredoc > "))
     {
         keepRunning = 4;
         caps->str[0] = ft_memalloc(1);

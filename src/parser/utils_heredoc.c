@@ -119,13 +119,13 @@ int		realloc_heredoc(t_hdoc *h, char ***heredoc)
 	free(h->cmd);
 	tmp = heredoc[0][h->command];
 	// free(heredoc[0][h->command]);
-	if ((heredoc[0][h->command] = ft_strjoin(tmp, "\n")))
-	{
-		// dprintf(2, "heredoc complet: %s\n", heredoc[0][h->command]);
-		// heredoc[0][h->command] = ft_strjoin(tmp, "\n");
-		free(tmp);
-		dprintf(3, "après: [[%s]]\n", heredoc[0][h->command]);
-		return (1);
-	}
-	return (0);
+	if (keepRunning != 4)
+		heredoc[0][h->command] = ft_strjoin(tmp, "\n");
+	else
+		heredoc[0][h->command] = ft_strdup(tmp);
+	free(tmp);
+	dprintf(3, "après: [[%s]]\n", heredoc[0][h->command]);
+	return (1);
+	// }
+	// return (0);
 }
