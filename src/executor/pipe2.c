@@ -107,9 +107,9 @@ int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt)
        // else
         //{
             close(p[1]);
-            fd_in = p[0];
             if(fd_in != 0)
                 close(fd_in);
+            fd_in = p[0];
             (*i)++;
             aux++;
             if (aux == len_pipe)
