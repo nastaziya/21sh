@@ -91,7 +91,7 @@ int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt)
         {
           exit(EXIT_FAILURE);
         }
-        else if (pid == 0)
+        if (pid == 0)
         {
             dup2(fd_in, 0);
             if (aux + 1 != len_pipe)
@@ -108,6 +108,8 @@ int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt)
         //{
             close(p[1]);
             fd_in = p[0];
+            if(fd_in != 0)
+                close(fd_in);
             (*i)++;
             aux++;
             if (aux == len_pipe)
