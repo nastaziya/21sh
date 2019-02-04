@@ -84,11 +84,11 @@ static int	ft_builtin_env2(char **av, char **cp_c_env, int i, int ret)
 	
     path = ft_find_path_and_split(cp_c_env);
 	if (!ft_strchr(av[i], '/'))
-        ret = error_exec_or_exec(path, av + i, cp_c_env, 1);
+        ret = error_exec_or_exec(path, av + i, cp_c_env);
 	else
-        ret = error_exec_or_exec(path, av + i, cp_c_env, 1);
+        ret = error_exec_or_exec(path, av + i, cp_c_env);
     ft_free_av(path);
-	return (ret);
+	return (ret == 0 ? 3 : ret);
 }
 
 int         ft_usage_env_builtin(char **av, int argc, int *i, char *p)
@@ -112,11 +112,17 @@ int         ft_usage_env_builtin(char **av, int argc, int *i, char *p)
     return (0);
 }
 
-int     ft_manage_option_i_env(char	***cp_c_env)
+int     ft_manage_option_i_env(char	***cp_c_env, char **env)
 {
+	int i;
+
+	i = -1;
     if (!(cp_c_env[0] = (char**)malloc(sizeof(char*) * 2)))
 		return (1);
-    cp_c_env[0][0] = NULL;
+    while (env[++i])
+		if (!ft_strncmp(env[i], "PATH=", 5))
+			cp_c_env[0][0] = ft_strdup(env[i]);
+	// cp_c_env[0][0] = NULL;
     // cp_c_env[0][0] = (char*)malloc(sizeof(char) * 2);
     cp_c_env[0][1] = NULL;
     return (0);
@@ -140,7 +146,7 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
     int     ret;
     char    p;
 
-    // ret = 0;
+    ret = 1;
     p = 0;
     // i = 0;
     // ajouter fonction gestion de l'usage + commencer au bon endroit
@@ -150,9 +156,10 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
     argc = ft_len_array_char(av);
     if ((ret = ft_usage_env_builtin(av, argc, &i, &p)))
         return (ret == 2 ? 0 : 1);
-    dprintf(3, "builtin env: %d - %c - %d\n", i, p, argc);
+    // dprintf(3, "builtin env: %d - %c - %d\n", i, p, argc);
     // gérer avec le -i
-	p == 0 ? ft_cp_env(&cp_c_env, *c_env) : ft_manage_option_i_env(&cp_c_env);
+	p == 0 ? ft_cp_env(&cp_c_env, *c_env)
+		: ft_manage_option_i_env(&cp_c_env, *c_env);
 	if (argc == 1)//  || i == argc ------ //i == argc - 1
 		ft_print_env(c_env);
 	else
@@ -161,9 +168,11 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
     //////// Gérer env PIPI=POPO => Affiche env + PIPI=POPO
     //////// gérer env ls -> ne fonctionne pas
     /////// Gérer option -i => copie vide
-        --i;
+        // dprintf(3, "ret_env: %d-%d\n", ret, i);
+		--i;
 		while (av[++i] && ret == 0)
 		{
+			// dprintf(3, "av[i]-env: |%s|\n", av[i]);
 			if (ft_strchr(av[i], '='))
 			{
 				ft_builtin_setenv_2(av[i], &cp_c_env, paths, env);
@@ -178,5 +187,5 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
 		}
     }
 	ft_free_av(cp_c_env);
-	return (ret);
+	return (ret == 3 ? 0 : ret);
 }

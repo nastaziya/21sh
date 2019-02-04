@@ -36,6 +36,7 @@ int		exec2(char *path, char **str, char **env, int fork_ret)
 	}
 	return (0);
 }
+
 static char	*return_path(char **paths, char **str,
 		char **env)
 {
