@@ -110,29 +110,31 @@ int		ft_isnumber_redir(char *str)
 }
 // Place it somewhere else for the norm
 
-int		check_errors_exec(char *path, char **str)
+int		check_errors_exec(char *path, char **str, int in_env)
 {
 	int res;
 	struct stat buf;
 	
 	res = 0;
 	if (access(path, F_OK)) // no such file or directory
-		res = error_command("bash: ", str,
+		res = error_command(in_env == 0 ? "bash: " : "env: ", str,
 			": No such file or directory", 127);
 	// return (msh_nosuchfile(cmd));
 	else if (!(stat(path, &buf) == -1)) // À tester => Check les directory
 	{
 		if ((buf.st_mode & S_IFMT) == S_IFDIR) // À tester
-			res = error_command("bash: ", str, ": is a directory", 126);
+			res = error_command(in_env == 0 ? "bash: "
+				: "env: ", str, ": is a directory", 126);
 	}
 	// realloc la commande
 	else if ((stat(path, &buf) == 0 && buf.st_mode & S_IXUSR) == 0) // permission denied
-		res = error_command("bash: ", str, ": permission denied", 126);
+		res = error_command(in_env == 0 ? "bash: "
+			: "env: ", str, ": permission denied", 126);
 	return (res);
 }
 
 int		error_exec_or_exec(char **paths, char **str,
-		char **env) // insérer booléen précisant si dans env ou non
+		char **env, int in_env) // insérer booléen précisant si dans env ou non
 {
 	int			res;
 	char		*path;
@@ -143,15 +145,15 @@ int		error_exec_or_exec(char **paths, char **str,
 		path = ft_strdup(str[0]);
 	else
 		check_path(paths, &path, str);
-	if (path)
+	if (path || (in_env == 1))
 	{
-		if ((res = check_errors_exec(path, str)))
+		if ((res = check_errors_exec(path, str, in_env)))
 			;
 		else
 			res = exec(path, str, env);
 	}
 	else
-		res = error_command("bash: ", str,
+		res = error_command(in_env == 0 ? "bash: " : "env: ", str,
 			": command not found", 127);
 	if (path != NULL)
 		free(path);

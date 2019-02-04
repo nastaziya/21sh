@@ -119,10 +119,10 @@ int		ft_exec_command(t_env_tools *env, char **cmd)
 		else if (!ft_strcmp("exit", cmd[0]))
 			return (ft_builtin_exit(cmd));
 		else
-			return (error_exec_or_exec(env->paths, cmd, env->env_cpy));
+			return (error_exec_or_exec(env->paths, cmd, env->env_cpy, 0));
 	}
 	else
-		return (error_exec_or_exec(env->paths, cmd, env->env_cpy));
+		return (error_exec_or_exec(env->paths, cmd, env->env_cpy, 0));
 		// return (5);
 	return (0);
 }

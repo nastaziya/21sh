@@ -84,9 +84,9 @@ static int	ft_builtin_env2(char **av, char **cp_c_env, int i, int ret)
 	
     path = ft_find_path_and_split(cp_c_env);
 	if (!ft_strchr(av[i], '/'))
-        ret = error_exec_or_exec(path, av + i, cp_c_env);
+        ret = error_exec_or_exec(path, av + i, cp_c_env, 1);
 	else
-        ret = error_exec_or_exec(path, av + i, cp_c_env);
+        ret = error_exec_or_exec(path, av + i, cp_c_env, 1);
     ft_free_av(path);
 	return (ret == 0 ? 3 : ret);
 }
@@ -98,8 +98,10 @@ int         ft_usage_env_builtin(char **av, int argc, int *i, char *p)
     *i = (argc > 1 ? 1 : 0);
     if (argc > 1)
     {
-        while (av[*i] && !ft_usage_is_good("i", av[*i]) && (*p = 'i'))
-            (*i)++;
+		// while (av[*i])
+		while (!ft_strcmp(av[*i], "env") || (av[*i] && !ft_usage_is_good("i", av[*i]) && (*p = 'i')))
+			(*i)++;
+		dprintf(3, "i_usage_env: %d\n", *i);
         // dprintf(2, "[%s]\n", av[*i]);
         if (av[*i] && ft_strcmp(av[*i], "-") && av[*i][0] == '-')
             return (
