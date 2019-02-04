@@ -14,14 +14,6 @@
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
 
-int		ft_print_error_env(char *av)
-{
-	ft_putstr_fd("env: ", 2);
-	ft_putstr_fd(av, 2);
-	ft_putstr_fd(": No such file or directory\n", 2);
-    return (127);
-}
-
 char	**ft_build_exec_path(char **path, char **av)
 {
 	int		i;
@@ -42,7 +34,6 @@ char	**ft_build_exec_path(char **path, char **av)
 	return (path);
 }
 
-// char	**ft_find_path_and_split(char **c_env, char **av)
 char	**ft_find_path_and_split(char **c_env)
 {
 	int		i;
@@ -88,30 +79,7 @@ static int	ft_builtin_env2(char **av, char **cp_c_env, int i, int ret)
 	else
         ret = error_exec_or_exec(path, av + i, cp_c_env, 1);
     ft_free_av(path);
-	return (ret == 0 ? 3 : ret);
-}
-
-int         ft_usage_env_builtin(char **av, int argc, int *i, char *p)
-{
-    // int     argc;
-
-    *i = (argc > 1 ? 1 : 0);
-    if (argc > 1)
-    {
-		// while (av[*i])
-		while (!ft_strcmp(av[*i], "env") || (av[*i] && !ft_usage_is_good("i", av[*i]) && (*p = 'i')))
-			(*i)++;
-		dprintf(3, "i_usage_env: %d\n", *i);
-        // dprintf(2, "[%s]\n", av[*i]);
-        if (av[*i] && ft_strcmp(av[*i], "-") && av[*i][0] == '-')
-            return (
-            ft_usage_error("env: illegal option -- ", av[*i],
-            "\nusage: env [-i] [name=value ...] [utility [argument ...]]", 1));
-        else if (av[*i] && av[*i][0] == '-' && *i == argc)
-            return (2);
-    }
-    // dprintf(2, "av[sortie]: |%s|\n", av[*i]);
-    return (0);
+	return (ret = 0 ? 2 : ret); // modifier le ret je pense
 }
 
 int     ft_manage_option_i_env(char	***cp_c_env, char **env)
@@ -119,13 +87,13 @@ int     ft_manage_option_i_env(char	***cp_c_env, char **env)
 	int i;
 
 	i = -1;
+	ft_free_av(*cp_c_env);
     if (!(cp_c_env[0] = (char**)malloc(sizeof(char*) * 2)))
 		return (1);
     while (env[++i])
 		if (!ft_strncmp(env[i], "PATH=", 5))
 			cp_c_env[0][0] = ft_strdup(env[i]);
 	// cp_c_env[0][0] = NULL;
-    // cp_c_env[0][0] = (char*)malloc(sizeof(char) * 2);
     cp_c_env[0][1] = NULL;
     return (0);
 }
@@ -136,58 +104,69 @@ int     ft_manage_option_i_env(char	***cp_c_env, char **env)
 *** - sinon, après, on envoie le reste à l'execve
 */
 
-// 1 - passer tous les -i -i -i -i => erreur : usage
-// 2 - si -i, prendre un env vide, sinon copie env
-// 3 - si "=" après "env -i -i" -> rajouter dans l'env
-// 4 - 
 int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
 {
 	int		argc;
 	char	**cp_c_env;
     int     i;
     int     ret;
-    char    p;
 
-    ret = 1;
-    p = 0;
-    // i = 0;
-    // ajouter fonction gestion de l'usage + commencer au bon endroit
-    // -> Après les -i, donc le i est set dans la fonction
-	// if (ft_norm_av(&av, &n.c, &n.begin))
-    //     return (1);
+    ret = 0;
+	i = -1;
     argc = ft_len_array_char(av);
-    if ((ret = ft_usage_env_builtin(av, argc, &i, &p)))
-        return (ret == 2 ? 0 : 1);
-    // dprintf(3, "builtin env: %d - %c - %d\n", i, p, argc);
-    // gérer avec le -i
-	p == 0 ? ft_cp_env(&cp_c_env, *c_env)
-		: ft_manage_option_i_env(&cp_c_env, *c_env);
-	if (argc == 1)//  || i == argc ------ //i == argc - 1
+	ft_cp_env(&cp_c_env, *c_env);
+	if (argc == 1)
 		ft_print_env(c_env);
 	else
     {
-        ////////Gérer env -i PIPI=POPO => Affiche PIPI=POPO
-    //////// Gérer env PIPI=POPO => Affiche env + PIPI=POPO
-    //////// gérer env ls -> ne fonctionne pas
-    /////// Gérer option -i => copie vide
-        // dprintf(3, "ret_env: %d-%d\n", ret, i);
-		--i;
-		while (av[++i] && ret == 0)
+		while (++i < argc && ret == 0)
 		{
 			// dprintf(3, "av[i]-env: |%s|\n", av[i]);
+			// ajoute dans la copie de l'env
 			if (ft_strchr(av[i], '='))
 			{
-				ft_builtin_setenv_2(av[i], &cp_c_env, paths, env);
+				ft_builtin_setenv_env_builtin(av[i], &cp_c_env, paths, env);
 				if (!av[i + 1])
 					ft_print_env(&cp_c_env);
 			}
-            else if (i == argc - 1 && !ft_strcmp(av[i], "env"))
-                ft_print_env(&cp_c_env);
-			else if (i != argc - 1 ? ft_strcmp(av[i], "env") : 1)
+			// empty the env_cpy
+			else if (av[i] && av[i][0] == '-' && !ft_usage_is_good("i", av[i]))
+				ft_manage_option_i_env(&cp_c_env, *c_env);
+			// illegal option, stops everything
+			else if (av[i] && av[i][0] == '-' && (ret = 1))
+				ft_usage_error("env: illegal option -- ", av[i],
+            "\nusage: env [-i] [name=value ...] [utility [argument ...]]", 1);
+			// prints the env, if env is at the end
+			// else if (!ft_strcmp(av[i], "env") && (ret = 2))
+			// 	ft_builtin_env(av + i, &cp_c_env, paths, env);
+			else if (i == argc - 1 && !ft_strcmp(av[i], "env"))
+				ft_print_env(&cp_c_env);
+			else if (ft_strcmp(av[i], "env"))
 			    ret = ft_builtin_env2(av, cp_c_env, i, 0);
-
 		}
     }
-	ft_free_av(cp_c_env);
-	return (ret == 3 ? 0 : ret);
+	if (cp_c_env && *cp_c_env)
+		ft_free_av(cp_c_env);
+	return (ret == 2 ? 0 : ret);
 }
+
+
+// ma nouvelle logique : 
+
+
+// Je calcule la taille de l'av
+// Je copie l'env complet
+// je boucle sur mes av 
+// 
+// si jamais -i, je checke les option. Si erreur je la print et tout s'arrête
+// et si "-i" je free la copie de l'env, et j'en ressort une propre
+// 
+// si jamais "=", j'ajoue à la copie de l'env
+// if après un -i ou un "=" autre chose que env -> execution de la commande, sinon, continuer la boucle
+// Demander si, quand on modifie la variable PATH dans l'env, l'exécution doit planter aussi -> je pense que oui
+
+
+// Modifier cp_c_env pour qu'il prenne n'affiche pas le PATH si path cp_c_env == path c_env
+// et quand on envoie dans la fonction le c_env
+
+// Modifier setenv pour qu'il ne prenne pas en compte le changement de la variable paths qui stocke tous les paths

@@ -89,6 +89,31 @@ static void	ft_builtin_setenv_2_norm(int i, char ***c_env, char *tmp)
 
 /*
 *** - Aim of the function :
+*** - Setenv for the env builtin, one that doesn't affect the env->home and PATH variables
+*** - used to mimick the bash behavior
+*/
+
+void		ft_builtin_setenv_env_builtin(char *av, char ***c_env, char ***paths,
+				t_env_tools *env)
+{
+	int		len;
+	char	*tmp;
+	int		i;
+
+	i = 0;
+	len = (ft_strchr(av, '=') ? ft_strchr(av, '=') - av : ft_strlen(av));
+	tmp = ft_strdup_without_quotes(av);
+	ft_exchange_chars(*c_env, ' ', (char)255);
+	while ((*c_env)[i] && ft_strncmp((*c_env)[i], av, len))
+		i++;
+	if ((*c_env)[i]) // if we have found the env
+		ft_builtin_setenv_2_norm(i, c_env, tmp);
+	else //if the env is not present here
+		ft_builtin_setenv_3(c_env, i, tmp);
+}
+
+/*
+*** - Aim of the function :
 *** - We first find the corresponding variable,
 *** - so before the "=" if there is one
 *** - if this is HOME or PATH, we also work on the copies
