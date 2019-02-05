@@ -14,25 +14,25 @@
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
 
-char	**ft_build_exec_path(char **path, char **av)
-{
-	int		i;
-	char	*tmp;
-	char	*tmp2;
+// char	**ft_build_exec_path(char **path, char **av)
+// {
+// 	int		i;
+// 	char	*tmp;
+// 	char	*tmp2;
 
-	i = -1;
-	tmp = ft_strdup(av[0]);
-	tmp2 = ft_strjoin("/", tmp);
-	free(tmp);
-	while (path[++i])
-	{
-		tmp = path[i];
-		path[i] = ft_strjoin(tmp, tmp2);
-		free(tmp);
-	}
-	free(tmp2);
-	return (path);
-}
+// 	i = -1;
+// 	tmp = ft_strdup(av[0]);
+// 	tmp2 = ft_strjoin("/", tmp);
+// 	free(tmp);
+// 	while (path[++i])
+// 	{
+// 		tmp = path[i];
+// 		path[i] = ft_strjoin(tmp, tmp2);
+// 		free(tmp);
+// 	}
+// 	free(tmp2);
+// 	return (path);
+// }
 
 char	**ft_find_path_and_split(char **c_env)
 {
@@ -104,8 +104,7 @@ int     ft_manage_option_i_env(char	***cp_c_env, char **env)
 *** - sinon, après, on envoie le reste à l'execve
 */
 
-int			ft_builtin_env(char **av, char ***c_env, char ***paths,
-				t_env_tools *env)
+int			ft_builtin_env(char **av, char ***c_env)
 {
 	int		argc;
 	char	**cp_c_env;
@@ -127,7 +126,7 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths,
 			// ajoute dans la copie de l'env
 			if (ft_strchr(av[i], '='))
 			{
-				ft_builtin_setenv_env_builtin(av[i], &cp_c_env, paths, env);
+				ft_builtin_setenv_env_builtin(av[i], &cp_c_env);
 				if (!av[i + 1])
 					ft_print_env(&cp_c_env);
 			}

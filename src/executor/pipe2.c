@@ -9,7 +9,7 @@
 
 int		exec2(char *path, char **str, char **env, int fork_ret)
 {
-	pid_t	pid;
+	// pid_t	pid;
 	int 	status;
 	int		res;
 	// int		ret_signal;
@@ -37,8 +37,7 @@ int		exec2(char *path, char **str, char **env, int fork_ret)
 	return (0);
 }
 
-static char	*return_path(char **paths, char **str,
-		char **env)
+static char	*return_path(char **paths, char **str)
 {
 	char *path;
 	
@@ -79,14 +78,14 @@ int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt, 
     int ret = 0;
     int aux = 0;
 
-  
  //cat < toto | ew -l seg fault
     pid_t pid;
+    (void)pt;
     while (aux < len_pipe)
     {
        
         command = expense_cmd(cmd, *env, *i);
-        path = return_path(env->paths, command, env->env_cpy);
+        path = return_path(env->paths, command);//, env->env_cpy
         pipe(p);
         if ((pid = fork()) == -1)
         {
@@ -99,7 +98,7 @@ int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt, 
                 dup2(p[1], 1);
             if (cmd.command[*i].redirection.used_space )
             {
-                if ((ret = process_redirections(t, cmd.command[*i])))
+                if ((ret = process_redirections(t, cmd.command[*i], env)))
 		            return (ret);
             }
             close(p[0]);

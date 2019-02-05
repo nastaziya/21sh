@@ -69,8 +69,7 @@ int	    ft_builtin_echo(char **av);
 
 void		ft_builtin_setenv_2(char *av, char ***c_env, char ***paths, t_env_tools *env);
 int		    ft_builtin_setenv(char **av, char ***c_env, t_env_tools *env);
-void		ft_builtin_setenv_env_builtin(char *av, char ***c_env, char ***paths,
-				t_env_tools *env);
+void		ft_builtin_setenv_env_builtin(char *av, char ***c_env);
 
 /*
 *** - cd2.c
@@ -117,7 +116,7 @@ void	ft_print_env(char ***c_env);
 *** - env.c
 */
 
-int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env);
+int			ft_builtin_env(char **av, char ***c_env);
 char	    **ft_find_path_and_split(char **c_env);
 
 

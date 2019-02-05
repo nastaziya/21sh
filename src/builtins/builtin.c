@@ -128,7 +128,7 @@ int		ft_exec_command(t_env_tools *env, char **cmd)
 		else if (!ft_strcmp("cd", cmd[0]))
 			return (ft_builtin_cd(cmd, &(env->env_cpy), env));
 		else if (!ft_strcmp("env", cmd[0]))
-			return (ft_builtin_env(cmd, &(env->env_cpy), &(env->paths), env));
+			return (ft_builtin_env(cmd, &(env->env_cpy)));
 		else if (!ft_strcmp("exit", cmd[0]))
 			return (ft_builtin_exit(cmd));
 		else

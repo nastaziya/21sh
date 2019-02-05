@@ -103,7 +103,7 @@ void	all_exec(char **environ, char ***heredoc)
 	t_pipe_struct p;
 	t_command 	cmd;
 	t_env_tools	env;
-	char		*path;
+	// char		*path;
 	p = (t_pipe_struct){.pipe_end = -1, .fds = {-1, -1}};
 	
 	env.env_cpy = copy_env(environ, size_str(environ), &env);              

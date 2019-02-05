@@ -93,8 +93,7 @@ static void	ft_builtin_setenv_2_norm(int i, char ***c_env, char *tmp)
 *** - used to mimick the bash behavior
 */
 
-void		ft_builtin_setenv_env_builtin(char *av, char ***c_env, char ***paths,
-				t_env_tools *env)
+void		ft_builtin_setenv_env_builtin(char *av, char ***c_env)
 {
 	int		len;
 	char	*tmp;

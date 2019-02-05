@@ -14,6 +14,12 @@
 #include "../../inc/sh.h"
 #include "../../inc/exec.h"
 #include "../../inc/builtin.h"
+#include "../../inc/expansion.h"
+
+/*
+*** - Aim of the function : 
+***	- Print is_dir error
+*/
 
 int         ft_print_error_directory(char *str, char *str1, char *str2,
                 int fd)
@@ -24,6 +30,11 @@ int         ft_print_error_directory(char *str, char *str1, char *str2,
     return (1);
 }
 
+/*
+*** - Aim of the function : 
+***	- Print is_dir error
+*/
+
 int         ft_perror_norm_dir(char *str1, int fd)
 {
     ft_putstr_fd("bash: ", fd);
@@ -33,7 +44,8 @@ int         ft_perror_norm_dir(char *str1, int fd)
 }
 
 /*
-**	Handle [n]<<[delimiter]
+*** - Aim of the function : 
+***	- Handle [n]<<[delimiter]
 */
 
 static int	manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t)
@@ -55,6 +67,11 @@ static int	manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t)
 	return (0);
 }
 
+/*
+*** - Aim of the function : 
+*** - Process the fds redirections in order to process the manage file function
+*/
+
 static int  manage_file_norm(t_simp_com cmd, int i, t_exec_redir *t,
                 struct stat buf)
 {
@@ -62,33 +79,60 @@ static int  manage_file_norm(t_simp_com cmd, int i, t_exec_redir *t,
 	{
 		if (S_ISDIR(buf.st_mode))
 		    return (ft_perror_norm_dir(cmd.redirection.file[i], 2));
-		t->fdoutred[i] = open(cmd.redirection.file[i],
+		t->fdoutred[i] = open(t->file_name,
             O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	}
 	else if (cmd.redirection.red[i] == T_DBL_GREAT)
 	{
 		if (S_ISDIR(buf.st_mode))
 		    return (ft_perror_norm_dir(cmd.redirection.file[i], 2));
-		t->fdoutred[i] = open(cmd.redirection.file[i],
+		t->fdoutred[i] = open(t->file_name,
             O_WRONLY | O_CREAT | O_APPEND, 0644);
 	}
 	else if (cmd.redirection.red[i] == T_LESS)
 	{
-        t->fdoutred[i] = open(cmd.redirection.file[i], O_RDONLY);
+        t->fdoutred[i] = open(t->file_name, O_RDONLY);
         if (t->fdoutred[i] < 0)
             return (ft_print_error_directory("bash: ",
                 cmd.redirection.file[i], ": No such file or directory", 2));
     }
 	else if (cmd.redirection.red[i] == T_REDIR_LESSGREAT)
-		t->fdoutred[i] = open(cmd.redirection.file[i], O_RDWR);
+		t->fdoutred[i] = open(t->file_name, O_RDWR);
+    return (0);
+}
+
+int     expand_filename(t_simp_com cmd, t_exec_redir *t, int i, t_env_tools *env)
+{
+
+// 
+	char *temp;
+    t->file_name = NULL;
+	temp = ft_strdup(cmd.redirection.file[i]);
+	expanded_dynamic_table(&temp, *env, 0);
+	t->file_name = ft_strdup(temp);
+	free(temp);
+    // dprintf(3, "expand_filename: |%s|%d|\n", temp, ft_strlen(temp));
+    // dprintf(3, "DEBUG, je suis passe dans lexpand NULL\n");
+    if (temp && ft_strlen(t->file_name) == 0)
+    {
+        // free(temp);
+        free(t->file_name);
+        dprintf(3, "DEBUG, je suis passe dans lexpand NULL\n");
+        ft_print_error_directory("bash: ",
+                cmd.redirection.file[i], ": ambiguous redirect", 2);
+        return (1);
+    }
+    // free(temp);
+    // dprintf(3, "expand_filename: |%s|\n", t->file_name);
     return (0);
 }
 
 /*
-**	Handle [n]>[word], [n]>>[word], [n]<[word], [n]<>[word]
+*** - Aim of the function : 
+*** - Handle [n]>[word], [n]>>[word], [n]<[word], [n]<>[word]
 */
 
-static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t)
+static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t, t_env_tools *env)
 {
     struct stat buf;
     char        pbuf[1024];
@@ -96,8 +140,10 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t)
     char        *tmp2;
 
     getcwd(pbuf, sizeof(pbuf));
+    if (expand_filename(cmd, t, i, env))
+        return (1);
     tmp = ft_strjoin(pbuf, "/");
-    tmp2 = ft_strjoin(tmp, cmd.redirection.file[i]);
+    tmp2 = ft_strjoin(tmp, t->file_name);
     free(tmp);
     lstat(tmp2, &buf);
 	if (manage_file_norm(cmd, i, t, buf))
@@ -113,11 +159,13 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t)
 	    return (ft_print_error_directory("bash: ",
                 cmd.redirection.file[i], ": Is a directory", 2));
     free(tmp2);
+    free (t->file_name);
 	return (0);
 }
 
 /*
-**	Handle [n]>&[word]
+*** - Aim of the function : 
+*** - Handle Aggregations -> [n]>&[word]
 */
 
 static int	manage_aggreg(t_simp_com cmd, int i, t_exec_redir *t)
@@ -128,9 +176,9 @@ static int	manage_aggreg(t_simp_com cmd, int i, t_exec_redir *t)
 		close(cmd.redirection.fd[i]);
 		return (0);
 	}
-	else if (cmd.redirection.file[i] && !ft_isdigit(cmd.redirection.file[i][0]))
-		return (ft_print_error_directory("bash: ",
-                cmd.redirection.file[i], ": ambiguous redirect", 2));
+	// else if (cmd.redirection.file[i] && !ft_isdigit(cmd.redirection.file[i][0]))
+	// 	return (ft_print_error_directory("bash: ",
+    //             cmd.redirection.file[i], ": ambiguous redirect", 2));
 	else
 		t->fdoutred[i] = ft_atoi(cmd.redirection.file[i]);
 	if ((dup2(t->fdoutred[i], cmd.redirection.fd[i])) < 0)
@@ -181,6 +229,11 @@ int			copy_fds(t_exec_redir *t, t_simp_com *cmd)
     return (0);
 }
 
+/*
+***	- Aim of the function :
+*** - Clear all the used fds
+*/
+
 void	clear_fd(t_exec_redir *t, int end)
 {
     int i;
@@ -193,6 +246,13 @@ void	clear_fd(t_exec_redir *t, int end)
 	}
     free(t->fdoutred);
 }
+
+/*
+***	- Aim of the function :
+*** - Calculate the index corresponding to the last heredoc
+*** - Example : cat << oui << non << plus
+*** - will return : 3 which equals to "plus"
+*/
 
 int     ft_calcul_pos_last_heredoc(t_simp_com cmd)
 {
@@ -211,30 +271,23 @@ int     ft_calcul_pos_last_heredoc(t_simp_com cmd)
 }
 
 /*
-***	- Aim of the function : to redirect to the proper redirection
+***	- Aim of the function :
+*** - Redirect to the proper redirection
 */
-// cmd.redirection.fd => stocke les anciens fds, avec 1 quand
 
-int			process_redirections(t_exec_redir *t, t_simp_com cmd)
+int			process_redirections(t_exec_redir *t, t_simp_com cmd, t_env_tools *env)
 {
     int     i;
 	int		ret;
     int     pos_heredoc;
-    // int     fd;
-    // t_exec_redir t;
 
 	i = -1;
     ret = 0;
-    // fd = -1;
-    // dprintf(1, "cmd.redirection.used_space: %d\n", cmd.redirection.used_space);
     // 1. Copier tous les fds
 	copy_fds(t, &cmd);
     pos_heredoc = ft_calcul_pos_last_heredoc(cmd);
-    // dprintf(3, "POS_HEREDOC: %d\n", pos_heredoc);
-    // dprintf(3, "REDIR_TYPE: %d\n", cmd.redirection.red[i]);
     while (++i < cmd.redirection.used_space && ret == 0)
 	{
-        // dprintf(3, "REDIR_TYPE: %d\n", cmd.redirection.red[i]);
 		if (cmd.redirection.red[i] == T_REDIR_LESS
             || cmd.redirection.red[i] == T_REDIR_GREAT)
 			ret = manage_aggreg(cmd, i, t);
@@ -245,11 +298,10 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd)
                 ret = manage_here_doc(cmd, i, t);
         }
 		else
-			ret = manage_file(cmd, i, t);
+			ret = manage_file(cmd, i, t, env);
 	}
     // clear et close tous les fds && free ce que j'ai malloc (fdoutred)
     // dans copy_fds
     clear_fd(t, cmd.redirection.used_space);
-    // loop here to do the proper redirections
 	return (ret);
 }
