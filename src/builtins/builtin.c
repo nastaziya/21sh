@@ -29,6 +29,19 @@ int		ft_usage_error(char *command, char *btwn, char *after, int i)
 
 /*
 *** - Aim of the function :
+*** - Print usage error and returns the proper int
+*/
+
+int		ft_usage_error_env(char *command, char *btwn, char *after, int i)
+{
+	ft_putstr_fd(command, 2);
+	ft_putstr_fd(btwn, 2);
+	ft_putendl_fd(after, 2);
+	return (i);
+}
+
+/*
+*** - Aim of the function :
 *** - ft_putstr inside int function
 *** - in order to use it inside if statement
 */

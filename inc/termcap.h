@@ -9,7 +9,7 @@
 # include "../libft/libft.h"
 
 typedef struct termios t_term;
-static char term_buffer[2048];
+// static char term_buffer[2048];
 int keepRunning;
 # define ENTER_KEY (caps.buf[0] == 10 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
 # define CTRL_L_KEY (caps.buf[0] == 12 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)

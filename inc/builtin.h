@@ -43,6 +43,7 @@ typedef struct      s_nom_pwd
 */
 
 int		ft_usage_error(char *command, char *btwn, char *after, int i);
+int		ft_usage_error_env(char *command, char *btwn, char *after, int i);
 int		ft_int_error(char *str, int fd, int ret);
 int		ft_int_print_error(char *str, char *str2, char *str3, int fd);
 int		ft_len_array_char(char **av);

@@ -104,7 +104,8 @@ int     ft_manage_option_i_env(char	***cp_c_env, char **env)
 *** - sinon, après, on envoie le reste à l'execve
 */
 
-int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
+int			ft_builtin_env(char **av, char ***c_env, char ***paths,
+				t_env_tools *env)
 {
 	int		argc;
 	char	**cp_c_env;
@@ -121,6 +122,7 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
     {
 		while (++i < argc && ret == 0)
 		{
+			dprintf(3, "builtin_env_loop: %d|%s\n", i-1, av[i]);
 			// dprintf(3, "av[i]-env: |%s|\n", av[i]);
 			// ajoute dans la copie de l'env
 			if (ft_strchr(av[i], '='))
@@ -130,19 +132,22 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
 					ft_print_env(&cp_c_env);
 			}
 			// empty the env_cpy
-			else if (av[i] && av[i][0] == '-' && !ft_usage_is_good("i", av[i]))
+			else if (av[i] && av[i][0] == '-' && !ft_usage_is_good("i", av[i])
+				&& (i > 1 ? (!ft_strcmp(av[i - 1], "env")
+					|| av[i - 1][0] == '-') : 1)) //  && (i > 1 ? av[i - 1][0] == '-' : 1)
 				ft_manage_option_i_env(&cp_c_env, *c_env);
 			// illegal option, stops everything
-			else if (av[i] && av[i][0] == '-' && (ret = 1))
-				ft_usage_error("env: illegal option -- ", av[i],
+			else if (av[i] && av[i][0] == '-' && ft_usage_is_good("i", av[i])
+				&& (ret = 1))
+				ft_usage_error_env("env: illegal option -- ", av[i],
             "\nusage: env [-i] [name=value ...] [utility [argument ...]]", 1);
 			// prints the env, if env is at the end
 			// else if (!ft_strcmp(av[i], "env") && (ret = 2))
 			// 	ft_builtin_env(av + i, &cp_c_env, paths, env);
 			else if (i == argc - 1 && !ft_strcmp(av[i], "env"))
 				ft_print_env(&cp_c_env);
-			else if (ft_strcmp(av[i], "env"))
-			    ret = ft_builtin_env2(av, cp_c_env, i, 0);
+			else if (ft_strcmp(av[i], "env"))// (i > 1 ? av[i - 1][0] == '-' : 1) && 
+				ret = ft_builtin_env2(av, cp_c_env, i, 0);
 		}
     }
 	if (cp_c_env && *cp_c_env)
@@ -170,3 +175,5 @@ int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
 // et quand on envoie dans la fonction le c_env
 
 // Modifier setenv pour qu'il ne prenne pas en compte le changement de la variable paths qui stocke tous les paths
+
+// Problème de l'env -> Après un strchr(av[i], '='), si jamais l'av d'après != "env", alors l'exécuter
