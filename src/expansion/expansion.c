@@ -54,7 +54,7 @@ char *str)
 
 void	treat_expansion_cases(char **str, int i, t_dynamic_array *final_array, t_env_tools env)
 {
-	s_norm_exp	n;
+	t_norm_exp	n;
 
 	n.j = 0;
 	n.i = i;

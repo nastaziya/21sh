@@ -61,7 +61,7 @@ void	manage_sq(char **str,  t_dynamic_array *final_array, int *j, int i)
 }
 
 // void	home_var_expand(char **str, int i, int *j, t_dynamic_array *final_array)//, char *home_cpy
-void	home_var_expand(char **str, s_norm_exp	*n, t_dynamic_array *final_array, char *home)//, char *home_cpy
+void	home_var_expand(char **str, t_norm_exp	*n, t_dynamic_array *final_array, char *home)//, char *home_cpy
 {
 	//treat directory ~/
 	if (str[n->i][n->j] == '~' && (n->j == 0 && str[n->i][n->j + 1] == '/'))

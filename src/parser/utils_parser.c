@@ -30,7 +30,7 @@ static void		norm_tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 
 void    		tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 {
-	e_token_type	*temp;
+	t_token_type	*temp;
 	char			**temp1;
 	int i;
 
@@ -39,7 +39,7 @@ void    		tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 	{
 		temp1 = redir->file;
 		redir->av_space = (redir->used_space * 3) / 2 + 1;
-		if (!(redir->red = malloc(sizeof(e_token_type) * redir->av_space + 1)))
+		if (!(redir->red = malloc(sizeof(t_token_type) * redir->av_space + 1)))
 			return ;
 		if (!(redir->file = malloc(sizeof(char*) * redir->av_space + 1)))
 			return ;

@@ -29,7 +29,7 @@ void    tab_red_init(t_red *redir)
 	redir->av_space = TAB_INITIAL_CAPACITY;
 	// if (!(redir->red = malloc(sizeof(char*) * redir->av_space)))
 	// 	return ;
-	if (!(redir->red = malloc(sizeof(e_token_type) * redir->av_space)))
+	if (!(redir->red = malloc(sizeof(t_token_type) * redir->av_space)))
 		return ;
 	if (!(redir->file = malloc(sizeof(char*) * redir->av_space)))
 		return ;

@@ -49,7 +49,7 @@ static int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 			// dprintf(2, "PLUS PRECCISEMENT [%s]\n", h->cmd);
 			// if (heredoc[0][h->command])
 			// 	free(heredoc[0][h->command]);
-			if (keepRunning != 4)
+			if (g_keeprun != 4)
 				heredoc[0][h->command] = ft_strjoin(h->cmd, "\n");
 			else
 				heredoc[0][h->command] = ft_strdup(h->cmd);
@@ -81,7 +81,7 @@ static int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer,
 	// char *res;
 
 	if (h->i_words > 0)
-		while (h->k < h->i_words && !keepRunning)
+		while (h->k < h->i_words && !g_keeprun)
 		{
 			h->obool > 0 ? ft_putstr_fd("\nHeredoc > ", 1)
 				: ft_putstr_fd("Heredoc > ", 1); 
@@ -137,7 +137,7 @@ int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 
 	ft_initialize_heredoc(lexer, heredoc, 0, 0);
 	// loop on the different commands (with separators : && || ;)
-	while (h.j < lexer->used_size - 1 && !keepRunning)
+	while (h.j < lexer->used_size - 1 && !g_keeprun)
 	{
 		ft_find_end_command_and_nb_kewyords(&h, lexer);
 		ft_collect_line_and_realloc_heredoc(&h, lexer, heredoc, history);

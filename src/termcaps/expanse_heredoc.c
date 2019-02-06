@@ -41,7 +41,7 @@ void	dquote_heredoc(char **str, int *j, t_dynamic_array *final_array)
 
 void	treat_expansion_cases_heredoc(char **str, int i, t_dynamic_array *final_array)
 {
-	s_norm_exp	n;
+	t_norm_exp	n;
 
 	n.j = 0;
 	n.i = i;

@@ -13,7 +13,7 @@ void print_array(int size, char **cmd)
 	}
 }
 
-void print_array_token(int size, e_token_type *cmd)
+void print_array_token(int size, t_token_type *cmd)
 {
 	int i;
 

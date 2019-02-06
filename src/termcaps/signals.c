@@ -72,9 +72,9 @@ void    ctrl_c(int sig)
 	// and when i give the control to the system
 	// (ls -Rl /, then ctrl_c for example)
     // ft_putc_if -> Add the \n in order to keep the termcaps properly
-    if (keepRunning != 3 && !ft_putc_if('\n'))
+    if (g_keeprun != 3 && !ft_putc_if('\n'))
         return ;
-	keepRunning = 1;
+	g_keeprun = 1;
     end_key(&caps);
     // to manage bash > oui " -> the way I did it ...
     // a string like that would launch the dquote shell
@@ -88,7 +88,7 @@ void    ctrl_c(int sig)
     {
         // caps.sz_str = 10;
         free(caps.str[0]);
-        keepRunning = 2;
+        g_keeprun = 2;
         if (!ft_strcmp(caps.prompt, "dquote > "))
             caps.str[0] = ft_strdup("\"");
         else if (!ft_strcmp(caps.prompt, "squote > "))

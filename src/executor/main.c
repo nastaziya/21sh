@@ -110,7 +110,7 @@ void	all_exec(char **environ, char ***heredoc)
 	path_str(env.env_cpy, &env.paths);
 	// cpy_home(&env);
 	history = ft_dlstnew(NULL);
-	keepRunning = 0;
+	g_keeprun = 0;
 	while (42)
 	{
 		lex = final_tokens(&history);
@@ -118,14 +118,14 @@ void	all_exec(char **environ, char ***heredoc)
 		command_init(&cmd);
 		add_simple_command(&cmd, lex, &history, heredoc);
 		//print_struct(cmd);
-		if (keepRunning == 1 || keepRunning == 2)
+		if (g_keeprun == 1 || g_keeprun == 2)
 			env.g_return_value = 1;
-		else if (keepRunning == 5)
+		else if (g_keeprun == 5)
 			env.g_return_value = 258;
 			// keepRunning = 5 -> 
 	 	// si je n'ai ni fait ctrl_c, de ctrl_d, ou j'ai fait ctrl_d pendant le heredoc 
 		//  -> Exécute les commandes
-		if (!keepRunning || keepRunning == 4)
+		if (!g_keeprun || g_keeprun == 4)
 			check_op(cmd, &env, heredoc, p);
 		if (*heredoc)
 		{

@@ -74,8 +74,8 @@ int 		get_line_term_termcaps(char **res, char *str, t_dlist **history)
 		if (ENTER_KEY && !end_key(&caps)
 			&& ((caps.sz_str - caps.size_prompt) == 0)
 				&& (*res = ft_memalloc(2)) && (caps.str[0] ? 
-					!ft_free(caps.str[0]) : 1) && (keepRunning == 3 ?
-						0 : keepRunning) && !ft_free_char_char(caps.str))
+					!ft_free(caps.str[0]) : 1) && (g_keeprun == 3 ?
+						0 : g_keeprun) && !ft_free_char_char(caps.str))
 				return (2);
 		else if (ENTER_KEY && !end_key(&caps))// if (ENTER_KEY)
 				break ;
@@ -97,7 +97,7 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 
 	terminal_data(&term);
 	modify_terminos(&term);
-	keepRunning = 3; // int to know if inside termcaps or not
+	g_keeprun = 3; // int to know if inside termcaps or not
 	if ((ret = get_line_term_termcaps(res, str, history)))
 		return (ret);
 	
@@ -120,8 +120,8 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 	// keeprunning == 3 to differenciate the signal when inside termcap
 	// and when i give the control to the system
 	// (ls -Rl /, then ctrl_c for example)
-	if (keepRunning == 3)
-		keepRunning = 0;
+	if (g_keeprun == 3)
+		g_keeprun = 0;
 	reset_termios(&term);
 	return (0);
 }

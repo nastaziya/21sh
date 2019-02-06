@@ -106,7 +106,7 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 				// if during the ft_count_quote, no ctrl_c was used
 				// then, erase the string from the history, it will
 				// be managed later in the lexer
-				if (!keepRunning && ((*history) = (*history)->next))
+				if (!g_keeprun && ((*history) = (*history)->next))
 					ft_dlstdelone(&(*history)->prev);
 			}
 	}

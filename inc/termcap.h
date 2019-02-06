@@ -1,58 +1,69 @@
-// #ifndef TERMCAP_H
-// # define TERMCAP_H
-#ifndef TERM_H
-# define TERM_H
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   termcap.h                                        .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2019/02/06 01:05:33 by gurival-     #+#   ##    ##    #+#       */
+/*   Updated: 2019/02/06 01:19:42 by gurival-    ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
 
+#ifndef TERMCAP_H
+# define TERMCAP_H
 # include <term.h>
 # include <termios.h>
 # include <sys/ioctl.h>
 # include "../libft/libft.h"
 
-typedef struct termios t_term;
-// static char term_buffer[2048];
-int keepRunning;
-# define ENTER_KEY (caps.buf[0] == 10 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
-# define CTRL_L_KEY (caps.buf[0] == 12 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
-# define CTRL_D_KEY (caps.buf[0] == 4 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
+typedef struct termios	t_term;
+int						g_keeprun;
 
-# define BUF_EQUALS_ARRAY (caps.buf[0] == tmp_tab->key0 && caps.buf[1] == tmp_tab->key1 && caps.buf[2] == tmp_tab->key2 && caps.buf[3] == tmp_tab->key3 && caps.buf[4] == tmp_tab->key4)
+# define ENTER_KEY (caps.buf[0] == 10 && caps.buf[1] == 0 && caps.buf[2] == 0 \
+						&& caps.buf[3] == 0 && caps.buf[4] == 0)
+
+# define CTRL_L_KEY (caps.buf[0] == 12 && caps.buf[1] == 0 && caps.buf[2] == 0 \
+						&& caps.buf[3] == 0 && caps.buf[4] == 0)
+
+# define CTRL_D_KEY (caps.buf[0] == 4 && caps.buf[1] == 0 && caps.buf[2] == 0 \
+						&& caps.buf[3] == 0 && caps.buf[4] == 0)
+
+# define BUF_EQUALS_ARRAY (caps.buf[0] == tmp_tab->key0 && \
+							caps.buf[1] == tmp_tab->key1 && \
+							caps.buf[2] == tmp_tab->key2 && \
+							caps.buf[3] == tmp_tab->key3 && \
+							caps.buf[4] == tmp_tab->key4)
+
 /*
 *** - Structure that contains all the required info
 *** - to manage the termcaps
 */
 
-typedef struct          s_tcap
+typedef struct			s_tcap
 {
-    int             i; // i used for the print function - helps for the initialization
-    int             sz_str; // size of the str
-    int             size_prompt;// size of the prompt
-    int             cursor;//position of the cursor in the string
-    int             window_size[2]; // row in [0], col in [1]
-    char            buf[2048];
-    // char            buf[5]; // String that contains the return of the read
-    char            **str; // string that gets constantly realloc'd    
-    char            *res; // return the tgetstr function
-    int             curs_pos[2]; //Cursor position, X in [0], Y in [1]
-    int             y_prompt; // y position of the prompt at all time
-    int             char_pos[2]; // X(0) and Y(1) position in the window of any char of the string
-    int             x_lines[3]; // (0) == x of line before cursor, (1) == x of line cursor, (2) x of line after
-    char            last_char; // char for the return of the position char in window function. It's the char right before the passage to the next line
-    char            *tmp_str; // str that is a copy of the current str when in history
-    t_dlist         **history;// history - to be able to pass it to the pointer of functions
-    int             ct_arrow; // count the number of arrows that were used, 1 == last arrow was down key ; 2 == last arrow was up key
-    char            *copy_str; // copy of str when copy_paste
-    char            *prompt; // copy of the prompt str for the resize of the window management
-    // int             g_glob; // int to specify is inside running function or not
-}                       t_tcap;
+	int				i; // i used for the print function - helps for the initialization
+	int				sz_str; // size of the str
+	int				size_prompt;// size of the prompt
+	int				cursor;//position of the cursor in the string
+	int				window_size[2]; // row in [0], col in [1]
+	char			buf[2048];
+	char			**str; // string that gets constantly realloc'd    
+	char			*res; // return the tgetstr function
+	int				curs_pos[2]; //Cursor position, X in [0], Y in [1]
+	int				y_prompt; // y position of the prompt at all time
+	int				char_pos[2]; // X(0) and Y(1) position in the window of any char of the string
+	int				x_lines[3]; // (0) == x of line before cursor, (1) == x of line cursor, (2) x of line after
+	char			last_char; // char for the return of the position char in window function. It's the char right before the passage to the next line
+	char			*tmp_str; // str that is a copy of the current str when in history
+	t_dlist			**history;// history - to be able to pass it to the pointer of functions
+	int				ct_arrow; // count the number of arrows that were used, 1 == last arrow was down key ; 2 == last arrow was up key
+	char			*copy_str; // copy of str when copy_paste
+	char			*prompt; // copy of the prompt str for the resize of the window management
+}						t_tcap;
 
-// typedef struct		s_dlist
-// {
-// 	void			*content;
-// 	struct s_dlist	*next;
-// 	struct s_dlist	*prev;
-// }					t_dlist;
-
-t_tcap		caps;
+t_tcap					caps;
 
 /*
 *** - Structure that will be the array 

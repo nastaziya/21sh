@@ -119,7 +119,7 @@ int		realloc_heredoc(t_hdoc *h, char ***heredoc)
 	free(h->cmd);
 	tmp = heredoc[0][h->command];
 	// free(heredoc[0][h->command]);
-	if (keepRunning != 4)
+	if (g_keeprun != 4)
 		heredoc[0][h->command] = ft_strjoin(tmp, "\n");
 	else
 		heredoc[0][h->command] = ft_strdup(tmp);
