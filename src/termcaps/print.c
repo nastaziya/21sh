@@ -50,8 +50,6 @@ static void     print_middle_line_manage_char_end_line(t_tcap *caps)
     if ((caps->char_pos[0] == 0 && caps->char_pos[1] - 1 == caps->window_size[0])
         || (position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0)
             && (caps->char_pos[1] == caps->window_size[0] && caps->last_char == '\n')))
-// (position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 1)
-//             && (caps->char_pos[1] == caps->window_size[0] && caps->last_char == '\n'))
     {
         // saves position
         cursor_position(tst);
@@ -79,7 +77,6 @@ static void     print_middle_line(t_tcap *caps, char *string, char *tmp, char *t
         tputs(tgetstr("bl", NULL), 1, ft_outc);
         return ;
     }
-    // tputs(tgetstr("vi", NULL), 1, ft_outc);
     // saves cursor position
     tputs(tgetstr("sc", NULL), 1, ft_outc);
     // manages substrings
@@ -115,6 +112,11 @@ static void     print_middle_line(t_tcap *caps, char *string, char *tmp, char *t
     // tputs(tgetstr("ve", NULL), 1, ft_outc);
 }
 
+/////////////////
+/////////////////
+// je recode la fonction de print milieu
+// -> 
+
 
 static void            print_normal_char_initialization_first_passage(t_tcap *caps, char *string)
 {
@@ -143,7 +145,11 @@ int			     print_normal_char(t_tcap *caps)
     string = NULL; //fonctionne sans
 	size_windows(caps);
     position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0);
-	if (((caps->buf[0] >= 32 && caps->buf[0] <= 127) || caps->buf[0] == 10) && caps->buf[1] == 0
+    
+    // régler ici le problème de l'affichage de char quand la str est pleine et que ça déborde
+    // je pense que le pb vient du y-1 et y => les 2 seront justes quand il y a un \n dans la str
+	
+    if (((caps->buf[0] >= 32 && caps->buf[0] <= 127) || caps->buf[0] == 10) && caps->buf[1] == 0
         && !(((caps->y_prompt - 1) == 0 || (caps->y_prompt) == 0) && (caps->char_pos[0] + 1) == caps->window_size[1]
             && caps->char_pos[1] == caps->window_size[0]) && caps->buf[0] != 9)
 	{
