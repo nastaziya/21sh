@@ -86,14 +86,9 @@ int				position_char_in_window_print_inside_string(int pos, t_tcap *caps, int en
 		}
 		else
 			x++;
-		// if (x == caps->window_size[1] && y == caps->curs_pos[1])
-		// 		caps->last_char = caps->str[0][pos + 1];
 		// rajouter un check de la pos du dernier \n à partir de la pos du curseur
 		if (x + 1 == caps->window_size[1] && caps->str[0][pos + 1] == '\n' && count_n == 0)
-		{
-			dprintf(3, "je t'ai petit coquin\n");
 			caps->last_char = caps->str[0][pos + 1];
-		}
 	}
 	caps->char_pos[0] = x;
 	caps->char_pos[1] = y;

@@ -65,12 +65,12 @@ int 		alt_p(t_tcap *caps)
     {
         while (caps->copy_str[++i])
         {
-            if (caps->copy_str[i] != '\n')
-            {
+            // if (caps->copy_str[i] != '\n')
+            // {
                 ft_bzero(caps->buf, 2048);
                 caps->buf[0] = caps->copy_str[i];
                 print_normal_char(caps);
-            }
+            // }
         }
     }
     return (0);
