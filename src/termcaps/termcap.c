@@ -54,10 +54,10 @@ void		ft_initialize_get_line(t_tab **ttab, char *str, t_dlist **history)
 // Initialisation du tableau de pointeurs sur fonction
 	*ttab = tab_termcaps();
 // Initialisation de la struct caps
-	initialize_caps(&caps, str);
+	initialize_caps(&g_caps, str);
 	initialize_signals();
 //inclure un printf de prompt pour voir
-	caps.history = history;
+	g_caps.history = history;
 }
 
 int 		get_line_term_termcaps(char **res, char *str, t_dlist **history)
@@ -67,25 +67,25 @@ int 		get_line_term_termcaps(char **res, char *str, t_dlist **history)
 
 	ft_initialize_get_line(&ttab, str, history);
 // Itérer sur le read
-	while ((tmp_tab = (ttab - 1)) && !ft_clean(caps.buf, 2048)
-		&& (read(0, caps.buf, 2047) >= 0))
+	while ((tmp_tab = (ttab - 1)) && !ft_clean(g_caps.buf, 2048)
+		&& (read(0, g_caps.buf, 2047) >= 0))
 	{
 		// dprintf(2, "LA: %d %d %d %d %d\n", caps.buf[0], caps.buf[1], caps.buf[2], caps.buf[3], caps.buf[4]);
-		if (ENTER_KEY && !end_key(&caps)
-			&& ((caps.sz_str - caps.size_prompt) == 0)
-				&& (*res = ft_memalloc(2)) && (caps.str[0] ? 
-					!ft_free(caps.str[0]) : 1) && (g_keeprun == 3 ?
-						0 : g_keeprun) && !ft_free_char_char(caps.str))
+		if (ENTER_KEY && !end_key(&g_caps)
+			&& ((g_caps.sz_str - g_caps.size_prompt) == 0)
+				&& (*res = ft_memalloc(2)) && (g_caps.str[0] ? 
+					!ft_free(g_caps.str[0]) : 1) && (g_keeprun == 3 ?
+						0 : g_keeprun) && !ft_free_char_char(g_caps.str))
 				return (2);
-		else if (ENTER_KEY && !end_key(&caps))// if (ENTER_KEY)
+		else if (ENTER_KEY && !end_key(&g_caps))// if (ENTER_KEY)
 				break ;
-		if (CTRL_D_KEY && ctrl_d_management(&caps))
+		if (CTRL_D_KEY && ctrl_d_management(&g_caps))
 			break ;
 		while ((++tmp_tab)->cmd)
-			if (BUF_EQUALS_ARRAY && !(tmp_tab->ptr(&caps)))
+			if (BUF_EQUALS_ARRAY && !(tmp_tab->ptr(&g_caps)))
 				break ;
 		if (!tmp_tab->cmd)
-			print_buf(&caps, caps.buf);
+			print_buf(&g_caps, g_caps.buf);
 	}
 	return (0);
 }
@@ -102,19 +102,19 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		return (ret);
 	
 	// for the norm
-	*res = caps.str[0];
+	*res = g_caps.str[0];
 	// FIRST FREES
-	if (caps.tmp_str)// && caps.tmp_str[0]
-		free(caps.tmp_str);
-	caps.tmp_str = NULL;
-	if (caps.prompt)
-		free(caps.prompt);
-	caps.prompt = NULL;
-	if (caps.copy_str)
-		free(caps.copy_str);
-	caps.copy_str = NULL;
-	free(caps.str);
-	caps.str = NULL;
+	if (g_caps.tmp_str)// && caps.tmp_str[0]
+		free(g_caps.tmp_str);
+	g_caps.tmp_str = NULL;
+	if (g_caps.prompt)
+		free(g_caps.prompt);
+	g_caps.prompt = NULL;
+	if (g_caps.copy_str)
+		free(g_caps.copy_str);
+	g_caps.copy_str = NULL;
+	free(g_caps.str);
+	g_caps.str = NULL;
 	// for the norm
 
 	// keeprunning == 3 to differenciate the signal when inside termcap
