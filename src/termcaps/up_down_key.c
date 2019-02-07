@@ -90,6 +90,8 @@ static void      down_key_norm_2_down_key_not_in_history_print_copy_str(t_tcap *
         caps->buf[0] = caps->tmp_str[i];
         print_normal_char(caps);
     }
+    // if (!caps->str[0])
+    //     caps->str[0] = ft_memalloc(2);
     //specify that the last key used is down key, but that we are not anymore in the history
     caps->ct_arrow = 0;
 }

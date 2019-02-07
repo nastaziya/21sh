@@ -61,7 +61,7 @@ int 		alt_p(t_tcap *caps)
     int i;
 
     i = -1;
-    if (caps->copy_str)
+    if (caps->copy_str && (caps->y_prompt == 0 ? !check_if_scroll(caps, caps->copy_str) : 1))
     {
         while (caps->copy_str[++i])
         {
@@ -73,5 +73,7 @@ int 		alt_p(t_tcap *caps)
             // }
         }
     }
+    else
+        tputs(tgetstr("bl", NULL), 1, ft_outc);
     return (0);
 }

@@ -38,80 +38,6 @@ void print_end_line(t_tcap *caps, char *string, char *tmp)
         caps->y_prompt--;
 }
 
-// static void     print_middle_line_manage_char_end_line(t_tcap *caps)
-// {
-//     int tst[2];
-
-//     // collects position in window of the last char
-//     position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0);
-
-//     // dprintf(2, "bien: cpos[0]: %d - cpos_1: %d - col_win: %d - line_win: %d\n", caps->char_pos[0], caps->char_pos[1], caps->window_size[1], caps->window_size[0]);
-//     // First manages the char at the end of the string when bottom right of the window, the second part manages when \n arrives at the end of line
-//     if ((caps->char_pos[0] == 0 && caps->char_pos[1] - 1 == caps->window_size[0])
-//         || (position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0)
-//             && (caps->char_pos[1] == caps->window_size[0] && caps->last_char == '\n')))
-//     {
-//         // saves position
-//         cursor_position(tst);
-//         // if cursor.y is not at the end of the window.y, go to the line at the bottom
-//         if (tst[1] != caps->window_size[0])
-//             tputs(tgoto(tgetstr("cm", NULL), tst[0] - 1, caps->window_size[0]), 1, ft_outc);
-//         // scroll up one time
-//         tputs(tgetstr("sf", NULL), 1, ft_outc);
-//         //diminues the value of the y_prompt, to keep correct track of the y.position of the origin
-//         caps->y_prompt--;
-//         // replace the cursor at the previous position
-//         tputs(tgoto(tgetstr("cm", NULL), tst[0] - 1, tst[1] - 2), 1, ft_outc);
-//     }
-//     // Gère le y-- de la pos du prompt (pour la fonction de fleche gauche), quand on est en bas de la fenetre
-//     else if (caps->buf[0] == '\n' && caps->char_pos[1]-1 == caps->window_size[0])
-//         caps->y_prompt--;
-// }
-
-// static void     print_middle_line(t_tcap *caps, char *string, char *tmp, char *tmp2)
-// {
-//     if (ft_strchr(caps->str[0], '\n') && caps->y_prompt - 1 == 0
-//         && position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0)
-//             && caps->char_pos[1] == caps->window_size[0])
-//     {
-//         tputs(tgetstr("bl", NULL), 1, ft_outc);
-//         return ;
-//     }
-//     // saves cursor position
-//     tputs(tgetstr("sc", NULL), 1, ft_outc);
-//     // manages substrings
-//     tmp2 = ft_strdup(caps->str[0] + (caps->cursor - caps->size_prompt));
-//     tmp = ft_strsub(caps->str[0], 0, (caps->cursor - caps->size_prompt));
-//     free(caps->str[0]);
-//     caps->str[0] = ft_strjoin(tmp, string);
-//     free(tmp);
-//     free(string);
-//     tmp = caps->str[0];
-//     caps->str[0] = ft_strjoin(tmp, tmp2);
-//     free(tmp);
-//     // efface le reste
-//     tputs(tgetstr("cd", NULL), 1, ft_outc);
-//     // usleep(50000);
-//     //saves cursor position again, but not in the system tmp
-//     cursor_position(caps->curs_pos);
-//     // write the new char
-//     write(1, caps->buf, 3);// write(1, caps->buf, 4); ??
-//     // prints the rest (the tmp)
-//     write(1, tmp2, caps->sz_str - caps->cursor);
-//     // Incrémente le compteur
-//     caps->sz_str++;
-//     //replace le curseur
-//     tputs(tgetstr("rc", NULL), 1, ft_outc);
-
-//     //manages char end of line, at x == window_size
-//     print_middle_line_manage_char_end_line(caps);
-
-//     // Déplacer le curseur à droite, et incrémente en même temps
-//     right_key(caps);
-//     free(tmp2);
-//     // tputs(tgetstr("ve", NULL), 1, ft_outc);
-// }
-
 int check_if_scroll(t_tcap *caps, char *str)
 {
     int curs[2]; // [0] = x
@@ -126,7 +52,7 @@ int check_if_scroll(t_tcap *caps, char *str)
     x = curs[0];
     y = curs[1];
     count_up = 0;
-    while (str[++i])
+    while (str && str[++i])
     {
         if (x == caps->window_size[1] || str[i] == '\n')
         {
@@ -190,6 +116,8 @@ static void     print_middle_line(t_tcap *caps, char *string, char *tmp, char *t
     }
     // write the new char
     write(1, caps->buf, 3);// write(1, caps->buf, 4); ??
+    if (caps->buf[0] == '\n' && boul == 1) //  && boul == 1
+        caps->y_prompt--;
     // prints the rest (the tmp)
     write(1, tmp2, caps->sz_str - caps->cursor);
     // Incrémente le compteur
@@ -208,118 +136,6 @@ static void     print_middle_line(t_tcap *caps, char *string, char *tmp, char *t
     free(tmp2);
     // tputs(tgetstr("ve", NULL), 1, ft_outc);
 }
-
-// static void print_middle_line(t_tcap *caps, char *string, char *tmp, char *tmp2)
-// {
-//     // if (ft_strchr(caps->str[0], '\n') && caps->y_prompt - 1 == 0
-//     //     && position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0)
-//     //         && caps->char_pos[1] == caps->window_size[0])
-//     // {
-//     //     tputs(tgetstr("bl", NULL), 1, ft_outc);
-//     //     return ;
-//     // }
-//     // saves cursor position
-//     tputs(tgetstr("sc", NULL), 1, ft_outc);
-//     // manages substrings
-//     tmp2 = ft_strdup(caps->str[0] + (caps->cursor - caps->size_prompt));
-//     tmp = ft_strsub(caps->str[0], 0, (caps->cursor - caps->size_prompt));
-//     free(caps->str[0]);
-//     caps->str[0] = ft_strjoin(tmp, string);
-//     free(tmp);
-//     free(string);
-//     tmp = caps->str[0];
-//     caps->str[0] = ft_strjoin(tmp, tmp2);
-//     free(tmp);
-//     // efface le reste
-//     tputs(tgetstr("cd", NULL), 1, ft_outc);
-//     // usleep(50000);
-    
-//     char *othertmp;
-//     othertmp = ft_strjoin(string, tmp2);
-//     //saves cursor position again, but not in the system tmp
-//     // // Incrémente le compteur
-//     // caps->sz_str++;
-//     // write the new char
-//     write(1, caps->buf, 3); // write(1, caps->buf, 4); ??
-//     // cursor_position(caps->curs_pos);
-//     //
-//     // anticipate the rest of the str will touch
-//     check_if_scroll(caps, tmp2);
-//     // prints the rest (the tmp)
-//     // write(1, othertmp, caps->sz_str - caps->cursor);
-//     write(1, tmp2, caps->sz_str - caps->cursor);
-//     // Incrémente le compteur
-//     caps->sz_str++;
-//     //replace le curseur
-//     tputs(tgetstr("rc", NULL), 1, ft_outc);
-
-//     //manages char end of line, at x == window_size
-//     print_middle_line_manage_char_end_line(caps);
-
-//     // Déplacer le curseur à droite, et incrémente en même temps
-//     right_key(caps);
-//     free(tmp2);
-//     // tputs(tgetstr("ve", NULL), 1, ft_outc);
-// }
-
-// ------- FONCTIONNE MAIS MOCHE -------
-
-// static void     print_middle_line(t_tcap *caps, char *string, char *tmp, char *tmp2)
-// {
-//     int diff;
-//     int cpy_curs_pos;
-//     int i;
-//     int j;
-//     // char *cpy_str;
-
-//     i = -1;
-//     j = -1;
-//     cpy_curs_pos = caps->cursor;
-//     (void)tmp;
-//     (void)string;
-//     tputs(tgetstr("vi", NULL), 1, ft_outc);
-//     // diff = caps->cursor - caps->size_prompt
-//     // manages substrings
-//     tmp2 = ft_strdup(caps->str[0] + (caps->cursor - caps->size_prompt));
-//     // tmp = ft_strsub(caps->str[0], 0, (caps->cursor - caps->size_prompt));
-//     // free(caps->str[0]);
-//     // caps->str[0] = ft_strjoin(tmp, string);
-//     // free(tmp);
-//     // free(string);
-//     // tmp = caps->str[0];
-//     // caps->str[0] = ft_strjoin(tmp, tmp2);
-//     // free(tmp);
-
-//     // end_key
-//     end_key(caps);
-//     // how much to delete
-//     diff = caps->cursor - cpy_curs_pos;
-//     // supprimer tout
-//     while (++i < diff)
-//         del_key(caps);
-//     // sleep(3);
-//     // copy the str
-//     // cpy_str = ft_strdup(tmp2);
-//     print_normal_char(caps);
-//     // sleep(1);
-//     // rewrite everything
-//     while (tmp2[++j])
-//     {
-//         ft_bzero(caps->buf, 2048);
-//         caps->buf[0] = tmp2[j];
-//         print_normal_char(caps);
-//         // sleep(1);
-//     }
-//     while (diff--)
-//         left_key(caps);
-//     free(tmp2);
-//     tputs(tgetstr("ve", NULL), 1, ft_outc);
-// }
-
-/////////////////
-/////////////////
-// je recode la fonction de print milieu
-// ->
 
 static void print_normal_char_initialization_first_passage(t_tcap *caps, char *string)
 {
@@ -349,12 +165,20 @@ int print_normal_char(t_tcap *caps)
     size_windows(caps);
     position_char_in_window_print_inside_string(caps->cursor, caps, caps->sz_str, 0);
 
+     string = ft_strndup(caps->buf, 1);
+     tmp2 = ft_strjoin(string, caps->str[0] + (caps->cursor - caps->size_prompt));
     // régler ici le problème de l'affichage de char quand la str est pleine et que ça déborde
     // je pense que le pb vient du y-1 et y => les 2 seront justes quand il y a un \n dans la str
-
-    if (((caps->buf[0] >= 32 && caps->buf[0] <= 127) || caps->buf[0] == 10) && caps->buf[1] == 0 && !(((caps->y_prompt - 1) == 0 || (caps->y_prompt) == 0) && (caps->char_pos[0] + 1) == caps->window_size[1] && caps->char_pos[1] == caps->window_size[0]) && caps->buf[0] != 9)
+    if (caps->str && caps->str[0])
+        dprintf(3, "print_normal_char: %d| %d\n", caps->y_prompt, check_if_scroll(caps, caps->str[0] + (caps->cursor - caps->size_prompt)));
+    if (((caps->buf[0] >= 32 && caps->buf[0] <= 127) || caps->buf[0] == 10) 
+        && caps->buf[1] == 0 &&
+        // && !(((caps->y_prompt - 1) == 0 || (caps->y_prompt) == 0) && (caps->char_pos[0] + 1) == caps->window_size[1] && caps->char_pos[1] == caps->window_size[0]) && caps->buf[0] != 9)
+        !(caps->y_prompt == 0 && check_if_scroll(caps, tmp2))) // caps->str[0] + (caps->cursor - caps->size_prompt) ====  && caps->char_pos[1] == caps->window_size[0]
     {
-        string = ft_strndup(caps->buf, 1);
+        // string = ft_strndup(caps->buf, 1);
+        free(tmp2);
+        tmp2 = NULL;
         if (caps->i == 0) // Initialization of the str, the first time
             print_normal_char_initialization_first_passage(caps, string);
         else if (caps->cursor < caps->sz_str) // Manages when prints char in the middle of string
@@ -366,12 +190,5 @@ int print_normal_char(t_tcap *caps)
     }
     else if (caps->buf[0] != 9) // escape the tab char
         tputs(tgetstr("bl", NULL), 1, ft_outc);
-    // if (string)
-    //     free(string);
-    // if (tmp)
-    //     free(tmp);
-    // if (tmp2)
-    //     free(tmp2);
-
     return (0);
 }

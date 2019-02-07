@@ -71,9 +71,9 @@ int 		get_line_term_termcaps(char **res, char *str, t_dlist **history)
 	{
 		if (EN_K1 && EN_K2 && !end_key(&g_caps)
 			&& ((g_caps.sz_str - g_caps.size_prompt) == 0)
-				&& (*res = ft_memalloc(2)) && (g_caps.str[0] ? 
+				&& (*res = NULL) && (g_caps.str[0] ? 
 					!ft_free(g_caps.str[0]) : 1) && (g_keeprun == 3 ?
-						0 : g_keeprun) && !ft_free_char_char(g_caps.str))
+						0 : g_keeprun) && !ft_free_char_char(g_caps.str))//ft_memalloc(2)
 				return (2);
 		else if (EN_K1 && EN_K2 && !end_key(&g_caps))// if (ENTER_KEY)
 				break ;
@@ -100,7 +100,8 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 		return (ret);
 	
 	// for the norm
-	*res = g_caps.str[0];
+	// if (ret != 2)
+		*res = g_caps.str[0];
 	// FIRST FREES
 	if (g_caps.tmp_str)// && caps.tmp_str[0]
 		free(g_caps.tmp_str);
