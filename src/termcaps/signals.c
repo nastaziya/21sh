@@ -83,6 +83,8 @@ void    ctrl_c(int sig)
         free(g_caps.str[0]);
     g_caps.str[0] = ft_memalloc(1);
     g_caps.sz_str = ft_strlen(g_caps.prompt);
+    while (g_caps.history[0]->prev)
+		g_caps.history[0] = g_caps.history[0]->prev;
     // caps.str[0] = ft_strdup("o");
     if (ft_strcmp(g_caps.prompt, "bash > ") && (g_caps.sz_str = 10))
     {
