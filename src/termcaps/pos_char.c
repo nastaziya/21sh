@@ -60,7 +60,7 @@ void			position_char_in_window_left_alt_keys(t_tcap *caps, int curs_pos[2])
 /*
 *** - Aim of the function :
 *** - Returns the position in the window of the cursor after the last char of the string
-*** - Function also returns the last_char of the line (on the same y that the cursor)
+*** - Function also returns the last_char of the line (on the paragraph (until the next '\n' that the cursor)
 */
 
 int				position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end, int bulean)
@@ -68,11 +68,13 @@ int				position_char_in_window_print_inside_string(int pos, t_tcap *caps, int en
 	int 	x;
 	int 	y;
 	int 	curs[2];
+	int		count_n;
 
 	cursor_position(curs);
 	size_windows(caps);
 	x = curs[0] - 1;
 	y = curs[1];
+	count_n = 0;
 	caps->last_char = 0;
 	pos = pos - caps->size_prompt - 1;
 	while (++pos < (end - caps->size_prompt))
@@ -84,8 +86,9 @@ int				position_char_in_window_print_inside_string(int pos, t_tcap *caps, int en
 		}
 		else
 			x++;
-		if (x == caps->window_size[1] && y == caps->curs_pos[1])
-				caps->last_char = caps->str[0][pos + 1];
+		// rajouter un check de la pos du dernier \n à partir de la pos du curseur
+		if (x + 1 == caps->window_size[1] && caps->str[0][pos + 1] == '\n' && count_n == 0)
+			caps->last_char = caps->str[0][pos + 1];
 	}
 	caps->char_pos[0] = x;
 	caps->char_pos[1] = y;

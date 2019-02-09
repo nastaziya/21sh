@@ -32,7 +32,7 @@ static int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 	tmp = ft_strdup(lexer->tokens[h->words[h->k]].content);
 	expanded_dynamic_table_heredoc(&tmp, 0);
 	res = ft_strdup(tmp);
-	if (ft_strcmp(h->cmd, res) == 0 && !ft_free(h->cmd))
+	if (h->cmd && ft_strcmp(h->cmd, res) == 0 && !ft_free(h->cmd))
 	{
 		(h->k)++;
 		// free(h->cmd);
@@ -42,17 +42,19 @@ static int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer, char ***heredoc)
 	// là on realloc
 	else if (!ft_free(tmp) && !ft_free(res))
 	{
-		// dprintf(2, "passe iciavant if\n");
-		// free(tmp);
-		// free(res);
+		
 		// // ici on initialise
 		if (heredoc[0][h->command] == NULL)//[0]
 		{
 			// dprintf(2, "PLUS PRECCISEMENT [%s]\n", h->cmd);
 			// if (heredoc[0][h->command])
 			// 	free(heredoc[0][h->command]);
-			heredoc[0][h->command] = ft_strjoin(h->cmd, "\n");
-			free(h->cmd);
+			if (g_keeprun != 4)
+				heredoc[0][h->command] = ft_strjoin(h->cmd, "\n");
+			else
+				heredoc[0][h->command] = ft_strdup(h->cmd);
+			if (h->cmd)
+				free(h->cmd);		
 		}
 		// // ici on realloc
 		else //// GERER les leaks, normalement pas bon
@@ -76,10 +78,10 @@ static int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer,
 			char ***heredoc, t_dlist **history)
 {
 	char *tmp;
-	char *res;
+	// char *res;
 
 	if (h->i_words > 0)
-		while (h->k < h->i_words && !keepRunning)
+		while (h->k < h->i_words && !g_keeprun)
 		{
 			h->obool > 0 ? ft_putstr_fd("\nHeredoc > ", 1)
 				: ft_putstr_fd("Heredoc > ", 1); 
@@ -90,18 +92,22 @@ static int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer,
 			// if (h->cmd)
 			// free(h->cmd);
 			//si mot clé c'est pas le dernier, free ce que l'on get_line et passer au suivant
-			if (h->k < h->i_words - 1 && (res = ft_strdup(tmp)))
+			// dprintf(3, "DEBUG HEREDOC_NB: [%d]-[%d]-[%d]\n", h->i_words, h->words[h->k], h->k);
+			if (h->k < h->i_words - 1)// && (res = ft_strdup(h->cmd))
 			{
+				///DEBUG HEREDOC///
+				// dprintf(3, "DEBUG HEREDOC: [|%d|]-[|%s|]\n", h->k, tmp);
+				// dprintf(3, "DEBUG HEREDOC: [|%d|]\n", h->k);
 				//control expansion
 				tmp = ft_strdup(lexer->tokens[h->words[h->k]].content);
 				expanded_dynamic_table_heredoc(&tmp, 0);
 				// res = ft_strdup(tmp);
 				// expansionner le lexer->tokens[h->words[h->k]].content sur les " et les /
-				if (ft_strcmp(res, h->cmd) == 0)
+				if (ft_strcmp(tmp, h->cmd) == 0)
 					(h->k)++;
 				free(h->cmd);
 				free(tmp);
-				free(res);
+				// free(res);
 			}
 			// quand on arrive au dernier, on collecte les données dans le char***
 			else if (h->k == h->i_words - 1)
@@ -130,9 +136,8 @@ int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 	h.obool = 0;
 
 	ft_initialize_heredoc(lexer, heredoc, 0, 0);
-	
 	// loop on the different commands (with separators : && || ;)
-	while (h.j < lexer->used_size - 1 && !keepRunning)
+	while (h.j < lexer->used_size - 1 && !g_keeprun)
 	{
 		ft_find_end_command_and_nb_kewyords(&h, lexer);
 		ft_collect_line_and_realloc_heredoc(&h, lexer, heredoc, history);
@@ -145,7 +150,10 @@ int		ft_manage_heredoc(t_lexer *lexer, char ***heredoc, t_dlist **history)
 				(h.command)++;
 		}
 	}
-	if (h.obool > 0)
+	if (h.obool > 0) //  && keepRunning == 2
 		ft_putstr_fd("\n", 1);
+	// else if (h.obool > 0 && heredoc[0][h.command]
+	// 	&& ft_strcmp(heredoc[0][h.command], "\n"))
+		// ft_putstr_fd("\n", 1);
 	return (0);
 }

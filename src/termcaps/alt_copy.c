@@ -61,14 +61,20 @@ int 		alt_p(t_tcap *caps)
     int i;
 
     i = -1;
-    if (caps->copy_str)
+    if (caps->copy_str && (caps->y_prompt == 1 ? !check_if_scroll(caps, caps->copy_str) : 1)
+        && !check_if_scroll(caps, caps->str[0] + (caps->cursor - caps->size_prompt)))
     {
         while (caps->copy_str[++i])
         {
-            ft_bzero(caps->buf, 2048);
-            caps->buf[0] = caps->copy_str[i];
-            print_normal_char(caps);
+            // if (caps->copy_str[i] != '\n')
+            // {
+                ft_bzero(caps->buf, 2048);
+                caps->buf[0] = caps->copy_str[i];
+                print_normal_char(caps);
+            // }
         }
     }
+    else
+        tputs(tgetstr("bl", NULL), 1, ft_outc);
     return (0);
 }

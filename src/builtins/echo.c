@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 17:28:41 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -16,7 +16,7 @@
 
 static void	ft_builtin_echo2(char **av, int i)
 {
-		ft_putstr_fd(av[i], 1);
+	ft_putstr_fd(av[i], 1);
 	if (av[i + 1])
 		ft_putstr_fd(" ", 1);
 }
@@ -27,7 +27,7 @@ static void	ft_builtin_echo2(char **av, int i)
 *** - Manage the option -n
 */
 
-int			ft_builtin_echo(char **av, char ***c_env)
+int			ft_builtin_echo(char **av)
 {
 	int		i;
 	int		len;

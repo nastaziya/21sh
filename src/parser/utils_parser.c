@@ -23,15 +23,15 @@ void    		command_init(t_command *cmd)
 
 static void		norm_tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 {
-	redir->red[redir->used_space] = lex.tokens[j].content;
+	redir->red[redir->used_space] = lex.tokens[j].type;
 	redir->file[redir->used_space] = lex.tokens[k].content;
 	++redir->used_space;
 }
 
 void    		tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 {
-	char **temp;
-	char **temp1;
+	t_token_type	*temp;
+	char			**temp1;
 	int i;
 
 	i = -1;
@@ -39,7 +39,7 @@ void    		tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 	{
 		temp1 = redir->file;
 		redir->av_space = (redir->used_space * 3) / 2 + 1;
-		if (!(redir->red = malloc(sizeof(char*) * redir->av_space + 1)))
+		if (!(redir->red = malloc(sizeof(t_token_type) * redir->av_space + 1)))
 			return ;
 		if (!(redir->file = malloc(sizeof(char*) * redir->av_space + 1)))
 			return ;
@@ -47,7 +47,7 @@ void    		tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 			exit(EXIT_FAILURE);
 		while(++i < redir->used_space)
 		{
-			redir->red[i] = ft_strdup(temp[i]);
+			redir->red[i] = temp[i];
 			redir->file[i] = ft_strdup(temp1[i]);
 		}
 		free(temp);

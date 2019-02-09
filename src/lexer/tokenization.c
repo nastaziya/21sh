@@ -19,7 +19,7 @@
 */
 
 void		add_token_to_lexer(t_lexer *lexer, const char *text,
-				int text_size, e_token_type type)
+				int text_size, t_token_type type)
 {
 	t_lexer_token	item;
 	t_lexer_token	*temp;
@@ -56,7 +56,7 @@ t_oplist	type_of_token(const char *s)
 	const t_oplist		*ex_tok;
 	t_oplist			not_found;
 
-	ex_tok = existing_token;
+	ex_tok = g_existing_token;
 	not_found = (t_oplist){0, 0, 0};
 	while (ex_tok && ex_tok->op)
 	{

@@ -4,7 +4,8 @@ int		is_red(t_lexer lex, int i)
 {
 	if ((lex.tokens[i].type == T_GREAT || lex.tokens[i].type == T_LESS ||
 		lex.tokens[i].type == T_DBL_GREAT || lex.tokens[i].type == T_DBL_LESS)
-		|| lex.tokens[i].type == T_TRL_LESS)
+		|| lex.tokens[i].type == T_TRL_LESS || lex.tokens[i].type == T_REDIR_LESS
+			|| lex.tokens[i].type == T_REDIR_GREAT)
 		return (1); 
 	return (0);
 }
@@ -22,7 +23,7 @@ int		is_red(t_lexer lex, int i)
 
 int is_built_in(char **cmd)
 {
-	dprintf(2, "||%s||\n", cmd[0]);
+	dprintf(3, "||%s||\n", cmd[0]);
 	if (cmd && cmd[0])
 	{
 		if (!ft_strcmp("echo", cmd[0]) ||
@@ -42,6 +43,7 @@ int		is_op(t_lexer lex, int i)
 		return (1);
 	return(0);
 }
+
 
 int		parse_errors(t_lexer lex, int i)
 {

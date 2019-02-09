@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 18:07:39 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -15,7 +15,7 @@
 #include "../../inc/builtin.h"
 
 /*
-*** - Aim of the function : 
+*** - Aim of the function :
 *** - Free with return to include inside
 *** - an if statement
 */
@@ -27,19 +27,20 @@ int		ft_free_char_char(char **av)
 }
 
 /*
-*** - Aim of the function : 
+*** - Aim of the function :
 *** - Free with return to include inside
 *** - an if statement
 */
 
 int		ft_free(char *av)
 {
-	free(av);
+	if (av)
+		free(av);
 	return (0);
 }
 
 /*
-*** - Aim of the function : 
+*** - Aim of the function :
 *** - Name not correct as the string is already expansioned
 *** - Manages the "setenv OUI" and "setenv OUI=" by creating a copy
 *** - that will always be "OUI=""
@@ -62,7 +63,7 @@ char	*ft_strdup_without_quotes(char *av)
 }
 
 /*
-*** - Aim of the function : 
+*** - Aim of the function :
 *** - We modify the global env. Used in the unsetenv command
 *** - We realloc without the env[avoid]; -> we avoid this variable
 *** - because I work with a string that I will split afterward

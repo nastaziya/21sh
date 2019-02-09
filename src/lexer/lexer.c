@@ -19,18 +19,18 @@
 *** - Checked, it's ok now;
 */
 
-// void		print(const t_lexer *lexer)
-// {
-	// int	i;
+void		print(const t_lexer *lexer)
+{
+	int	i;
 
-	// i = 0;
-	// while (i < lexer->used_size)
-	// {
-	// 	printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
-	// 	++i;
-	// }
-	// printf("\n");
-// }
+	i = 0;
+	while (i < lexer->used_size)
+	{
+		printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
+		++i;
+	}
+	printf("\n");
+}
 
 static void	ft_manage_string_to_lexer_realloc_arguments(t_lexer *lexer, t_dlist **history)
 {
@@ -42,7 +42,7 @@ static void	ft_manage_string_to_lexer_realloc_arguments(t_lexer *lexer, t_dlist 
 		if (!string_to_lexer(cmd, lexer))
 			ft_putendl_fd("error !", 1);
 	// History add, if arguments are missing (realloc)
-	if (!keepRunning)
+	if (!g_keeprun)
 	{
 		tmp = (*history)->content;
 		(*history)->content = ft_strjoin(tmp, " ");
@@ -78,7 +78,7 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 		history[0] = history[0]->prev;
 	// ajouter ici historique
 	// dprintf(2, "keepRunning: |%d\n|", keepRunning);
-	if (!keepRunning)
+	if (!g_keeprun)
 		ft_dlstadd(history, ft_dlstnew(s));
 	while (42)
 	{

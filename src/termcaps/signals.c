@@ -23,18 +23,18 @@ void    win_resize(int sig)
 {
     (void)sig;
  
-    end_key(&caps);
+    end_key(&g_caps);
     tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
     tputs(tgetstr("cd", NULL), 1, ft_outc);
-    size_windows(&caps);
-    ft_putstr_fd(caps.prompt, 1);
-    caps.cursor = caps.size_prompt + 1;
-    position_char_in_window_print_inside_string(caps.cursor, &caps, caps.sz_str, 0);
-    if ((caps.char_pos[0] < caps.window_size[1] && caps.char_pos[1] < caps.window_size[0]) 
-        && caps.window_size[1] > caps.size_prompt)
+    size_windows(&g_caps);
+    ft_putstr_fd(g_caps.prompt, 1);
+    g_caps.cursor = g_caps.size_prompt + 1;
+    position_char_in_window_print_inside_string(g_caps.cursor, &g_caps, g_caps.sz_str, 0);
+    if ((g_caps.char_pos[0] < g_caps.window_size[1] && g_caps.char_pos[1] < g_caps.window_size[0]) 
+        && g_caps.window_size[1] > g_caps.size_prompt)
     {
-        if (caps.sz_str > caps.size_prompt)
-            ft_putstr_fd(caps.str[0],1);
+        if (g_caps.sz_str > g_caps.size_prompt)
+            ft_putstr_fd(g_caps.str[0],1);
     }
     else
     {
@@ -42,15 +42,15 @@ void    win_resize(int sig)
         tputs(tgetstr("cd", NULL), 1, ft_outc);
         ft_putstr_fd("make a larger screen",1);
     }
-    caps.y_prompt = 0;
-    caps.cursor = caps.sz_str;
+    g_caps.y_prompt = 0;
+    g_caps.cursor = g_caps.sz_str;
 }
 
 /*
 *** - Aim of the function : int function to use putchar_fd inside if
 */
 
-static int     ft_putc_if(char c, int fd)
+static int     ft_putc_if(char c)
 {
     ft_putchar_fd(c, 1);
     return (0);
@@ -72,29 +72,36 @@ void    ctrl_c(int sig)
 	// and when i give the control to the system
 	// (ls -Rl /, then ctrl_c for example)
     // ft_putc_if -> Add the \n in order to keep the termcaps properly
-    if (keepRunning != 3 && !ft_putc_if('\n', 1))
+    if (g_keeprun != 3 && !ft_putc_if('\n'))
         return ;
-	keepRunning = 1;
-    end_key(&caps);
+	g_keeprun = 1;
+    end_key(&g_caps);
     // to manage bash > oui " -> the way I did it ...
     // a string like that would launch the dquote shell
     // That's my way of solving it
-    if (caps.str[0])
-        free(caps.str[0]);
-    caps.str[0] = ft_memalloc(1);
-    caps.sz_str = ft_strlen(caps.prompt);
+    if (g_caps.str[0])
+        free(g_caps.str[0]);
+    g_caps.str[0] = ft_memalloc(1);
+    g_caps.sz_str = ft_strlen(g_caps.prompt);
+    while (g_caps.history[0]->prev)
+		g_caps.history[0] = g_caps.history[0]->prev;
     // caps.str[0] = ft_strdup("o");
-    if (ft_strcmp(caps.prompt, "bash > ") && (caps.sz_str = 10))
+    if (ft_strcmp(g_caps.prompt, "bash > ") && (g_caps.sz_str = 10))
     {
         // caps.sz_str = 10;
-        free(caps.str[0]);
-        keepRunning = 2;
-        if (!ft_strcmp(caps.prompt, "dquote > "))
-            caps.str[0] = ft_strdup("\"");
-        else if (!ft_strcmp(caps.prompt, "squote > "))
-            caps.str[0] = ft_strdup("\'");
-        else if (!ft_strcmp(caps.prompt, "Missing arguments > "))
-            caps.str[0] = ft_strdup("oui");
+        free(g_caps.str[0]);
+        g_keeprun = 2;
+        if (!ft_strcmp(g_caps.prompt, "dquote > "))
+            g_caps.str[0] = ft_strdup("\"");
+        else if (!ft_strcmp(g_caps.prompt, "squote > "))
+            g_caps.str[0] = ft_strdup("\'");
+        else if (!ft_strcmp(g_caps.prompt, "Missing arguments > "))
+            g_caps.str[0] = ft_strdup("oui");
+        else if (!ft_strcmp(g_caps.prompt, "\nHeredoc > "))
+            g_caps.str[0] = ft_strdup("pppppp");
+        // premiere execution heredoc
+        else if (!ft_strcmp(g_caps.prompt, "Heredoc > "))
+            g_caps.str[0] = ft_strdup("pppppp");
     }
     ioctl(0, TIOCSTI, &c);
 }

@@ -95,6 +95,7 @@ int		ft_find_end_command_and_nb_kewyords(t_hdoc *h, t_lexer *lexer)
 			&& h->words[h->i_words] == -1)			
 		{
 			h->words[h->i_words] = h->i + 1;
+			// dprintf(3, "h->words: %d\n", h->words[h->i_words]);
 			(h->i_words)++;
 		}
 	// set k value at 0 not after for the norm (gain space for next function)
@@ -111,20 +112,20 @@ int		realloc_heredoc(t_hdoc *h, char ***heredoc)
 {
 	char	*tmp;
 
-	dprintf(2, "avant: [[%s]]\n", heredoc[0][h->command]);
+	dprintf(3, "avant: [[%s]]\n", heredoc[0][h->command]);
 	tmp = heredoc[0][h->command];
 	heredoc[0][h->command] = ft_strjoin(tmp, h->cmd);
 	free(tmp);
 	free(h->cmd);
 	tmp = heredoc[0][h->command];
 	// free(heredoc[0][h->command]);
-	if ((heredoc[0][h->command] = ft_strjoin(tmp, "\n")))
-	{
-		// dprintf(2, "heredoc complet: %s\n", heredoc[0][h->command]);
-		// heredoc[0][h->command] = ft_strjoin(tmp, "\n");
-		free(tmp);
-		dprintf(2, "après: [[%s]]\n", heredoc[0][h->command]);
-		return (1);
-	}
-	return (0);
+	if (g_keeprun != 4)
+		heredoc[0][h->command] = ft_strjoin(tmp, "\n");
+	else
+		heredoc[0][h->command] = ft_strdup(tmp);
+	free(tmp);
+	dprintf(3, "après: [[%s]]\n", heredoc[0][h->command]);
+	return (1);
+	// }
+	// return (0);
 }

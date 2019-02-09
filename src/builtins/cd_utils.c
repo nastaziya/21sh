@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 17:28:15 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -19,7 +19,7 @@
 *** - Print errors, and return 1
 */
 
-int	    ft_find_path_and_cd2(char c)
+int		ft_find_path_and_cd2(char c)
 {
 	if (c == '~')
 		ft_putstr_fd("No $HOME variable set.\n", 2);
@@ -37,12 +37,12 @@ int	    ft_find_path_and_cd2(char c)
 
 int		ft_len_array_char_cd(char **av)
 {
-    int	i;
+	int	i;
 
-    i = 0;
-    while (av[i] && (i > 0 ? ft_strcmp(av[i - 1], "-") : 1))
-        i++;
-    return (i);
+	i = 0;
+	while (av[i] && (i > 0 ? ft_strcmp(av[i - 1], "-") : 1))
+		i++;
+	return (i);
 }
 
 /*
@@ -52,23 +52,23 @@ int		ft_len_array_char_cd(char **av)
 *** - cd ./././21LN -> returns 21LN
 */
 
-char    *ft_skip_slash(char *s)
+char	*ft_skip_slash(char *s)
 {
-    int i;
+	int i;
 
-    i = 0;
-    while (s[i])
-    {
-        if (s[i] == '.')
-            i++;
-        if (s[i] == '/')
-        {
-            i++;
-            continue ;
-        }
-        return (s + i);
-    }
-    return (s);
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '.')
+			i++;
+		if (s[i] == '/')
+		{
+			i++;
+			continue ;
+		}
+		return (s + i);
+	}
+	return (s);
 }
 
 /*

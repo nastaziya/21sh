@@ -1,19 +1,31 @@
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   lexer.c                                          .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
+/*   Updated: 2019/02/09 20:16:48 by gurival-    ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
 
 #include "../../inc/expansion.h"
 
-void    tab_expansion_init(t_dynamic_array *arr)
+void		tab_expansion_init(t_dynamic_array *arr)
 {
 	arr->used_size = 0;
 	arr->capacity = TAB_INITIAL_CAPACITY;
-	if (!(arr->array_expanded =(char*)malloc(sizeof(char) * (arr->capacity + 1))))
-		return;
+	if (!(arr->array_expanded = (char*)malloc(sizeof(char)
+		* (arr->capacity + 1))))
+		return ;
 	arr->array_expanded[arr->used_size] = '\0';
-	
 }
 
 void		add_char_to_array(t_dynamic_array *arr, char item)
 {
-    char            *temp;
+	char			*temp;
 	int				i;
 
 	i = -1;
@@ -32,5 +44,4 @@ void		add_char_to_array(t_dynamic_array *arr, char item)
 	arr->array_expanded[arr->used_size] = item;
 	++arr->used_size;
 	arr->array_expanded[arr->used_size] = '\0';
-
 }

@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 18:06:23 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -14,36 +14,7 @@
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
 
-int		ft_print_error_env(char *av)
-{
-	ft_putstr_fd("env: ", 2);
-	ft_putstr_fd(av, 2);
-	ft_putstr_fd(": No such file or directory\n", 2);
-    return (127);
-}
-
-char	**ft_build_exec_path(char **path, char **av)
-{
-	int		i;
-	char	*tmp;
-	char	*tmp2;
-
-	i = -1;
-	tmp = ft_strdup(av[0]);
-	tmp2 = ft_strjoin("/", tmp);
-	free(tmp);
-	while (path[++i])
-	{
-		tmp = path[i];
-		path[i] = ft_strjoin(tmp, tmp2);
-		free(tmp);
-	}
-	free(tmp2);
-	return (path);
-}
-
-// char	**ft_find_path_and_split(char **c_env, char **av)
-char	**ft_find_path_and_split(char **c_env)
+char		**ft_find_path_and_split(char **c_env)
 {
 	int		i;
 	char	**ret;
@@ -63,7 +34,7 @@ char	**ft_find_path_and_split(char **c_env)
 	return (res);
 }
 
-void	ft_cp_env(char ***c_env, char **env)
+void		ft_cp_env(char ***c_env, char **env)
 {
 	int	i;
 
@@ -83,43 +54,27 @@ static int	ft_builtin_env2(char **av, char **cp_c_env, int i, int ret)
 	char	**path;
 	
     path = ft_find_path_and_split(cp_c_env);
-	if (!ft_strchr(av[i], '/'))
-        ret = error_exec_or_exec(path, av + i, cp_c_env, 1);
-	else
-        ret = error_exec_or_exec(path, av + i, cp_c_env, 1);
+	// if (!ft_strchr(av[i], '/'))
+        // ret = error_exec_or_exec(path, av + i, cp_c_env, 2);
+	// else
+        ret = error_exec_or_exec(path, av + i, cp_c_env, 2);
     ft_free_av(path);
-	return (ret);
+	return (ret = 0 ? 2 : ret); // modifier le ret je pense
 }
 
-int         ft_usage_env_builtin(char **av, int argc, int *i, char *p)
+int			ft_manage_option_i_env(char ***cp_c_env, char **env)
 {
-    // int     argc;
+	int	i;
 
-    *i = (argc > 1 ? 1 : 0);
-    if (argc > 1)
-    {
-        while (av[*i] && !ft_usage_is_good("i", av[*i]) && (*p = 'i'))
-            (*i)++;
-        // dprintf(2, "[%s]\n", av[*i]);
-        if (av[*i] && ft_strcmp(av[*i], "-") && av[*i][0] == '-')
-            return (
-            ft_usage_error("env: illegal option -- ", av[*i],
-            "\nusage: env [-i] [name=value ...] [utility [argument ...]]", 1));
-        else if (av[*i] && av[*i][0] == '-' && *i == argc)
-            return (2);
-    }
-    // dprintf(2, "av[sortie]: |%s|\n", av[*i]);
-    return (0);
-}
-
-int     ft_manage_option_i_env(char	***cp_c_env)
-{
-    if (!(cp_c_env[0] = (char**)malloc(sizeof(char*) * 2)))
+	i = -1;
+	ft_free_av(*cp_c_env);
+	if (!(cp_c_env[0] = (char**)malloc(sizeof(char*) * 2)))
 		return (1);
-    cp_c_env[0][0] = NULL;
-    // cp_c_env[0][0] = (char*)malloc(sizeof(char) * 2);
-    cp_c_env[0][1] = NULL;
-    return (0);
+	while (env[++i])
+		if (!ft_strncmp(env[i], "PATH=", 5))
+			cp_c_env[0][0] = ft_strdup(env[i]);
+	cp_c_env[0][1] = NULL;
+	return (0);
 }
 
 /*
@@ -128,55 +83,44 @@ int     ft_manage_option_i_env(char	***cp_c_env)
 *** - sinon, après, on envoie le reste à l'execve
 */
 
-// 1 - passer tous les -i -i -i -i => erreur : usage
-// 2 - si -i, prendre un env vide, sinon copie env
-// 3 - si "=" après "env -i -i" -> rajouter dans l'env
-// 4 - 
-int			ft_builtin_env(char **av, char ***c_env, char ***paths, t_env_tools *env)
+int			ft_builtin_env(char **av, char ***c_env)
 {
 	int		argc;
 	char	**cp_c_env;
-    int     i;
-    int     ret;
-    char    p;
+	int		i;
+	int		ret;
 
-    // ret = 0;
-    p = 0;
-    // i = 0;
-    // ajouter fonction gestion de l'usage + commencer au bon endroit
-    // -> Après les -i, donc le i est set dans la fonction
-	// if (ft_norm_av(&av, &n.c, &n.begin))
-    //     return (1);
-    argc = ft_len_array_char(av);
-    if ((ret = ft_usage_env_builtin(av, argc, &i, &p)))
-        return (ret == 2 ? 0 : 1);
-    dprintf(2, "builtin env: %d - %c - %d\n", i, p, argc);
-    // gérer avec le -i
-	p == 0 ? ft_cp_env(&cp_c_env, *c_env) : ft_manage_option_i_env(&cp_c_env);
-	if (argc == 1)//  || i == argc ------ //i == argc - 1
+	ret = 0;
+	i = -1;
+	argc = ft_len_array_char(av);
+	ft_cp_env(&cp_c_env, *c_env);
+	if (argc == 1)
 		ft_print_env(c_env);
 	else
-    {
-        ////////Gérer env -i PIPI=POPO => Affiche PIPI=POPO
-    //////// Gérer env PIPI=POPO => Affiche env + PIPI=POPO
-    //////// gérer env ls -> ne fonctionne pas
-    /////// Gérer option -i => copie vide
-        --i;
-		while (av[++i] && ret == 0)
+	{
+		while (++i < argc && ret == 0)
 		{
 			if (ft_strchr(av[i], '='))
 			{
-				ft_builtin_setenv_2(av[i], &cp_c_env, paths, env);
+				ft_builtin_setenv_env_builtin(av[i], &cp_c_env);
 				if (!av[i + 1])
 					ft_print_env(&cp_c_env);
 			}
-            else if (i == argc - 1 && !ft_strcmp(av[i], "env"))
-                ft_print_env(&cp_c_env);
-			else if (i != argc - 1 ? ft_strcmp(av[i], "env") : 1)
-			    ret = ft_builtin_env2(av, cp_c_env, i, 0);
-
+			else if (av[i] && av[i][0] == '-' && !ft_usage_is_good("i", av[i])
+				&& (i > 1 ? (!ft_strcmp(av[i - 1], "env")
+					|| av[i - 1][0] == '-') : 1))
+				ft_manage_option_i_env(&cp_c_env, *c_env);
+			else if (av[i] && av[i][0] == '-' && ft_usage_is_good("i", av[i])
+				&& (ret = 1))
+				ft_usage_error_env("env: illegal option -- ", av[i],
+					"\nusage: env [-i] [name=value ...] [utility [argument ...]]", 1);
+			else if (i == argc - 1 && !ft_strcmp(av[i], "env"))
+				ft_print_env(&cp_c_env);
+			else if (ft_strcmp(av[i], "env"))
+				ret = ft_builtin_env2(av, cp_c_env, i, 0);
 		}
-    }
-	ft_free_av(cp_c_env);
-	return (ret);
+	}
+	if (cp_c_env && *cp_c_env)
+		ft_free_av(cp_c_env);
+	return (ret == 2 ? 0 : ret);
 }

@@ -12,6 +12,7 @@
 /* ************************************************************************** */
 
 #include "../../inc/sh.h"
+#include "../../inc/builtin.h"
 
 static void     up_key_next_norm(t_tcap *caps, char *tmp, int i)
 {
@@ -36,13 +37,15 @@ int			     up_key(t_tcap *caps)
     char *tmp;
     
     i = -1;
+    // if (caps->tmp_str)
+    //     free(caps->tmp_str);
     // si je suis bien dans bash et non un sous-shell et que 
     if (caps->size_prompt == 7 && caps->history[0]->next)
     {
         if (caps->ct_arrow == 1 && caps->history[0]->next)
             caps->history[0] = caps->history[0]->next;
         tmp = caps->history[0]->content;
-        if (caps->history[0]->prev == NULL && !caps->tmp_str)
+        if (caps->history[0]->prev == NULL && !caps->tmp_str && !ft_free(caps->tmp_str))
             // Première initialisation de l'historique -> faire une sauvegarde de la str
             caps->tmp_str = caps->sz_str > caps->size_prompt ? ft_strdup(caps->str[0]) : ft_strnew(1);
         else if (caps->history[0]->prev == NULL && caps->tmp_str)
@@ -87,6 +90,8 @@ static void      down_key_norm_2_down_key_not_in_history_print_copy_str(t_tcap *
         caps->buf[0] = caps->tmp_str[i];
         print_normal_char(caps);
     }
+    // if (!caps->str[0])
+    //     caps->str[0] = ft_memalloc(2);
     //specify that the last key used is down key, but that we are not anymore in the history
     caps->ct_arrow = 0;
 }

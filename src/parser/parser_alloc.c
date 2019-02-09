@@ -27,7 +27,9 @@ void    tab_red_init(t_red *redir)
 {
 	redir->used_space = 0;
 	redir->av_space = TAB_INITIAL_CAPACITY;
-	if (!(redir->red = malloc(sizeof(char*) * redir->av_space)))
+	// if (!(redir->red = malloc(sizeof(char*) * redir->av_space)))
+	// 	return ;
+	if (!(redir->red = malloc(sizeof(t_token_type) * redir->av_space)))
 		return ;
 	if (!(redir->file = malloc(sizeof(char*) * redir->av_space)))
 		return ;
@@ -54,7 +56,10 @@ void    tab_assign(t_simp_com *simple_cmd, t_lexer lex, int j)
 			simple_cmd->cmd_simple[i] = ft_strdup(temp[i]);
 		free(temp);
 	}
-	simple_cmd->cmd_simple[simple_cmd->used_space] = lex.tokens[j].content;
+	if (j == -1)
+		simple_cmd->cmd_simple[simple_cmd->used_space] = NULL;
+	else
+		simple_cmd->cmd_simple[simple_cmd->used_space] = lex.tokens[j].content;
 	++simple_cmd->used_space;
 	simple_cmd->cmd_simple[simple_cmd->used_space] =  NULL;
 }

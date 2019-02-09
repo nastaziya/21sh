@@ -1,143 +1,233 @@
-// #ifndef TERMCAP_H
-// # define TERMCAP_H
-#ifndef TERM_H
-# define TERM_H
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   termcap.h                                        .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2019/02/06 01:05:33 by gurival-     #+#   ##    ##    #+#       */
+/*   Updated: 2019/02/06 01:36:43 by gurival-    ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
 
+#ifndef TERMCAP_H
+# define TERMCAP_H
 # include <term.h>
 # include <termios.h>
 # include <sys/ioctl.h>
 # include "../libft/libft.h"
 
-typedef struct termios t_term;
-static char term_buffer[2048];
-int keepRunning;
-# define ENTER_KEY (caps.buf[0] == 10 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
-# define CTRL_L_KEY (caps.buf[0] == 12 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
-# define CTRL_D_KEY (caps.buf[0] == 4 && caps.buf[1] == 0 && caps.buf[2] == 0 && caps.buf[3] == 0 && caps.buf[4] == 0)
+typedef struct termios	t_term;
+int						g_keeprun;
 
-# define BUF_EQUALS_ARRAY (caps.buf[0] == tmp_tab->key0 && caps.buf[1] == tmp_tab->key1 && caps.buf[2] == tmp_tab->key2 && caps.buf[3] == tmp_tab->key3 && caps.buf[4] == tmp_tab->key4)
+# define EN_K1 (g_caps.buf[0] == 10 && g_caps.buf[1] == 0)
+# define EN_K2 (g_caps.buf[2] == 0 && g_caps.buf[3] == 0 && g_caps.buf[4] == 0)
+
+# define CL_K1 (g_caps.buf[0] == 12 && g_caps.buf[1] == 0 && g_caps.buf[2] == 0)
+# define CL_K2 (g_caps.buf[3] == 0 && g_caps.buf[4] == 0)
+
+# define CD_K1 (g_caps.buf[0] == 4 && g_caps.buf[1] == 0 && g_caps.buf[2] == 0)
+# define CD_K2 (g_caps.buf[3] == 0 && g_caps.buf[4] == 0)
+
+# define EQ1 (g_caps.buf[0] == tmp_tab->key0 && g_caps.buf[1] == tmp_tab->key1)
+# define EQ2 (g_caps.buf[2] == tmp_tab->key2 && g_caps.buf[3] == tmp_tab->key3)
+# define EQ3 (g_caps.buf[4] == tmp_tab->key4)
+
 /*
 *** - Structure that contains all the required info
-*** - to manage the termcaps
+*** - to manage the termcaps :
+*** -
+*** - int	i; // i used for the print function - helps for the initialization
+*** - int	sz_str; // size of the str
+*** - int	size_prompt;// size of the prompt
+*** - int	cursor;//position of the cursor in the string
+*** - int	window_size[2]; // row in [0], col in [1]
+*** - char	buf[2048];
+*** - char	**str; // string that gets constantly realloc'd
+*** - char	*res; // return the tgetstr function
+*** - int	curs_pos[2]; //Cursor position, X in [0], Y in [1]
+*** - int	y_prompt; // y position of the prompt at all time
+*** - int	char_pos[2]; // X(0) and Y(1) position in the window of any char
+*** - of the string
+*** - int	x_lines[3]; // (0) == x of line before cursor, (1) == x of line
+*** - cursor, (2) x of line after
+*** - char	last_char; // char for the return of the position char in window
+*** - function. It's the char right before the passage to the next line
+*** - char	*tmp_str; // str that is a copy of the current str when in history
+*** - t_dlist	**history;// history - to be able to pass it to the pointer
+*** - of functions
+*** - int		ct_arrow; // count the number of arrows that were used,
+*** - 		1 == last arrow was down key ; 2 == last arrow was up key
+*** - char		*copy_str; // copy of str when copy_paste
+*** - char		*prompt; // copy of the prompt str for the resize
+*** - of the window management
 */
 
-typedef struct          s_tcap
+typedef struct			s_tcap
 {
-    int             i; // i used for the print function - helps for the initialization
-    int             sz_str; // size of the str
-    int             size_prompt;// size of the prompt
-    int             cursor;//position of the cursor in the string
-    int             window_size[2]; // row in [0], col in [1]
-    char            buf[2048];
-    // char            buf[5]; // String that contains the return of the read
-    char            **str; // string that gets constantly realloc'd    
-    char            *res; // return the tgetstr function
-    int             curs_pos[2]; //Cursor position, X in [0], Y in [1]
-    int             y_prompt; // y position of the prompt at all time
-    int             char_pos[2]; // X(0) and Y(1) position in the window of any char of the string
-    int             x_lines[3]; // (0) == x of line before cursor, (1) == x of line cursor, (2) x of line after
-    char            last_char; // char for the return of the position char in window function. It's the char right before the passage to the next line
-    char            *tmp_str; // str that is a copy of the current str when in history
-    t_dlist         **history;// history - to be able to pass it to the pointer of functions
-    int             ct_arrow; // count the number of arrows that were used, 1 == last arrow was down key ; 2 == last arrow was up key
-    char            *copy_str; // copy of str when copy_paste
-    char            *prompt; // copy of the prompt str for the resize of the window management
-    // int             g_glob; // int to specify is inside running function or not
-}                       t_tcap;
+	int				i;
+	int				sz_str;
+	int				size_prompt;
+	int				cursor;
+	int				window_size[2];
+	char			buf[2048];
+	char			**str;
+	char			*res;
+	int				curs_pos[2];
+	int				y_prompt;
+	int				char_pos[2];
+	int				x_lines[3];
+	char			last_char;
+	char			*tmp_str;
+	t_dlist			**history;
+	int				ct_arrow;
+	char			*copy_str;
+	char			*prompt;
+}						t_tcap;
 
-// typedef struct		s_dlist
-// {
-// 	void			*content;
-// 	struct s_dlist	*next;
-// 	struct s_dlist	*prev;
-// }					t_dlist;
-
-t_tcap		caps;
+t_tcap					g_caps;
 
 /*
-*** - Structure that will be the array 
+*** - Structure that will be the array
 *** - of function pointers
+*** - typedef struct          s_tab
+*** - {
+*** - int				(*ptr)(t_tcap *caps); // pointer to the function
+*** - that manages the specific pressed key
+*** - char			key0; // char that contains value of buf[0] to be compared
+*** - char			key1; // char that contains value of buf[1] to be compared
+*** - char			key2; // char that contains value of buf[2] to be compared
+*** - char			key3; // char that contains value of buf[2] to be compared
+*** - char			key4;
+*** - char			*cmd; // string that contains the cmd for tgetstr
+*** - }						t_tab;
 */
 
-typedef struct          s_tab
+typedef struct			s_tab
 {
-    int             (*ptr)(t_tcap *caps); // pointer to the function that manages the specific pressed key
-    char            key0; // char that contains value of buf[0] to be compared
-    char            key1; // char that contains value of buf[1] to be compared
-    char            key2; // char that contains value of buf[2] to be compared
-    char            key3; // char that contains value of buf[2] to be compared
-    char            key4;
-    char            *cmd; // string that contains the cmd for tgetstr
-}                       t_tab;
+	int				(*ptr)(t_tcap *caps);
+	char			key0;
+	char			key1;
+	char			key2;
+	char			key3;
+	char			key4;
+	char			*cmd;
+}						t_tab;
 
-// cursor_position.c
-void        cursor_position(int curs_pos[2]);
+/*
+** - cursor_position.c
+*/
 
-// utils.c
-int			ft_outc(int c);
-void		initialize_caps(t_tcap *caps, char *prompt);
-void		size_windows(t_tcap *caps);
+void					cursor_position(int curs_pos[2]);
 
-//left_right_key.c
-int 		right_key(t_tcap *caps);
-int 		left_key(t_tcap *caps);
+/*
+*** - utils.c
+*/
 
-// del_key.c
-int			del_key(t_tcap *caps);// -> Faire suppr key
+int						ft_outc(int c);
+void					initialize_caps(t_tcap *caps, char *prompt);
+void					size_windows(t_tcap *caps);
 
-// pos_char.c
-void		position_char_in_window_left_alt_keys(t_tcap *caps, int curs_pos[2]);
-// void		position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end);
-int		    position_char_in_window_print_inside_string(int pos, t_tcap *caps, int end, int bulean);
+/*
+*** - left_right_key.c
+*/
 
-// home_end.c
-int			home_key(t_tcap *caps);
-int			end_key(t_tcap *caps);
+int						right_key(t_tcap *caps);
+int						left_key(t_tcap *caps);
 
+/*
+*** - del_key.c
+*/
 
-// termios.c
-int         terminal_data (t_term *term);
-int         modify_terminos(t_term *term);
-int         reset_termios(t_term *term);
+int						del_key(t_tcap *caps);
 
-// alt_up_down_key.c
-int			alt_up_key(t_tcap *caps);
-int			alt_down_key(t_tcap *caps);
+/*
+*** - pos_char.c
+*/
+void					position_char_in_window_left_alt_keys(t_tcap *caps,
+							int curs_pos[2]);
+int						position_char_in_window_print_inside_string(int pos,
+							t_tcap *caps, int end, int bulean);
 
-//print.c
-int			     print_normal_char(t_tcap *caps);
-void            print_end_line(t_tcap *caps, char *string, char *tmp);
-int              print_buf(t_tcap *caps, char *buf);
+/*
+*** - home_end.c
+*/
 
+int						home_key(t_tcap *caps);
+int						end_key(t_tcap *caps);
 
+/*
+*** - termios.c
+*/
 
-// termcap.c - MAIN FILE
-int         get_line_term(char **cmd, char *str, t_dlist **history);
+int						terminal_data (t_term *term);
+int						modify_terminos(t_term *term);
+int						reset_termios(t_term *term);
 
-// up_down_key.c
-int			     up_key(t_tcap *caps);
-int			     down_key(t_tcap *caps);
+/*
+*** - alt_up_down_key.c
+*/
 
-// alt_right_left_key.c
-int 		alt_right_key(t_tcap *caps);
-int 		alt_left_key(t_tcap *caps);
+int						alt_up_key(t_tcap *caps);
+int						alt_down_key(t_tcap *caps);
 
-// alt_copy.c
-int 		alt_x(t_tcap *caps);
-int 		alt_s(t_tcap *caps);
-int 		alt_w(t_tcap *caps);
-int 		alt_s(t_tcap *caps);
-int 		alt_p(t_tcap *caps);
+/*
+*** - print.c
+*/
 
-// control_commands.c
-int			ctrl_l(t_tcap *caps);
-// int 		debug(t_tcap *caps);
-int			ctrl_d(t_tcap *caps);
+int						print_normal_char(t_tcap *caps);
+void					print_end_line(t_tcap *caps, char *string, char *tmp);
+int						print_buf(t_tcap *caps, char *buf);
+int						check_if_scroll(t_tcap *caps, char *str);
 
-// signals.c
-int     initialize_signals(void);
+/*
+*** -  termcap.c - MAIN FILE
+*/
 
-// print_buf.c
-int              print_buf(t_tcap *caps, char *buf);
+int						get_line_term(char **cmd, char *str, t_dlist **history);
+
+/*
+*** - up_down_key.c
+*/
+
+int						up_key(t_tcap *caps);
+int						down_key(t_tcap *caps);
+
+/*
+*** - alt_right_left_key.c
+*/
+
+int						alt_right_key(t_tcap *caps);
+int						alt_left_key(t_tcap *caps);
+
+/*
+*** - alt_copy.c
+*/
+
+int						alt_x(t_tcap *caps);
+int						alt_s(t_tcap *caps);
+int						alt_w(t_tcap *caps);
+int						alt_s(t_tcap *caps);
+int						alt_p(t_tcap *caps);
+
+/*
+*** - control_commands.c
+*/
+
+int						ctrl_l(t_tcap *caps);
+int						ctrl_d(t_tcap *caps);
+
+/*
+*** - signals.c
+*/
+
+int						initialize_signals(void);
+
+/*
+*** - print_buf.c
+*/
+
+int						print_buf(t_tcap *caps, char *buf);
 
 #endif
