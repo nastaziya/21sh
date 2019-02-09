@@ -42,7 +42,6 @@ int		ft_or_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 	char	**cmd_expended;
 	int		ret;
 
-<<<<<<< HEAD
     ret = 0;
     cmd_expended = expense_cmd(cmd, *env, i);
     if (env->g_return_value > 0)
@@ -54,19 +53,6 @@ int		ft_or_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
     }
     free_str(cmd_expended);
     return (0);
-=======
-	ret = 0;
-	cmd_expended = expense_cmd(cmd, *env, i);
-	if (env->g_return_value > 0)
-	{
-		if (cmd.command[i].redirection.used_space > 0)
-			ret = process_redirections(t, cmd.command[i], env);
-		if (!ret)
-			env->g_return_value = ft_exec_command(env, cmd_expended);
-	}
-	free_str(cmd_expended);
-	return (0);
->>>>>>> 18665eba47ee593750fec65a889fd00b3acbbd25
 }
 
 int		ft_and_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
@@ -74,7 +60,6 @@ int		ft_and_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 	char	**cmd_expended;
 	int		ret;
 
-<<<<<<< HEAD
     ret = 0;
     cmd_expended = expense_cmd(cmd, *env, i);
     if (env->g_return_value == 0)
@@ -86,19 +71,6 @@ int		ft_and_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
     }
     free_str(cmd_expended);
     return (0);
-=======
-	ret = 0;
-	cmd_expended = expense_cmd(cmd, *env, i);
-	if (env->g_return_value == 0)
-	{
-		if (cmd.command[i].redirection.used_space > 0)
-			ret = process_redirections(t, cmd.command[i], env);
-		if (!ret)
-			env->g_return_value = ft_exec_command(env, cmd_expended);
-	}
-	free_str(cmd_expended);
-	return (0);
->>>>>>> 18665eba47ee593750fec65a889fd00b3acbbd25
 }
 
 int		ft_semi_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
@@ -106,7 +78,6 @@ int		ft_semi_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 	char	**cmd_expended;
 	int		ret;
 
-<<<<<<< HEAD
     ret = 0;
     cmd_expended = expense_cmd(cmd, *env, i);
     if (cmd.command[i].redirection.used_space > 0)
@@ -115,16 +86,6 @@ int		ft_semi_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
         env->g_return_value = ft_exec_command(env, cmd_expended,1);
     free_str(cmd_expended);
     return (0);
-=======
-	ret = 0;
-	cmd_expended = expense_cmd(cmd, *env, i);
-	if (cmd.command[i].redirection.used_space > 0)
-		ret = process_redirections(t, cmd.command[i], env);
-	if (!ret)
-		env->g_return_value = ft_exec_command(env, cmd_expended);
-	free_str(cmd_expended);
-	return (0);
->>>>>>> 18665eba47ee593750fec65a889fd00b3acbbd25
 }
 
 int		ft_first_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
@@ -135,7 +96,6 @@ int		ft_first_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 	ret = 0;
 	if (cmd.used_space > 0)
 	{
-<<<<<<< HEAD
         cmd_expended = expense_cmd(cmd, *env, 0);
 	    dprintf(3, "redirection.used_space: %d\n", cmd.command[0].redirection.used_space);
         // premiere redirections
@@ -148,14 +108,3 @@ int		ft_first_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
     }
     return (0);
 }
-=======
-		cmd_expended = expense_cmd(cmd, *env, 0);
-		if (cmd.command[0].redirection.used_space > 0)
-			ret = process_redirections(t, cmd.command[i], env);
-		if (cmd_expended != NULL && cmd.used_space > 0 && !ret)
-			env->g_return_value = ft_exec_command(env, cmd_expended);
-		free_str(cmd_expended);
-	}
-	return (0);
-}
->>>>>>> 18665eba47ee593750fec65a889fd00b3acbbd25

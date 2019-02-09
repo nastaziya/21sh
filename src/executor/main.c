@@ -68,13 +68,7 @@ void	all_exec(char **environ, char ***heredoc)
 	t_env_tools		env;
 
 	p = (t_pipe_struct){.pipe_end = -1, .fds = {-1, -1}};
-<<<<<<< HEAD
-	
 	env.env_cpy = copy_env(environ, size_str(environ), &env);
-	env.fork_val = -2;              
-=======
-	env.env_cpy = copy_env(environ, size_str(environ), &env);
->>>>>>> 18665eba47ee593750fec65a889fd00b3acbbd25
 	path_str(env.env_cpy, &env.paths);
 	history = ft_dlstnew(NULL);
 	g_keeprun = 0;
