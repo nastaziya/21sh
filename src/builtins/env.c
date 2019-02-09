@@ -74,10 +74,10 @@ static int	ft_builtin_env2(char **av, char **cp_c_env, int i, int ret)
 	char	**path;
 	
     path = ft_find_path_and_split(cp_c_env);
-	if (!ft_strchr(av[i], '/'))
-        ret = error_exec_or_exec(path, av + i, cp_c_env, 1);
-	else
-        ret = error_exec_or_exec(path, av + i, cp_c_env, 1);
+	// if (!ft_strchr(av[i], '/'))
+        // ret = error_exec_or_exec(path, av + i, cp_c_env, 2);
+	// else
+        ret = error_exec_or_exec(path, av + i, cp_c_env, 2);
     ft_free_av(path);
 	return (ret = 0 ? 2 : ret); // modifier le ret je pense
 }

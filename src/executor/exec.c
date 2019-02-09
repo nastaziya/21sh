@@ -65,14 +65,18 @@ int	error_command(char *part, char **str, char *str2, int ret)
 	return (ret);
 }
 
-int		exec(char *path, char **str, char **env)
+int		exec(char *path, char **str, char **env, int fork_val)
 {
 	pid_t	pid;
 	int 	status;
 	int		res;
 
 	res = 0;
-	if ((pid = fork()))
+	if (fork_val != 0)
+		pid = fork();
+	else
+		pid = 0;
+	if (pid)
 	{
 		if (pid == -1)
 			return (-1);
@@ -117,19 +121,19 @@ int		check_errors_exec(char *path, char **str, int in_env)
 	
 	res = 0;
 	if (access(path, F_OK)) // no such file or directory
-		res = error_command(in_env == 0 ? "bash: " : "env: ", str,
+		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
 			": No such file or directory", 127);
 	// return (msh_nosuchfile(cmd));
 	else if (!(stat(path, &buf) == -1)) // À tester => Check les directory
 	{
 		if ((buf.st_mode & S_IFMT) == S_IFDIR) // À tester
-			res = error_command(in_env == 0 ? "bash: "
-				: "env: ", str, ": is a directory", 126);
+			res = error_command(in_env == 2 ? "env: " : "bash: ",
+				str, ": is a directory", 126);
 	}
 	// realloc la commande
 	else if ((stat(path, &buf) == 0 && buf.st_mode & S_IXUSR) == 0) // permission denied
-		res = error_command(in_env == 0 ? "bash: "
-			: "env: ", str, ": permission denied", 126);
+		res = error_command(in_env == 2 ? "env: "
+			: "bash: ", str, ": permission denied", 126);
 	return (res);
 }
 
@@ -145,15 +149,15 @@ int		error_exec_or_exec(char **paths, char **str,
 		path = ft_strdup(str[0]);
 	else
 		check_path(paths, &path, str);
-	if (path || (in_env == 1))
+	if (path || (in_env == 1) || (in_env == 2))
 	{
 		if ((res = check_errors_exec(path, str, in_env)))
 			;
 		else
-			res = exec(path, str, env);
+			res = exec(path, str, env, in_env);
 	}
 	else
-		res = error_command(in_env == 0 ? "bash: " : "env: ", str,
+		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
 			": command not found", 127);
 	if (path != NULL)
 		free(path);

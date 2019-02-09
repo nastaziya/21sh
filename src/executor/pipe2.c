@@ -16,12 +16,8 @@ int		exec2(char *path, char **str, char **env, int fork_ret)
 
 	res = 0;
 	if (fork_ret)
-	{
-		//if (pid == -1)
-		//	return (-1);
+	{	
 		waitpid(fork_ret, &status, 0);
-        
-		// res = WEXITSTATUS(status);
 		if (WIFEXITED(status))
 			res = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
@@ -87,7 +83,8 @@ int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt, 
         command = expense_cmd(cmd, *env, *i);
         path = return_path(env->paths, command);//, env->env_cpy
         pipe(p);
-        if ((pid = fork()) == -1)
+        pid = fork();
+        if (pid == -1)
         {
           exit(EXIT_FAILURE);
         }
@@ -96,16 +93,15 @@ int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt, 
             dup2(fd_in, 0);
             if (aux + 1 != len_pipe)
                 dup2(p[1], 1);
-            if (cmd.command[*i].redirection.used_space )
-            {
-                if ((ret = process_redirections(t, cmd.command[*i], env)))
-		            return (ret);
-            }
+            if ((ret = process_redirections(t, cmd.command[*i], env)))
+		        return (ret);
             close(p[0]);
-            env->g_return_value = exec2(path,command,env->env_cpy, pid);
+            env->g_return_value = ft_exec_command(env, command, pid);
+            if (is_built_in(command) || (env->g_return_value != 0))
+                exit(EXIT_FAILURE);
+            //exec2(path,command,env->env_cpy, pid);
         }
-       // else
-        //{
+       
             close(p[1]);
             if(fd_in != 0)
                 close(fd_in);
@@ -113,19 +109,13 @@ int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt, 
             (*i)++;
             aux++;
             if (aux == len_pipe)
-            { 
                 (*i)--;   
-            }
        // }
           //  free(path);
            // free(command);
     }
     waitpid(pid, &status, 0);
-  //  wait(NULL);
     while (wait(NULL) > 0)
 		;
-    
-    
-    
-   return(0); 
+   return(manage_sig_term_ret_1(status)); 
 }

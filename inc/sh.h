@@ -29,13 +29,15 @@ typedef struct		s_env_tools
 	char			**paths;
 	char			*home;
 	int				g_return_value;
+	int				fork_val;
 }					t_env_tools;
 
 int					size_str(char **environ);
 char				**copy_env(char **environ, int size, t_env_tools *env);
 void				set_path(char *str, char ***paths);
 void				path_str(char **envs, char ***paths);
-int					exec(char *path, char **str, char **env);
+//int					exec(char *path, char **str, char **env);
+int					exec(char *path, char **str, char **env, int fork_val);
 int					error_exec_or_exec(char **paths, char **str, char **env,
 						int in_env);
 void				free_str(char **str);
