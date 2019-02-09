@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 22:57:36 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -18,14 +18,15 @@
 *** - Aim of the function :
 *** - Initialize the array of pointers function
 */
+
 t_tab		*tab_termcaps(void)
 {
 	static t_tab ttab[17] = {
 		{&left_key, 27, 91, 68, 0, 0, "le"},
 		{&right_key, 27, 91, 67, 0, 0, "nd"},
 		{&del_key, 127, 0, 0, 0, 0, "del"},
-		{&home_key, 27, 91, 72, 0, 0, "home"}, // verify if keyboard at school has the same numbers for home
-		{&end_key, 27, 91, 70, 0, 0, "end"},// verify if keyboard at school has the same numbers for end
+		{&home_key, 27, 91, 72, 0, 0, "home"},
+		{&end_key, 27, 91, 70, 0, 0, "end"},
 		{&alt_up_key, 27, 27, 91, 65, 0, "alt_up"},
 		{&alt_down_key, 27, 27, 91, 66, 0, "alt_down"},
 		{&up_key, 27, 91, 65, 0, 0, "up"},
@@ -43,7 +44,7 @@ t_tab		*tab_termcaps(void)
 	return ((t_tab*)ttab);
 }
 
-int		ft_clean(void *s, size_t n)
+int			ft_clean(void *s, size_t n)
 {
 	ft_bzero(s, n);
 	return (0);
@@ -51,16 +52,13 @@ int		ft_clean(void *s, size_t n)
 
 void		ft_initialize_get_line(t_tab **ttab, char *str, t_dlist **history)
 {
-// Initialisation du tableau de pointeurs sur fonction
 	*ttab = tab_termcaps();
-// Initialisation de la struct caps
 	initialize_caps(&g_caps, str);
 	initialize_signals();
-//inclure un printf de prompt pour voir
 	g_caps.history = history;
 }
 
-int 		get_line_term_termcaps(char **res, char *str, t_dlist **history)
+int			get_line_term_termcaps(char **res, char *str, t_dlist **history)
 {
 	t_tab		*ttab;
 	t_tab		*tmp_tab;
@@ -71,12 +69,12 @@ int 		get_line_term_termcaps(char **res, char *str, t_dlist **history)
 	{
 		if (EN_K1 && EN_K2 && !end_key(&g_caps)
 			&& ((g_caps.sz_str - g_caps.size_prompt) == 0)
-				&& (*res = NULL) && (g_caps.str[0] ? 
+				&& (*res = NULL) && (g_caps.str[0] ?
 					!ft_free(g_caps.str[0]) : 1) && (g_keeprun == 3 ?
-						0 : g_keeprun) && !ft_free_char_char(g_caps.str))//ft_memalloc(2)
-				return (2);
-		else if (EN_K1 && EN_K2 && !end_key(&g_caps))// if (ENTER_KEY)
-				break ;
+						0 : g_keeprun) && !ft_free_char_char(g_caps.str))
+			return (2);
+		else if (EN_K1 && EN_K2 && !end_key(&g_caps))
+			break ;
 		if (CD_K1 && CD_K2 && ctrl_d_management(&g_caps))
 			break ;
 		while ((++tmp_tab)->cmd)
@@ -88,22 +86,18 @@ int 		get_line_term_termcaps(char **res, char *str, t_dlist **history)
 	return (0);
 }
 
-int 		get_line_term(char **res, char *str, t_dlist **history)
+int			get_line_term(char **res, char *str, t_dlist **history)
 {
 	t_term		term;
 	int			ret;
 
 	terminal_data(&term);
 	modify_terminos(&term);
-	g_keeprun = 3; // int to know if inside termcaps or not
+	g_keeprun = 3;
 	if ((ret = get_line_term_termcaps(res, str, history)))
 		return (ret);
-	
-	// for the norm
-	// if (ret != 2)
-		*res = g_caps.str[0];
-	// FIRST FREES
-	if (g_caps.tmp_str)// && caps.tmp_str[0]
+	*res = g_caps.str[0];
+	if (g_caps.tmp_str)
 		free(g_caps.tmp_str);
 	g_caps.tmp_str = NULL;
 	if (g_caps.prompt)
@@ -114,11 +108,6 @@ int 		get_line_term(char **res, char *str, t_dlist **history)
 	g_caps.copy_str = NULL;
 	free(g_caps.str);
 	g_caps.str = NULL;
-	// for the norm
-
-	// keeprunning == 3 to differenciate the signal when inside termcap
-	// and when i give the control to the system
-	// (ls -Rl /, then ctrl_c for example)
 	if (g_keeprun == 3)
 		g_keeprun = 0;
 	reset_termios(&term);

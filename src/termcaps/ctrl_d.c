@@ -6,42 +6,39 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 22:34:17 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "../../inc/sh.h"
-// #include "../../inc/builtin.h"
 
 /*
 *** - Aim of the function : to manage the ctrl_d behavior when in subshell
 */
 
-static void     ctrl_d_management_norm(t_tcap *caps)
+static void		ctrl_d_management_norm(t_tcap *caps)
 {
-    caps->sz_str = 10;
-    free(caps->str[0]);
-    g_keeprun = 5;
-    if (!ft_strcmp(caps->prompt, "dquote > ") ||
-        !ft_strcmp(caps->prompt, "squote > "))
-    {
-        ft_putstr_fd("bash: unexpected EOF while looking for matching `\"\'\n"
-            , 2);
-        caps->str[0] = !ft_strcmp(caps->prompt, "dquote > ") ? ft_strdup("\"")
-            : ft_strdup("\'");
-    }
-    else if (!ft_strcmp(caps->prompt, "Missing arguments > "))
-        caps->str[0] = ft_strdup("oui");
-    else if (!ft_strcmp(caps->prompt, "Heredoc > ")
-        || !ft_strcmp(caps->prompt, "\nHeredoc > "))
-    {
-        g_keeprun = 4;
-        caps->str[0] = ft_memalloc(1);
-        caps->sz_str = ft_strlen(caps->prompt);
-    }
-    // if (!(!ft_strcmp(caps->prompt, "Heredoc > ") || !ft_strcmp(caps->prompt, "\nHeredoc > ")))
-    //     ft_putstr_fd("bash: syntax error: unexpected end of file", 2);
+	caps->sz_str = 10;
+	free(caps->str[0]);
+	g_keeprun = 5;
+	if (!ft_strcmp(caps->prompt, "dquote > ") ||
+			!ft_strcmp(caps->prompt, "squote > "))
+	{
+		ft_putstr_fd("bash: unexpected EOF while looking for matching `\"\'\n"
+				, 2);
+		caps->str[0] = !ft_strcmp(caps->prompt, "dquote > ") ? ft_strdup("\"")
+			: ft_strdup("\'");
+	}
+	else if (!ft_strcmp(caps->prompt, "Missing arguments > "))
+		caps->str[0] = ft_strdup("oui");
+	else if (!ft_strcmp(caps->prompt, "Heredoc > ")
+			|| !ft_strcmp(caps->prompt, "\nHeredoc > "))
+	{
+		g_keeprun = 4;
+		caps->str[0] = ft_memalloc(1);
+		caps->sz_str = ft_strlen(caps->prompt);
+	}
 }
 
 /*
@@ -51,7 +48,7 @@ static void     ctrl_d_management_norm(t_tcap *caps)
 *** - if there is a string, ring the bell and don't exit :-)
 */
 
-int			    ctrl_d_management(t_tcap *caps)
+int				ctrl_d_management(t_tcap *caps)
 {
 	if (((caps->sz_str - caps->size_prompt) == 0))
 	{
@@ -61,7 +58,7 @@ int			    ctrl_d_management(t_tcap *caps)
 			caps->str[0] = ft_strdup("exit");
 		}
 		else
-            ctrl_d_management_norm(caps);
+			ctrl_d_management_norm(caps);
 		return (1);
 	}
 	else

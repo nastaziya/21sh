@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 22:51:45 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -14,28 +14,29 @@
 #include "../../inc/sh.h"
 
 /*
-*** - For the cmd + c || cmd + v management ! I modified the size of the buf to 2048
-*** - And manages checks if ft_strlen == 1 (normal char) or not
+*** - For the cmd + c || cmd + v management ! I modified the size of the buf
+*** - to 2048. And manages checks if ft_strlen == 1 (normal char) or not
 */
 
-int              print_buf(t_tcap *caps, char *buf)
+int		print_buf(t_tcap *caps, char *buf)
 {
-    int i;
-    char *str;
+	int		i;
+	char	*str;
 
-    i = -1;
-    str = ft_strdup(buf);
-    if (ft_strlen(str) == 1 && str[0] != 9)
-        print_normal_char(caps);
-    else if ((str[0] > 32 || str[0] == '\n') && !(str[0] == ';' && str[0] == '['))
-    {
-        while (str && str[++i])
-        {
-            ft_bzero(caps->buf, 2048);
-            caps->buf[0] = str[i];
-            print_normal_char(caps);
-        }
-    }
-    free(str);
-    return (0);
+	i = -1;
+	str = ft_strdup(buf);
+	if (ft_strlen(str) == 1 && str[0] != 9)
+		print_normal_char(caps);
+	else if ((str[0] > 32 || str[0] == '\n') && !(str[0] == ';' &&
+		str[0] == '['))
+	{
+		while (str && str[++i])
+		{
+			ft_bzero(caps->buf, 2048);
+			caps->buf[0] = str[i];
+			print_normal_char(caps);
+		}
+	}
+	free(str);
+	return (0);
 }

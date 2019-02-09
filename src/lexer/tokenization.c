@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/09/07 17:58:18 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 21:47:20 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -34,7 +34,8 @@ void		add_token_to_lexer(t_lexer *lexer, const char *text,
 	{
 		temp = lexer->tokens;
 		lexer->capacity = (lexer->used_size * 3) / 2 + 1;
-		if (!(lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity + 1)))
+		if (!(lexer->tokens = malloc(sizeof(t_lexer_token)
+			* lexer->capacity + 1)))
 			return ;
 		if (lexer->tokens == NULL)
 			exit(EXIT_FAILURE);

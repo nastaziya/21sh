@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 18:06:23 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 22:17:47 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -52,14 +52,11 @@ void		ft_cp_env(char ***c_env, char **env)
 static int	ft_builtin_env2(char **av, char **cp_c_env, int i, int ret)
 {
 	char	**path;
-	
-    path = ft_find_path_and_split(cp_c_env);
-	// if (!ft_strchr(av[i], '/'))
-        // ret = error_exec_or_exec(path, av + i, cp_c_env, 2);
-	// else
-        ret = error_exec_or_exec(path, av + i, cp_c_env, 2);
-    ft_free_av(path);
-	return (ret = 0 ? 2 : ret); // modifier le ret je pense
+
+	path = ft_find_path_and_split(cp_c_env);
+	ret = error_exec_or_exec(path, av + i, cp_c_env, 2);
+	ft_free_av(path);
+	return (ret = 0 ? 2 : ret);
 }
 
 int			ft_manage_option_i_env(char ***cp_c_env, char **env)
@@ -113,7 +110,8 @@ int			ft_builtin_env(char **av, char ***c_env)
 			else if (av[i] && av[i][0] == '-' && ft_usage_is_good("i", av[i])
 				&& (ret = 1))
 				ft_usage_error_env("env: illegal option -- ", av[i],
-					"\nusage: env [-i] [name=value ...] [utility [argument ...]]", 1);
+				"\nusage: env [-i] [name=value ...] [utility [argument ...]]",
+				1);
 			else if (i == argc - 1 && !ft_strcmp(av[i], "env"))
 				ft_print_env(&cp_c_env);
 			else if (ft_strcmp(av[i], "env"))

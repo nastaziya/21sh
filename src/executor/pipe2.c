@@ -3,10 +3,10 @@
 
 
 
-static char	*return_path(char **paths, char **str)
+static char		*return_path(char **paths, char **str)
 {
 	char *path;
-	
+
 	if (str[0] && ft_strchr(str[0], '/'))
 		path = ft_strdup(str[0]);
 	else

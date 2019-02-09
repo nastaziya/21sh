@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/09/07 17:58:18 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 21:38:19 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -26,13 +26,15 @@ void		print(const t_lexer *lexer)
 	i = 0;
 	while (i < lexer->used_size)
 	{
-		printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
+		printf("{ |%s| (%i) } ", lexer->tokens[i].content,
+			lexer->tokens[i].type);
 		++i;
 	}
 	printf("\n");
 }
 
-static void	ft_manage_string_to_lexer_realloc_arguments(t_lexer *lexer, t_dlist **history)
+static void	ft_manage_string_to_lexer_realloc_arguments(t_lexer *lexer,
+				t_dlist **history)
 {
 	char	*cmd;
 	char	*tmp;
@@ -41,7 +43,6 @@ static void	ft_manage_string_to_lexer_realloc_arguments(t_lexer *lexer, t_dlist 
 	if (cmd && ft_strlen(cmd) > 0)
 		if (!string_to_lexer(cmd, lexer))
 			ft_putendl_fd("error !", 1);
-	// History add, if arguments are missing (realloc)
 	if (!g_keeprun)
 	{
 		tmp = (*history)->content;
@@ -52,11 +53,6 @@ static void	ft_manage_string_to_lexer_realloc_arguments(t_lexer *lexer, t_dlist 
 		free(tmp);
 		free(cmd);
 	}
-	// if (keepRunning)
-	// {
-	// 	(*history) = (*history)->next;
-	// 	ft_dlstdelone(&(*history)->prev);
-	// }
 }
 
 /*
@@ -64,20 +60,21 @@ static void	ft_manage_string_to_lexer_realloc_arguments(t_lexer *lexer, t_dlist 
 *** - Function that manages if the lexing ends up with && || |
 *** - if that's the case, we need to show a new prompt, collect a new string
 *** -  and lex it
-*** - Also manages the "cat << &&" error <= Should not enter in the Missing argument prompt
-*** - with this line : 	&& (lexer->used_size > 1 ? lexer->tokens[lexer->used_size - 2].type != T_DBL_LESS : 1))
+*** - Also manages the "cat << &&" error <= Should not enter in the
+*** - Missing argument prompt
+*** - with this line : 	&& (lexer->used_size > 1 ?
+*** - lexer->tokens[lexer->used_size - 2].type != T_DBL_LESS : 1))
 *** - Also manages the heredoc
 *** - Function also adds history
 */
 
-int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history)
+int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer,
+				t_dlist **history)
 {
 	if (!string_to_lexer(s, lexer))
 		return (0);
 	while (history[0]->prev)
 		history[0] = history[0]->prev;
-	// ajouter ici historique
-	// dprintf(2, "keepRunning: |%d\n|", keepRunning);
 	if (!g_keeprun)
 		ft_dlstadd(history, ft_dlstnew(s));
 	while (42)
@@ -86,11 +83,11 @@ int			ft_manage_string_to_lexer(const char *s, t_lexer *lexer, t_dlist **history
 		&& ((lexer->tokens[lexer->used_size - 1].type == T_PIPE)
 			|| (lexer->tokens[lexer->used_size - 1].type == T_DBLAND)
 			|| (lexer->tokens[lexer->used_size - 1].type == T_DBLOR))
-			// pour gérer qu'il n'y ait pas d'erreur quand on passe dans la fonction
-			&& (lexer->used_size > 1 ? lexer->tokens[lexer->used_size - 2].type == T_WORD : 1)
-			// pour gérer quand << || ou && seul
-			&& (lexer->used_size == 1 ? 0 : 1) && lexer->tokens[0].type == T_WORD)
-				ft_manage_string_to_lexer_realloc_arguments(lexer, history);
+			&& (lexer->used_size > 1 ?
+				lexer->tokens[lexer->used_size - 2].type == T_WORD : 1)
+				&& (lexer->used_size == 1 ? 0 : 1)
+				&& lexer->tokens[0].type == T_WORD)
+			ft_manage_string_to_lexer_realloc_arguments(lexer, history);
 		else
 			break ;
 	}
