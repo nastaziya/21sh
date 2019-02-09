@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/07/22 05:44:32 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/07/22 06:05:25 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 18:20:59 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -26,7 +26,8 @@
 *** - So, there is a copy of the HOME that the expansion uses
 */
 
-static void	ft_builtin_unsetenv_2(char *av, char ***c_env, char ***paths, t_env_tools *env)
+static void		ft_builtin_unsetenv_2(char *av, char ***c_env,
+					char ***paths, t_env_tools *env)
 {
 	int		i;
 	char	*ret;
@@ -57,7 +58,8 @@ static void	ft_builtin_unsetenv_2(char *av, char ***c_env, char ***paths, t_env_
 *** - Copies the unsetenv builtin
 */
 
-int			ft_builtin_unsetenv(char **av, char ***c_env, char ***paths, t_env_tools *env)
+int				ft_builtin_unsetenv(char **av, char ***c_env,
+					char ***paths, t_env_tools *env)
 {
 	int		i;
 	int		len;
