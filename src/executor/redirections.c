@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 19:40:43 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 19:59:21 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -56,14 +56,16 @@ static int	manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t)
 	pipe(fd);
 	if (t->heredoc && t->heredoc[0] && t->heredoc[0][t->i_hdoc])
 		write(fd[1], t->heredoc[0][t->i_hdoc],
-			ft_strlen(t->heredoc[0][t->i_hdoc]));//WRITE_END
+			ft_strlen(t->heredoc[0][t->i_hdoc]));
 	close(fd[1]);
-	ret = dup2(fd[0], cmd.redirection.fd[i]);//READ_END
+	ret = dup2(fd[0], cmd.redirection.fd[i]);
 	close(fd[0]);
 	t->i_hdoc = t->i_hdoc + 1;
 	if (ret < 0)
+	{
 		return (ft_print_error_directory("bash: ",
 			cmd.redirection.file[i], ": Bad file descriptor", 2));
+	}
 	return (0);
 }
 
@@ -78,7 +80,7 @@ static int	manage_file_norm(t_simp_com cmd, int i, t_exec_redir *t,
 	if (cmd.redirection.red[i] == T_GREAT)
 	{
 		if (S_ISDIR(buf.st_mode))
-		    return (ft_perror_norm_dir(cmd.redirection.file[i], 2));
+			return (ft_perror_norm_dir(cmd.redirection.file[i], 2));
 		t->fdoutred[i] = open(t->file_name,
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	}
@@ -93,8 +95,10 @@ static int	manage_file_norm(t_simp_com cmd, int i, t_exec_redir *t,
 	{
 		t->fdoutred[i] = open(t->file_name, O_RDONLY);
 		if (t->fdoutred[i] < 0)
+		{
 			return (ft_print_error_directory("bash: ",
 				cmd.redirection.file[i], ": No such file or directory", 2));
+		}
 	}
 	else if (cmd.redirection.red[i] == T_REDIR_LESSGREAT)
 		t->fdoutred[i] = open(t->file_name, O_RDWR);
@@ -147,14 +151,18 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t,
 		return (1);
 	}
 	if (t->fdoutred[i] < 0)
-		if (!S_ISDIR(buf.st_mode)&& !ft_free(tmp2))
+		if (!S_ISDIR(buf.st_mode) && !ft_free(tmp2))
+		{
 			return (ft_print_error_directory("bash: ",
 				cmd.redirection.file[i], ": Permission Denied", 2));
+		}
 	if (dup2(t->fdoutred[i], cmd.redirection.fd[i]) < 0 && !ft_free(tmp2))
+	{
 		return (ft_print_error_directory("bash: ",
 				cmd.redirection.file[i], ": Is a directory", 2));
+	}
 	free(tmp2);
-	free (t->file_name);
+	free(t->file_name);
 	return (0);
 }
 
@@ -173,8 +181,10 @@ static int	manage_aggreg(t_simp_com cmd, int i, t_exec_redir *t)
 	else
 		t->fdoutred[i] = ft_atoi(cmd.redirection.file[i]);
 	if ((dup2(t->fdoutred[i], cmd.redirection.fd[i])) < 0)
+	{
 		return (ft_print_error_directory("bash: ",
-			 cmd.redirection.file[i], ": Bad file descriptor", 2));
+			cmd.redirection.file[i], ": Bad file descriptor", 2));
+	}
 	return (0);
 }
 
@@ -185,7 +195,7 @@ static int	manage_aggreg(t_simp_com cmd, int i, t_exec_redir *t)
 *** - t->outred, that I memset with the int -1
 *** - For the while loop :
 *** - I modify all the ionumber to the correct one, they were done,
-*** - but not in a format easy enough to manage it properly -> 
+*** - but not in a format easy enough to manage it properly ->
 *** - the number that I shall redirect from
 *** - if the command is : ls 5> oui => I shall redirect the fd 5
 *** - to the fd of the file oui
@@ -247,18 +257,18 @@ void		clear_fd(t_exec_redir *t, int end)
 
 int			ft_calcul_pos_last_heredoc(t_simp_com cmd)
 {
-    int     i;
-    int     count;
+	int		i;
+	int		count;
 
-    i = -1;
-    count = -1;
-    while (++i < cmd.redirection.used_space)
-    {
-        if (cmd.redirection.red[i] == T_DBL_LESS ||
-            cmd.redirection.red[i] == T_DBL_LESS_DASH)
-            count++;
-    }
-    return (count);
+	i = -1;
+	count = -1;
+	while (++i < cmd.redirection.used_space)
+	{
+		if (cmd.redirection.red[i] == T_DBL_LESS ||
+			cmd.redirection.red[i] == T_DBL_LESS_DASH)
+			count++;
+	}
+	return (count);
 }
 
 /*
@@ -266,15 +276,15 @@ int			ft_calcul_pos_last_heredoc(t_simp_com cmd)
 *** - Redirect to the proper redirection
 */
 
-int			process_redirections(t_exec_redir *t, t_simp_com cmd, t_env_tools *env)
+int			process_redirections(t_exec_redir *t, t_simp_com cmd,
+				t_env_tools *env)
 {
-    int     i;
+	int		i;
 	int		ret;
-    int     pos_heredoc;
+	int		pos_heredoc;
 
 	i = -1;
 	ret = 0;
-// 1. Copier tous les fds
 	copy_fds(t, &cmd);
 	pos_heredoc = ft_calcul_pos_last_heredoc(cmd);
 	while (++i < cmd.redirection.used_space && ret == 0)
@@ -291,8 +301,6 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd, t_env_tools *env)
 		else
 			ret = manage_file(cmd, i, t, env);
 	}
-    // clear et close tous les fds && free ce que j'ai malloc (fdoutred)
-    // dans copy_fds
 	clear_fd(t, cmd.redirection.used_space);
 	return (ret);
 }
