@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 17:32:20 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -48,7 +48,7 @@ int		ft_usage_error_env(char *command, char *btwn, char *after, int i)
 
 int		ft_int_error(char *str, int fd, int ret)
 {
-	ft_putstr_fd(str,fd);
+	ft_putstr_fd(str, fd);
 	return (ret);
 }
 
@@ -85,23 +85,23 @@ int		ft_usage_is_good(char *limitor, char *str)
 {
 	int		i;
 	int		j;
-	
+
 	i = 0;
 	j = -1;
 	if (ft_strlen(str) > 1)
 	{
 		if (str[0] == '-' && (i = i + 1))
 		{
-				while (limitor[++j])
+			while (limitor[++j])
+			{
+				while (str[i])
 				{
-					while (str[i])
-					{
-						if (limitor[j] == str[i])
-							i++;
-						else
-							break ;
-					}
+					if (limitor[j] == str[i])
+						i++;
+					else
+						break ;
 				}
+			}
 		}
 		if (str[i])
 			return (1);
@@ -119,12 +119,13 @@ int		ft_exec_command(t_env_tools *env, char **cmd, int fork)
 {
 	if (cmd && cmd[0])
 	{
-		if (!ft_strcmp("echo", cmd[0])) // gérer le cas où VAR $HOME n'existe plus
+		if (!ft_strcmp("echo", cmd[0]))
 			return (ft_builtin_echo(cmd));
 		else if (!ft_strcmp("setenv", cmd[0]))
 			return (ft_builtin_setenv(cmd, &(env->env_cpy), env));
 		else if (!ft_strcmp("unsetenv", cmd[0]))
-			return (ft_builtin_unsetenv(cmd, &(env->env_cpy), &(env->paths), env));
+			return (ft_builtin_unsetenv(cmd, &(env->env_cpy), &(env->paths),
+				env));
 		else if (!ft_strcmp("cd", cmd[0]))
 			return (ft_builtin_cd(cmd, &(env->env_cpy), env));
 		else if (!ft_strcmp("env", cmd[0]))

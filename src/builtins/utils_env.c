@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/07/22 04:00:43 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/07/22 06:06:32 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 18:08:53 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -26,7 +26,7 @@ void		ft_print_env(char ***c_env)
 	}
 }
 
-int		ft_free_av(char **av)
+int			ft_free_av(char **av)
 {
 	int	i;
 
@@ -38,7 +38,7 @@ int		ft_free_av(char **av)
 	return (0);
 }
 
-void	ft_exchange_chars(char **av, char delimitor, char to_replace)
+void		ft_exchange_chars(char **av, char delimitor, char to_replace)
 {
 	int		i;
 	int		j;
@@ -77,7 +77,7 @@ int			ft_str_is_alpha_setenv(char *str)
 	return (0);
 }
 
-void	ft_swap_string(char **ret, char **tmp, char **c_env)
+void		ft_swap_string(char **ret, char **tmp, char **c_env)
 {
 	*tmp = *ret;
 	*ret = ft_strjoin(*tmp, *c_env);
