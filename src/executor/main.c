@@ -15,10 +15,8 @@
 #include "../../inc/builtin.h"
 #include "../../inc/expansion.h"
 #include "../../inc/exec.h"
-#include "../../inc/pipe.h"
 
-void	check_op(t_command cmd, t_env_tools *env, char ***heredoc,
-			t_pipe_struct p)
+void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 {
 	t_exec_redir	t;
 	int				i;
@@ -29,7 +27,7 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc,
 	save_original_fd(&t);
 	if (cmd.command[i].tok == T_PIPE)
 	{
-		ft_pipe_exec2(env, cmd, &i, &p, &t);
+		ft_pipe_exec(env, cmd, &i, &t);
 		i--;
 	}
 	else
@@ -48,7 +46,7 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc,
 			ft_or_exec(env, cmd, i + 1, &t);
 		else if (cmd.command[i].tok == T_PIPE)
 		{
-			ft_pipe_exec2(env, cmd, &i, &p, &t);
+			ft_pipe_exec(env, cmd, &i, &t);
 			i--;
 		}
 		else if (cmd.command[i].tok == T_DBLAND)
@@ -63,11 +61,9 @@ void	all_exec(char **environ, char ***heredoc)
 {
 	t_dlist			*history;
 	t_lexer			lex;
-	t_pipe_struct	p;
 	t_command		cmd;
 	t_env_tools		env;
 
-	p = (t_pipe_struct){.pipe_end = -1, .fds = {-1, -1}};
 	env.env_cpy = copy_env(environ, size_str(environ), &env);
 	path_str(env.env_cpy, &env.paths);
 	history = ft_dlstnew(NULL);
@@ -82,7 +78,7 @@ void	all_exec(char **environ, char ***heredoc)
 		else if (g_keeprun == 5)
 			env.g_return_value = 258;
 		if (!g_keeprun || g_keeprun == 4)
-			check_op(cmd, &env, heredoc, p);
+			check_op(cmd, &env, heredoc);
 		if (*heredoc)
 		{
 			ft_free_av(*heredoc);

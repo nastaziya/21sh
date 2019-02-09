@@ -29,7 +29,6 @@ typedef struct		s_env_tools
 	char			**paths;
 	char			*home;
 	int				g_return_value;
-	int				fork_val;
 }					t_env_tools;
 
 int					size_str(char **environ);

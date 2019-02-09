@@ -15,14 +15,17 @@
 # define EXEC_H
 # include "../libft/libft.h"
 # include "parser.h"
+# include "builtin.h"
 # include <fcntl.h>
 
 typedef struct	s_pipe
 {
 	int			fds[2];
-	int			first;
-	int			input;
-	int			output;
+	int   		fd_in;
+	int			aux;
+	pid_t		pid;
+	int			len_pipe;
+
 }				t_pipe;
 
 /*
@@ -35,7 +38,7 @@ typedef struct	s_exec_redir
 	int			*fdoutred;
 	char		***heredoc;
 	int			i_hdoc;
-	t_pipe		p;
+	t_pipe		pipe_tools;
 	pid_t		pid;
 	char		*file_name;
 }				t_exec_redir;
@@ -54,6 +57,8 @@ int				ft_or_exec(t_env_tools *env, t_command cmd, int i,
 					t_exec_redir *t);
 void			save_original_fd(t_exec_redir *t);
 void			restore_original_fd(t_exec_redir *t);
+int				manage_sig_term_ret_1(int ret);
+
 
 /*
 *** - FILE : redirections.c
@@ -61,9 +66,12 @@ void			restore_original_fd(t_exec_redir *t);
 
 int				process_redirections(t_exec_redir *t, t_simp_com cmd,
 					t_env_tools *env);
-int				ft_pipe_exec(t_env_tools *env, t_command cmd, int *i,
-					t_exec_redir *t);
 void			clear_fd(t_exec_redir *t, int end);
 int				copy_fds(t_exec_redir *t, t_simp_com *cmd);
+
+/*pipe*/
+
+int				ft_pipe_exec(t_env_tools *env, t_command cmd, int *i,
+				t_exec_redir *t);
 
 #endif
