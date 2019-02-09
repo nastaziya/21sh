@@ -6,14 +6,14 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 22:15:23 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "../../inc/sh.h"
 
-void    		command_init(t_command *cmd)
+void			command_init(t_command *cmd)
 {
 	cmd->used_space = 0;
 	cmd->av_space = TAB_INITIAL_CAPACITY;
@@ -28,11 +28,11 @@ static void		norm_tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 	++redir->used_space;
 }
 
-void    		tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
+void			tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 {
 	t_token_type	*temp;
 	char			**temp1;
-	int i;
+	int				i;
 
 	i = -1;
 	if (redir->used_space == redir->av_space && (temp = redir->red))
@@ -45,7 +45,7 @@ void    		tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 			return ;
 		if ((redir->red == NULL || redir->file == NULL))
 			exit(EXIT_FAILURE);
-		while(++i < redir->used_space)
+		while (++i < redir->used_space)
 		{
 			redir->red[i] = temp[i];
 			redir->file[i] = ft_strdup(temp1[i]);

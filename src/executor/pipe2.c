@@ -7,23 +7,21 @@
 #include <stdlib.h>
 
 
-int		exec2(char *path, char **str, char **env, int fork_ret)
+int			exec2(char *path, char **str, char **env, int fork_ret)
 {
-	// pid_t	pid;
 	int 	status;
 	int		res;
-	// int		ret_signal;
 
 	res = 0;
 	if (fork_ret)
-	{	
+	{
 		waitpid(fork_ret, &status, 0);
 		if (WIFEXITED(status))
 			res = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
 			res = manage_sig_term_ret_1(WTERMSIG(status));
 		if (res > 0)
-			return(res);	
+			return(res);
 	}
 	else
 	{
@@ -33,10 +31,10 @@ int		exec2(char *path, char **str, char **env, int fork_ret)
 	return (0);
 }
 
-static char	*return_path(char **paths, char **str)
+static char		*return_path(char **paths, char **str)
 {
 	char *path;
-	
+
 	if (str[0] && ft_strchr(str[0], '/'))
 	{
 		path = ft_strdup(str[0]);
@@ -45,36 +43,34 @@ static char	*return_path(char **paths, char **str)
 		check_path(paths, &path, str);
 	return (path);
 }
-int ret_nr_pipe(t_command cmd)
+int				ret_nr_pipe(t_command cmd)
 {
-    int i;
-    int nr_pipe;
-    
-    i = 0;
-    nr_pipe = 0;
-    while(i < cmd.used_space)
-    {
-        if (cmd.command[i].tok == T_PIPE)
-            nr_pipe++;
-        i++;
-    }
-    return(nr_pipe + 1);
+	int i;
+	int nr_pipe;
+
+	i = 0;
+	nr_pipe = 0;
+	while(i < cmd.used_space)
+	{
+		if (cmd.command[i].tok == T_PIPE)
+			nr_pipe++;
+		i++;
+	}
+	return(nr_pipe + 1);
 
 }
 
 int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt, t_exec_redir *t)
 {
-    char **command;
-    char *path;
-    int len_pipe = ret_nr_pipe(cmd);
-     int   p[2];
-   
-     int   fd_in = 0;
-    	int 	status;
-    int ret = 0;
-    int aux = 0;
+	char	**command;
+	char	*path;
+	int		len_pipe = ret_nr_pipe(cmd);
+	int		p[2];
+	int		fd_in = 0;
+	int		status;
+	int		ret = 0;
+	int		aux = 0;
 
- //cat < toto | ew -l seg fault
     pid_t pid;
     (void)pt;
     while (aux < len_pipe)

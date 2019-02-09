@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 18:54:28 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 22:20:50 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -122,17 +122,16 @@ int		check_errors_exec(char *path, char **str, int in_env)
 	struct stat	buf;
 
 	res = 0;
-	if (access(path, F_OK)) // no such file or directory
+	if (access(path, F_OK))
 		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
 			": No such file or directory", 127);
 	else if (!(stat(path, &buf) == -1))
 	{
-		if ((buf.st_mode & S_IFMT) == S_IFDIR) // À tester
+		if ((buf.st_mode & S_IFMT) == S_IFDIR)
 			res = error_command(in_env == 2 ? "env: " : "bash: ",
 				str, ": is a directory", 126);
 	}
-	// realloc la commande
-	else if ((stat(path, &buf) == 0 && buf.st_mode & S_IXUSR) == 0) // permission denied
+	else if ((stat(path, &buf) == 0 && buf.st_mode & S_IXUSR) == 0)
 		res = error_command(in_env == 2 ? "env: "
 			: "bash: ", str, ": permission denied", 126);
 	return (res);
