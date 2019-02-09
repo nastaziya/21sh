@@ -116,8 +116,13 @@ static void     print_middle_line(t_tcap *caps, char *string, char *tmp, char *t
     }
     // write the new char
     write(1, caps->buf, 3);// write(1, caps->buf, 4); ??
-    if (caps->buf[0] == '\n' && boul == 1) //  && boul == 1
+    if (caps->buf[0] == '\n' && check_if_scroll(caps, tmp2)) //  && boul == 1 // caps->copy_str
+    {
+        dprintf(3, "je suis passe dans cette merde\n");
         caps->y_prompt--;
+    }
+    // write the new char
+
     // prints the rest (the tmp)
     write(1, tmp2, caps->sz_str - caps->cursor);
     // Incrémente le compteur
@@ -136,6 +141,9 @@ static void     print_middle_line(t_tcap *caps, char *string, char *tmp, char *t
     free(tmp2);
     // tputs(tgetstr("ve", NULL), 1, ft_outc);
 }
+
+// le probleme est que, quand on envoie un \n dans la str, il faut parfois scroll-up
+// 
 
 static void print_normal_char_initialization_first_passage(t_tcap *caps, char *string)
 {
@@ -174,7 +182,7 @@ int print_normal_char(t_tcap *caps)
     if (((caps->buf[0] >= 32 && caps->buf[0] <= 127) || caps->buf[0] == 10) 
         && caps->buf[1] == 0 &&
         // && !(((caps->y_prompt - 1) == 0 || (caps->y_prompt) == 0) && (caps->char_pos[0] + 1) == caps->window_size[1] && caps->char_pos[1] == caps->window_size[0]) && caps->buf[0] != 9)
-        !(caps->y_prompt == 0 && check_if_scroll(caps, tmp2))) // caps->str[0] + (caps->cursor - caps->size_prompt) ====  && caps->char_pos[1] == caps->window_size[0]
+        !(caps->y_prompt == 1 && check_if_scroll(caps, tmp2))) // caps->str[0] + (caps->cursor - caps->size_prompt) ====  && caps->char_pos[1] == caps->window_size[0]
     {
         // string = ft_strndup(caps->buf, 1);
         free(tmp2);
