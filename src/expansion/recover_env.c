@@ -6,14 +6,17 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/09/07 17:58:18 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 21:28:38 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "../../inc/sh.h"
-/*take take what it is after env var = */ 
-//const char return
+
+/*
+*** - take what it is after env var =
+*/
+
 char	*env_var(t_env_tools env, char *str, int size)
 {
 	int		i;
@@ -39,15 +42,16 @@ char	*env_var(t_env_tools env, char *str, int size)
 	return (ret_var);
 }
 
-int size_env_var(char *tmp, int i)
+int		size_env_var(char *tmp, int i)
 {
-    int size;
+	int	size;
 
-    size = 0;
-    while (ft_isalnum(tmp[i]) && tmp[i] != '\\' && tmp[i] != '\''  && tmp[i] != '"' && i != ft_strlen(tmp))
-    {
-        size++;
-        i++;
-    }
-    return (size);
+	size = 0;
+	while (ft_isalnum(tmp[i]) && tmp[i] != '\\' &&
+		tmp[i] != '\'' && tmp[i] != '"' && i != ft_strlen(tmp))
+	{
+		size++;
+		i++;
+	}
+	return (size);
 }

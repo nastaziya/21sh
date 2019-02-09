@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/09/07 17:58:18 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 21:36:00 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -46,7 +46,7 @@ char		*ft_manage_prompt(char type_quote)
 *** - if yes, end, otherwise, the loop continues
 */
 
-void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
+void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 {
 	int		ret;
 	char	*line;
@@ -55,7 +55,6 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 	while (42)
 	{
 		ret = get_line_term(&line, ft_manage_prompt(type_quote), history);
-		// dprintf(2, "line: |%s|\n", line);
 		if (line && ft_strlen(line) > 0)
 		{
 			tmp = *cmd;
@@ -79,7 +78,7 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 *** - then checks if the line ends with \
 *** - If yes for any of the above, print the next then parse the quotes
 *** - return 2 is when user presses \n directly after prompt
-*** - returns 3 when ctrl_l key is being pressed, and doesn't print the 
+*** - returns 3 when ctrl_l key is being pressed, and doesn't print the
 *** - \n in this case
 */
 
@@ -89,8 +88,8 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 	char	type_quote;
 
 	ft_putstr_fd(str, 1);
-	ret = get_line_term(cmd, str, history); //str[0] == '\n' ? str + 1 : 
-	if (ret != 2)//  && ret != 3
+	ret = get_line_term(cmd, str, history);
+	if (ret != 2)
 	{
 		if (ret != 0)
 		{
@@ -100,12 +99,8 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 		else if (*cmd && ft_strlen(*cmd) > 0)
 			if ((type_quote = ft_count_quote(*cmd)))
 			{
-				// add the string to the history
 				ft_dlstadd(history, ft_dlstnew(*cmd));
 				ft_new_prompt(cmd, type_quote, history);
-				// if during the ft_count_quote, no ctrl_c was used
-				// then, erase the string from the history, it will
-				// be managed later in the lexer
 				if (!g_keeprun && ((*history) = (*history)->next))
 					ft_dlstdelone(&(*history)->prev);
 			}
