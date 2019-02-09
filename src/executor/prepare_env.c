@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/09/07 17:58:18 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 19:20:09 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -28,9 +28,6 @@ void	free_str(char **str)
 	int	i;
 
 	i = 0;
-//	dprintf(3, "|%s|\n", str[0]);
-//	dprintf(3, "|hey|\n");
-//	dprintf(3, "|%s|\n", str[1]);
 	while (str[i])
 	{
 		free(str[i]);

@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/09/07 17:58:18 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 18:54:28 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -20,13 +20,12 @@ void	path_str(char **envs, char ***paths)
 	*paths = ft_find_path_and_split(envs);
 }
 
-
 void	check_path_loop(char **path_env, char **path, char **str, int *count)
 {
 	int		j;
 	char	*join_slash;
 	char	*join_cmd;
-	
+
 	j = 0;
 	while (path_env[j])
 	{
@@ -57,7 +56,7 @@ int		check_path(char **path_env, char **path, char **str)
 	return (count);
 }
 
-int	error_command(char *part, char **str, char *str2, int ret)
+int		error_command(char *part, char **str, char *str2, int ret)
 {
 	ft_putstr_fd(part, 2);
 	ft_putstr_fd(*str, 2);
@@ -68,7 +67,7 @@ int	error_command(char *part, char **str, char *str2, int ret)
 int		exec(char *path, char **str, char **env)
 {
 	pid_t	pid;
-	int 	status;
+	int		status;
 	int		res;
 
 	res = 0;
@@ -82,7 +81,7 @@ int		exec(char *path, char **str, char **env)
 		else if (WIFSIGNALED(status))
 			res = manage_sig_term_ret_1(WTERMSIG(status));
 		if (res > 0)
-			return(res);	
+			return (res);
 	}
 	else
 	{
@@ -92,13 +91,13 @@ int		exec(char *path, char **str, char **env)
 	return (0);
 }
 
-
-// function tells if the word after the >& && <& is a redir number
+/*
+*** - function tells if the word after the >& && <& is a redir number
+*/
 
 int		ft_isnumber_redir(char *str)
 {
-	dprintf(3, "rentre dans ft_isnumber_redir\n");
-	int i;
+	int	i;
 
 	i = -1;
 	if (!ft_strcmp(str, "-"))
@@ -108,39 +107,39 @@ int		ft_isnumber_redir(char *str)
 			return (1);
 	return (0);
 }
-// Place it somewhere else for the norm
+
+/*
+*** - Place it somewhere else for the norm
+*/
 
 int		check_errors_exec(char *path, char **str, int in_env)
 {
-	int res;
-	struct stat buf;
-	
+	int			res;
+	struct stat	buf;
+
 	res = 0;
-	if (access(path, F_OK)) // no such file or directory
+	if (access(path, F_OK))
 		res = error_command(in_env == 0 ? "bash: " : "env: ", str,
 			": No such file or directory", 127);
-	// return (msh_nosuchfile(cmd));
-	else if (!(stat(path, &buf) == -1)) // À tester => Check les directory
+	else if (!(stat(path, &buf) == -1))
 	{
-		if ((buf.st_mode & S_IFMT) == S_IFDIR) // À tester
+		if ((buf.st_mode & S_IFMT) == S_IFDIR)
 			res = error_command(in_env == 0 ? "bash: "
 				: "env: ", str, ": is a directory", 126);
 	}
-	// realloc la commande
-	else if ((stat(path, &buf) == 0 && buf.st_mode & S_IXUSR) == 0) // permission denied
+	else if ((stat(path, &buf) == 0 && buf.st_mode & S_IXUSR) == 0)
 		res = error_command(in_env == 0 ? "bash: "
 			: "env: ", str, ": permission denied", 126);
 	return (res);
 }
 
 int		error_exec_or_exec(char **paths, char **str,
-		char **env, int in_env) // insérer booléen précisant si dans env ou non
+			char **env, int in_env)
 {
 	int			res;
 	char		*path;
 
 	path = NULL;
-	// Find the proper path
 	if (str[0] && ft_strchr(str[0], '/'))
 		path = ft_strdup(str[0]);
 	else
@@ -157,6 +156,5 @@ int		error_exec_or_exec(char **paths, char **str,
 			": command not found", 127);
 	if (path != NULL)
 		free(path);
-	dprintf(3, "return res: %d\n", res);
 	return (res);
 }
