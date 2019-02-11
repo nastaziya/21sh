@@ -101,13 +101,12 @@ int			string_to_lexer(const char *s, t_lexer *lexer)
 	{
 		nm.current = type_of_token(s);
 		if ((*s == '>' || *s == '<') && (s - nm.start > 0 ?
-					ft_isdigit(*(s - 1)) : 0))
+			ft_isdigit(*(s - 1)) : 0))
 			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_IO_NUMB);
-		else if ((*s == '"' || *s == '\'') &&
-			!manage_back_quote(s, nm.start))
+		else if (S_QUOTE && !manage_back_quote(s, nm.start))
 			ft_string_to_lexer_quote_management(&s, lexer, &nm);
-		else if (((*s == '\n' && *(s - 1) == '\\') ||
-			(nm.current.type != 0 && *(s - 1) == '\\')) && ++s)
+		else if (((*s == '\n' && SBS) || (nm.current.type != 0
+			&& s - nm.start > 0 ? SBS : 1 == 2)) && ++s)
 			continue ;
 		else if (nm.current.op != 0 && nm.prev != s)
 			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_WORD);
