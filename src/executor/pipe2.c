@@ -1,18 +1,16 @@
 #include "../../inc/sh.h"
 #include "../../inc/exec.h"
 
+// static char		*return_path(char **paths, char **str)
+// {
+// 	char *path;
 
-
-static char		*return_path(char **paths, char **str)
-{
-	char *path;
-
-	if (str[0] && ft_strchr(str[0], '/'))
-		path = ft_strdup(str[0]);
-	else
-		check_path(paths, &path, str);
-	return (path);
-}
+// 	if (str[0] && ft_strchr(str[0], '/'))
+// 		path = ft_strdup(str[0]);
+// 	else
+// 		check_path(paths, &path, str);
+// 	return (path);
+// }
 
 int ret_nr_pipe(t_command cmd)
 {

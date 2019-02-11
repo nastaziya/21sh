@@ -106,7 +106,8 @@ int			string_to_lexer(const char *s, t_lexer *lexer)
 		else if ((*s == '"' || *s == '\'') &&
 			!manage_back_quote(s, nm.start))
 			ft_string_to_lexer_quote_management(&s, lexer, &nm);
-		else if (*s == '\n' && *(s - 1) == '\\' && ++s)
+		else if (((*s == '\n' && *(s - 1) == '\\') ||
+			(nm.current.type != 0 && *(s - 1) == '\\')) && ++s)
 			continue ;
 		else if (nm.current.op != 0 && nm.prev != s)
 			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_WORD);
