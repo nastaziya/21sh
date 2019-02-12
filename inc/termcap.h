@@ -147,7 +147,7 @@ int						del_key(t_tcap *caps);
 */
 void					position_char_in_window_left_alt_keys(t_tcap *caps,
 							int curs_pos[2]);
-int						position_char_in_window_print_inside_string(int pos,
+int						pos_char_in_window_in_str(int pos,
 							t_tcap *caps, int end, int bulean);
 
 /*
