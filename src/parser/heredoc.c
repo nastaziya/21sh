@@ -15,6 +15,14 @@
 #include "../../inc/expansion.h"
 #include "../../inc/builtin.h"
 
+static void		ft_norm_manage_last_keyword(t_hdoc *h, char *tmp,
+					char *res)
+{
+	(h->k)++;
+	free(tmp);
+	free(res);
+}
+
 /*
 *** - Aim of the function :
 *** - Function that manages the heredoc when we are waiting
@@ -35,11 +43,7 @@ static int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer,
 	expanded_dynamic_table_heredoc(&tmp, 0);
 	res = ft_strdup(tmp);
 	if (h->cmd && ft_strcmp(h->cmd, res) == 0 && !ft_free(h->cmd))
-	{
-		(h->k)++;
-		free(tmp);
-		free(res);
-	}
+		ft_norm_manage_last_keyword(h, tmp, res);
 	else if (!ft_free(tmp) && !ft_free(res))
 	{
 		if (heredoc[0][h->command] == NULL)
@@ -51,13 +55,8 @@ static int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer,
 			if (h->cmd)
 				free(h->cmd);
 		}
-		else
-		{
-			if (realloc_heredoc(h, heredoc))
-			{
-				return (1);
-			}
-		}
+		else if (realloc_heredoc(h, heredoc))
+			return (1);
 	}
 	return (0);
 }

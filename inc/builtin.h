@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/06 00:06:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/06 00:08:59 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/12 22:02:00 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -30,6 +30,18 @@ typedef struct	s_norm_cd
 	int			argc;
 	int			dash;
 }				t_norm_cd;
+
+/*
+*** - Struct for the norm of the builtin_env
+*** - part of the env builtin
+*/
+
+typedef struct	s_norm_env
+{
+	int		argc;
+	char	**cp_c_env;
+	int		ret;
+}				t_norm_env;
 
 /*
 *** - Second struct for the norm
@@ -151,5 +163,17 @@ int				ft_builtin_exit(char **cmd);
 */
 
 int				ctrl_d_management(t_tcap *caps);
+
+/*
+*** - utils2.c
+*/
+
+int				ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
+					t_norm_cd *n);
+void			ft_norm_env(char **av, int i, t_norm_env *t, char ***c_env);
+int				ft_builtin_env2(char **av, char **cp_c_env, int i, int ret);
+int				ft_manage_option_i_env(char ***cp_c_env, char **env);
+char			*ft_array_char_to_str_replace_env(char **c_env, int avoid,
+					char *av);
 
 #endif

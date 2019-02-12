@@ -15,38 +15,6 @@
 #include "../../inc/builtin.h"
 
 /*
-*** - Function to manage :
-*** - cd alone
-*** - cd -
-*** - ft_find_path_and_cd2 => Manage the errors
-*** - p == 0 for cd -P - ; otherwise p == 1
-*/
-
-static int		ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
-					t_norm_cd *n)
-{
-	int		count;
-	char	*tmp;
-
-	count = 0;
-	while ((*c_env)[count] && ft_strncmp((*c_env)[count],
-				(c == '~' ? "HOME=" : "OLDPWD="), (c == '~' ? 5 : 7)))
-		count++;
-	if ((*c_env)[count])
-	{
-		tmp = ft_strdup(ft_strchr((*c_env)[count], '=') + 1);
-		n->dash = 1;
-		ft_change_dir_and_pwds(&tmp, c_env, env, n);
-		if (c == '-')
-			ft_putendl_fd(tmp, 1);
-		free(tmp);
-	}
-	else
-		return (ft_find_path_and_cd2(c));
-	return (0);
-}
-
-/*
 *** - Aim of the function : checks if the av is correct
 *** - Then : keeps the letter of the last option set (*begin)
 *** - Also :
@@ -124,6 +92,22 @@ int				ft_manage_cd_p_xxx(char **av, char ***c_env, t_norm_cd *n,
 
 /*
 *** - Aim of the function :
+*** - Created for the norm. We change the directory, then we
+*** - free and return
+*/
+
+static int		ft_change_dir_and_free(char **av, char ***c_env,
+						t_env_tools *env, t_norm_cd *n_cd)
+{
+	int ret;
+
+	ret = ft_change_dir_and_pwds(av, c_env, env, n_cd);
+	free(av);
+	return (ret);
+}
+
+/*
+*** - Aim of the function :
 *** - We copy the behavior of the cd builtin
 *** - In order of the ifs and elsifs, I manage the following commands :
 *** - 1. cd /21sh
@@ -137,7 +121,6 @@ int				ft_manage_cd_normal(char **av, char ***c_env, t_norm_cd *n,
 {
 	char	*tmp;
 	int		i;
-	int		ret;
 	char	*buf;
 
 	i = 0;
@@ -149,17 +132,9 @@ int				ft_manage_cd_normal(char **av, char ***c_env, t_norm_cd *n,
 		while ((*c_env)[i] && ft_strncmp("PWD=", (*c_env)[i], 4))
 			i++;
 		if ((*c_env)[i] && (tmp = ft_strdup(ft_strchr((*c_env)[i], '=') + 1)))
-		{
-			ret = ft_change_dir_and_pwds(&tmp, c_env, env, n);
-			free(tmp);
-			return (ret);
-		}
+			return (ft_change_dir_and_free(&tmp, c_env, env, n));
 		else if ((buf = ft_strnew(1024)) && getcwd(buf, sizeof(buf)))
-		{
-			ret = ft_change_dir_and_pwds(&buf, c_env, env, n);
-			free(buf);
-			return (ret);
-		}
+			return (ft_change_dir_and_free(&buf, c_env, env, n));
 		free(buf);
 	}
 	else

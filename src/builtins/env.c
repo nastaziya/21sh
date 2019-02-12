@@ -49,7 +49,7 @@ void		ft_cp_env(char ***c_env, char **env)
 	c_env[0][i] = NULL;
 }
 
-static int	ft_builtin_env2(char **av, char **cp_c_env, int i, int ret)
+int			ft_builtin_env2(char **av, char **cp_c_env, int i, int ret)
 {
 	char	**path;
 
@@ -82,43 +82,21 @@ int			ft_manage_option_i_env(char ***cp_c_env, char **env)
 
 int			ft_builtin_env(char **av, char ***c_env)
 {
-	int		argc;
-	char	**cp_c_env;
-	int		i;
-	int		ret;
+	int			i;
+	t_norm_env	t;
 
-	ret = 0;
+	t.ret = 0;
 	i = -1;
-	argc = ft_len_array_char(av);
-	ft_cp_env(&cp_c_env, *c_env);
-	if (argc == 1)
+	t.argc = ft_len_array_char(av);
+	ft_cp_env(&(t.cp_c_env), *c_env);
+	if (t.argc == 1)
 		ft_print_env(c_env);
 	else
 	{
-		while (++i < argc && ret == 0)
-		{
-			if (ft_strchr(av[i], '='))
-			{
-				ft_builtin_setenv_env_builtin(av[i], &cp_c_env);
-				if (!av[i + 1])
-					ft_print_env(&cp_c_env);
-			}
-			else if (av[i] && av[i][0] == '-' && !ft_usage_is_good("i", av[i])
-				&& (i > 1 ? (!ft_strcmp(av[i - 1], "env")
-					|| av[i - 1][0] == '-') : 1))
-				ft_manage_option_i_env(&cp_c_env, *c_env);
-			else if (av[i] && av[i][0] == '-' && ft_usage_is_good("i", av[i])
-				&& (ret = 1))
-				ft_usage_error_env("env: illegal option -- ", av[i],
-				"\nusage: env [-i] [name=value ...] [utility [argument ...]]",
-				1);
-			else if (i == argc - 1 && !ft_strcmp(av[i], "env"))
-				ft_print_env(&cp_c_env);
-			else if (ft_strcmp(av[i], "env"))
-				ret = ft_builtin_env2(av, cp_c_env, i, 0);
-		}
+		while (++i < t.argc && t.ret == 0)
+			ft_norm_env(av, i, &t, c_env);
 	}
-	if (cp_c_env && *cp_c_env)
-		ft_free_av(cp_c_env);
-	return (ret == 2 ? 0 : ret);
+	if (t.cp_c_env && *(t.cp_c_env))
+		ft_free_av(t.cp_c_env);
+	return (t.ret == 2 ? 0 : t.ret);
 }

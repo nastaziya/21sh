@@ -31,7 +31,7 @@ typedef struct	s_norm_exp
 }				t_norm_exp;
 
 void			tab_expansion_init(t_dynamic_array *arr);
-void			add_char_to_array(t_dynamic_array *arr, char item);
+int				add_char_to_array(t_dynamic_array *arr, char item);
 void			expanded_dynamic_table(char **str, t_env_tools env, int i);
 char			*ft_strdup_without_char(char *str, char c);
 int				recover_env_var(char *temp, t_env_tools env, int *i,

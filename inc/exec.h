@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/06 00:12:59 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/06 00:13:01 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/12 22:03:27 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -21,7 +21,7 @@
 typedef struct	s_pipe
 {
 	int			fds[2];
-	int   		fd_in;
+	int			fd_in;
 	int			aux;
 	pid_t		pid;
 	int			len_pipe;
@@ -59,7 +59,6 @@ void			save_original_fd(t_exec_redir *t);
 void			restore_original_fd(t_exec_redir *t);
 int				manage_sig_term_ret_1(int ret);
 
-
 /*
 *** - FILE : redirections.c
 */
@@ -69,9 +68,11 @@ int				process_redirections(t_exec_redir *t, t_simp_com cmd,
 void			clear_fd(t_exec_redir *t, int end);
 int				copy_fds(t_exec_redir *t, t_simp_com *cmd);
 
-/*pipe*/
+/*
+*** - pipe
+*/
 
 int				ft_pipe_exec(t_env_tools *env, t_command cmd, int *i,
-				t_exec_redir *t);
+					t_exec_redir *t);
 
 #endif
