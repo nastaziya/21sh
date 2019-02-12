@@ -29,7 +29,7 @@ void			win_resize(int sig)
 	size_windows(&g_caps);
 	ft_putstr_fd(g_caps.prompt, 1);
 	g_caps.cursor = g_caps.size_prompt + 1;
-	position_char_in_window_print_inside_string(g_caps.cursor,
+	pos_char_in_window_in_str(g_caps.cursor,
 		&g_caps, g_caps.sz_str, 0);
 	if ((g_caps.char_pos[0] < g_caps.window_size[1] &&
 		g_caps.char_pos[1] < g_caps.window_size[0])
@@ -58,6 +58,25 @@ static int		ft_putc_if(char c)
 	return (0);
 }
 
+static void		ctrl_c_norm(void)
+{
+	if (ft_strcmp(g_caps.prompt, "bash > ") && (g_caps.sz_str = 10))
+	{
+		free(g_caps.str[0]);
+		g_keeprun = 2;
+		if (!ft_strcmp(g_caps.prompt, "dquote > "))
+			g_caps.str[0] = ft_strdup("\"");
+		else if (!ft_strcmp(g_caps.prompt, "squote > "))
+			g_caps.str[0] = ft_strdup("\'");
+		else if (!ft_strcmp(g_caps.prompt, "Missing arguments > "))
+			g_caps.str[0] = ft_strdup("oui");
+		else if (!ft_strcmp(g_caps.prompt, "\nHeredoc > "))
+			g_caps.str[0] = ft_strdup("pppppp");
+		else if (!ft_strcmp(g_caps.prompt, "Heredoc > "))
+			g_caps.str[0] = ft_strdup("pppppp");
+	}
+}
+
 /*
 *** - Aim of the function : manage the ctrl_c signal
 *** - Handles the resizing of the terminal window.
@@ -80,21 +99,7 @@ void			ctrl_c(int sig)
 	g_caps.sz_str = ft_strlen(g_caps.prompt);
 	while (g_caps.history[0]->prev)
 		g_caps.history[0] = g_caps.history[0]->prev;
-	if (ft_strcmp(g_caps.prompt, "bash > ") && (g_caps.sz_str = 10))
-	{
-		free(g_caps.str[0]);
-		g_keeprun = 2;
-		if (!ft_strcmp(g_caps.prompt, "dquote > "))
-			g_caps.str[0] = ft_strdup("\"");
-		else if (!ft_strcmp(g_caps.prompt, "squote > "))
-			g_caps.str[0] = ft_strdup("\'");
-		else if (!ft_strcmp(g_caps.prompt, "Missing arguments > "))
-			g_caps.str[0] = ft_strdup("oui");
-		else if (!ft_strcmp(g_caps.prompt, "\nHeredoc > "))
-			g_caps.str[0] = ft_strdup("pppppp");
-		else if (!ft_strcmp(g_caps.prompt, "Heredoc > "))
-			g_caps.str[0] = ft_strdup("pppppp");
-	}
+	ctrl_c_norm();
 	ioctl(0, TIOCSTI, &c);
 }
 

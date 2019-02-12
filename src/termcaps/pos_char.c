@@ -57,6 +57,12 @@ void			position_char_in_window_left_alt_keys(t_tcap *caps,
 	}
 }
 
+static void		norm_pos_char_in_window_in_str(t_tcap *caps, int x, int y)
+{
+	caps->char_pos[0] = x;
+	caps->char_pos[1] = y;
+}
+
 /*
 *** - Aim of the function :
 *** - Returns the position in the window of the cursor after the last char
@@ -65,7 +71,7 @@ void			position_char_in_window_left_alt_keys(t_tcap *caps,
 *** - (until the next '\n' that the cursor))
 */
 
-int				position_char_in_window_print_inside_string(int pos,
+int				pos_char_in_window_in_str(int pos,
 					t_tcap *caps, int end, int bulean)
 {
 	int		x;
@@ -82,19 +88,15 @@ int				position_char_in_window_print_inside_string(int pos,
 	pos = pos - caps->size_prompt - 1;
 	while (++pos < (end - caps->size_prompt))
 	{
-		if (caps->str[0][pos] == '\n' || (bulean == 1 ?
-			(x == caps->window_size[1]) : (x + 1 == caps->window_size[1])))
-		{
+		if ((caps->str[0][pos] == '\n' || (bulean == 1 ?
+		(x == caps->window_size[1]) : (x + 1 == caps->window_size[1]))) && y++)
 			x = 0;
-			y++;
-		}
 		else
 			x++;
 		if (x + 1 == caps->window_size[1]
 			&& caps->str[0][pos + 1] == '\n' && count_n == 0)
 			caps->last_char = caps->str[0][pos + 1];
 	}
-	caps->char_pos[0] = x;
-	caps->char_pos[1] = y;
+	norm_pos_char_in_window_in_str(caps, x, y);
 	return (1);
 }

@@ -25,7 +25,7 @@ void			print_end_line(t_tcap *caps, char *string, char *tmp)
 	write(1, caps->buf, 3);
 	if (caps->curs_pos[0] == caps->window_size[1])
 	{
-		position_char_in_window_print_inside_string(caps->cursor, caps,
+		pos_char_in_window_in_str(caps->cursor, caps,
 			caps->sz_str, 0);
 		if (caps->char_pos[0] + 1 == (caps->window_size[1])
 				&& caps->char_pos[1] == caps->window_size[0])
@@ -42,7 +42,7 @@ void			print_end_line(t_tcap *caps, char *string, char *tmp)
 int				check_if_scroll(t_tcap *caps, char *str)
 {
 	int	curs[2];
-	int	i = -1;
+	int	i;
 	int	x;
 	int	y;
 	int	count_up;
@@ -52,6 +52,7 @@ int				check_if_scroll(t_tcap *caps, char *str)
 	size_windows(caps);
 	x = curs[0];
 	y = curs[1];
+	i = -1;
 	count_up = 0;
 	while (str && str[++i])
 	{
@@ -140,7 +141,7 @@ int				print_normal_char(t_tcap *caps)
 	tmp2 = NULL;
 	string = NULL;
 	size_windows(caps);
-	position_char_in_window_print_inside_string(caps->cursor,
+	pos_char_in_window_in_str(caps->cursor,
 		caps, caps->sz_str, 0);
 	string = ft_strndup(caps->buf, 1);
 	tmp2 = ft_strjoin(string, caps->str[0] +
