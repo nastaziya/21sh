@@ -75,4 +75,26 @@ int				copy_fds(t_exec_redir *t, t_simp_com *cmd);
 int				ft_pipe_exec(t_env_tools *env, t_command cmd, int *i,
 					t_exec_redir *t);
 
+/*
+*** - exec_utils.c
+*/
+
+int				error_command(char *part, char **str, char *str2, int ret);
+
+/*
+*** - exec_2.c
+*/
+
+int				manage_aggreg(t_simp_com cmd, int i, t_exec_redir *t);
+int				ft_perror_norm_dir(char *str1, int fd);
+int				ft_print_error_directory(char *str, char *str1, char *str2,
+					int fd);
+int				manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t);
+
+/*
+*** - utils_fd.c
+*/
+
+int				ft_calcul_pos_last_heredoc(t_simp_com cmd);
+
 #endif
