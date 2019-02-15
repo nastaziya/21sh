@@ -16,6 +16,21 @@
 #include "../../inc/expansion.h"
 #include "../../inc/exec.h"
 
+void	check_op_first_exec(t_command cmd, t_env_tools *env, t_exec_redir *t,
+			int *i)
+{
+	save_original_fd(t);
+	if (cmd.command[*i].tok == T_PIPE)
+		ft_pipe_exec(env, cmd, i, t);
+	else
+	{
+		ft_first_exec(env, cmd, 0, t);
+		if (cmd.used_space > 1 && cmd.command[*i + 1].tok != T_PIPE)
+			(*i)--;
+	}
+	restore_original_fd(t);
+}
+
 void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 {
 	t_exec_redir	t;
@@ -24,19 +39,7 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 	i = 0;
 	t.i_hdoc = 0;
 	t.heredoc = heredoc;
-	save_original_fd(&t);
-	if (cmd.command[i].tok == T_PIPE)
-	{
-		ft_pipe_exec(env, cmd, &i, &t);
-		i--;
-	}
-	else
-	{
-		ft_first_exec(env, cmd, 0, &t);
-		if (cmd.used_space > 1 && cmd.command[i + 1].tok != T_PIPE)
-			i--;
-	}
-	restore_original_fd(&t);
+	check_op_first_exec(cmd, env, &t, &i);	
 	while (++i < cmd.used_space && cmd.command[i].tok != -1)
 	{
 		if (i == cmd.used_space - 1 || cmd.command[i + 1].used_space == 0)
@@ -45,15 +48,27 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 		if (cmd.command[i].tok == T_DBLOR)
 			ft_or_exec(env, cmd, i + 1, &t);
 		else if (cmd.command[i].tok == T_PIPE)
-		{
 			ft_pipe_exec(env, cmd, &i, &t);
-			i--;
-		}
 		else if (cmd.command[i].tok == T_DBLAND)
 			ft_and_exec(env, cmd, i + 1, &t);
 		else if (cmd.command[i].tok == T_SEMI)
 			ft_semi_exec(env, cmd, i + 1, &t);
 		restore_original_fd(&t);
+	}
+}
+
+void	norm_all_exec(t_env_tools *env, t_command cmd, char ***heredoc)
+{
+	if (g_keeprun == 1 || g_keeprun == 2)
+		env->g_return_value = 1;
+	else if (g_keeprun == 5)
+		env->g_return_value = 258;
+	if (!g_keeprun || g_keeprun == 4)
+		check_op(cmd, env, heredoc);
+	if (*heredoc)
+	{
+		ft_free_av(*heredoc);
+		*heredoc = NULL;
 	}
 }
 
@@ -73,17 +88,7 @@ void	all_exec(char **environ, char ***heredoc)
 		lex = final_tokens(&history);
 		command_init(&cmd);
 		add_simple_command(&cmd, lex, &history, heredoc);
-		if (g_keeprun == 1 || g_keeprun == 2)
-			env.g_return_value = 1;
-		else if (g_keeprun == 5)
-			env.g_return_value = 258;
-		if (!g_keeprun || g_keeprun == 4)
-			check_op(cmd, &env, heredoc);
-		if (*heredoc)
-		{
-			ft_free_av(*heredoc);
-			*heredoc = NULL;
-		}
+		norm_all_exec(&env, cmd, heredoc);
 		free_the_op_content_array_token(&lex);
 		free_struct(&cmd);
 	}

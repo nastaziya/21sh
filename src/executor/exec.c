@@ -64,6 +64,14 @@ int		error_command(char *part, char **str, char *str2, int ret)
 	return (ret);
 }
 
+void	norm_exec(pid_t *pid, int fork_val)
+{
+	if (fork_val != 0)
+		*pid = fork();
+	else
+		*pid = 0;
+}
+
 int		exec(char *path, char **str, char **env, int fork_val)
 {
 	pid_t	pid;
@@ -71,10 +79,7 @@ int		exec(char *path, char **str, char **env, int fork_val)
 	int		res;
 
 	res = 0;
-	if (fork_val != 0)
-		pid = fork();
-	else
-		pid = 0;
+	norm_exec(&pid, fork_val);
 	if (pid)
 	{
 		if (pid == -1)

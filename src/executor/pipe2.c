@@ -77,5 +77,6 @@ int		ft_pipe_exec(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 	waitpid(t->pipe_tools.pid, &status, 0);
 	while (wait(NULL) > 0)
 		;
+	(*i)--;
 	return (manage_sig_term_ret_1(status));
 }

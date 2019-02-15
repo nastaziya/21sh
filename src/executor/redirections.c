@@ -95,10 +95,8 @@ static int	manage_file_norm(t_simp_com cmd, int i, t_exec_redir *t,
 	{
 		t->fdoutred[i] = open(t->file_name, O_RDONLY);
 		if (t->fdoutred[i] < 0)
-		{
 			return (ft_print_error_directory("bash: ",
 				cmd.redirection.file[i], ": No such file or directory", 2));
-		}
 	}
 	else if (cmd.redirection.red[i] == T_REDIR_LESSGREAT)
 		t->fdoutred[i] = open(t->file_name, O_RDWR);
@@ -125,6 +123,18 @@ int			expand_filename(t_simp_com cmd, t_exec_redir *t, int i,
 	return (0);
 }
 
+void		norm_manage_file(char **tmp, char **tmp2, t_exec_redir *t,
+				struct stat	*buf)
+{
+	char		pbuf[1024];
+
+	getcwd(pbuf, sizeof(pbuf));
+	*tmp = ft_strjoin(pbuf, "/");
+	*tmp2 = ft_strjoin(*tmp, t->file_name);
+	free(*tmp);
+	lstat(*tmp2, buf);
+}
+
 /*
 *** - Aim of the function :
 *** - Handle [n]>[word], [n]>>[word], [n]<[word], [n]<>[word]
@@ -134,33 +144,23 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t,
 				t_env_tools *env)
 {
 	struct stat	buf;
-	char		pbuf[1024];
 	char		*tmp;
 	char		*tmp2;
 
-	getcwd(pbuf, sizeof(pbuf));
 	if (expand_filename(cmd, t, i, env))
 		return (1);
-	tmp = ft_strjoin(pbuf, "/");
-	tmp2 = ft_strjoin(tmp, t->file_name);
-	free(tmp);
-	lstat(tmp2, &buf);
-	if (manage_file_norm(cmd, i, t, buf))
-	{
-		free(tmp2);
+	norm_manage_file(&tmp, &tmp2, t, &buf);
+	if (manage_file_norm(cmd, i, t, buf) && !ft_free(tmp2))
 		return (1);
-	}
 	if (t->fdoutred[i] < 0)
+	{
 		if (!S_ISDIR(buf.st_mode) && !ft_free(tmp2))
-		{
 			return (ft_print_error_directory("bash: ",
 				cmd.redirection.file[i], ": Permission Denied", 2));
-		}
+	}
 	if (dup2(t->fdoutred[i], cmd.redirection.fd[i]) < 0 && !ft_free(tmp2))
-	{
 		return (ft_print_error_directory("bash: ",
 				cmd.redirection.file[i], ": Is a directory", 2));
-	}
 	free(tmp2);
 	free(t->file_name);
 	return (0);
