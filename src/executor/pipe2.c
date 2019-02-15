@@ -14,16 +14,17 @@
 #include "../../inc/sh.h"
 #include "../../inc/exec.h"
 
-int		ret_nr_pipe(t_command cmd)
+
+int		ret_nr_pipe(t_command cmd, int i)
 {
-	int i;
+	//int i;
 	int nr_pipe;
 
-	i = 0;
+	//i = 0;
 	nr_pipe = 0;
-	while (i < cmd.used_space)
+	while (cmd.command[i].tok == T_PIPE)
 	{
-		if (cmd.command[i].tok == T_PIPE)
+		//if (cmd.command[i].tok == T_PIPE)
 			nr_pipe++;
 		i++;
 	}
@@ -50,9 +51,9 @@ int		exec_in_child(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 	return (ret);
 }
 
-void	norm_pipe_exec(t_exec_redir *t, t_command cmd)
+void	norm_pipe_exec(t_exec_redir *t, t_command cmd, int i)
 {
-	t->pipe_tools.len_pipe = ret_nr_pipe(cmd);
+	t->pipe_tools.len_pipe = ret_nr_pipe(cmd, i);
 	t->pipe_tools.aux = 0;
 	t->pipe_tools.fd_in = 0;
 }
@@ -61,7 +62,7 @@ int		ft_pipe_exec(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 {
 	int		status;
 
-	norm_pipe_exec(t, cmd);
+	norm_pipe_exec(t, cmd, *i);
 	while (t->pipe_tools.aux < t->pipe_tools.len_pipe)
 	{
 		pipe(t->pipe_tools.fds);

@@ -46,7 +46,10 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 			break ;
 		save_original_fd(&t);
 		if (cmd.command[i].tok == T_DBLOR)
+		{
 			ft_or_exec(env, cmd, i + 1, &t);
+			i++;
+		}
 		else if (cmd.command[i].tok == T_PIPE)
 			ft_pipe_exec(env, cmd, &i, &t);
 		else if (cmd.command[i].tok == T_DBLAND)
