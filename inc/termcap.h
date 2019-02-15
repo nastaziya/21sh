@@ -179,7 +179,14 @@ int						alt_down_key(t_tcap *caps);
 int						print_normal_char(t_tcap *caps);
 void					print_end_line(t_tcap *caps, char *string, char *tmp);
 int						print_buf(t_tcap *caps, char *buf);
-int						check_if_scroll(t_tcap *caps, char *str);
+
+/*
+*** - print_2.c
+*/
+
+void		    		print_middle_line(t_tcap *caps, char *string, char *tmp,
+							char *tmp2);
+int						check_if_scroll(t_tcap *caps, char *str, int i);
 
 /*
 *** -  termcap.c - MAIN FILE

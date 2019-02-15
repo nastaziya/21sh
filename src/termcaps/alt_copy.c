@@ -62,9 +62,9 @@ int			alt_p(t_tcap *caps)
 
 	i = -1;
 	if (caps->copy_str && (caps->y_prompt == 1 ?
-		!check_if_scroll(caps, caps->copy_str) : 1)
+		!check_if_scroll(caps, caps->copy_str, -1) : 1)
 		&& !check_if_scroll(caps, caps->str[0]
-			+ (caps->cursor - caps->size_prompt)))
+			+ (caps->cursor - caps->size_prompt), -1))
 	{
 		while (caps->copy_str[++i])
 		{
