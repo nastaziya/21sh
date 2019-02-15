@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/12 22:17:57 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/12 22:21:32 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/15 15:16:43 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -50,13 +50,18 @@ int		exec_in_child(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 	return (ret);
 }
 
+void	norm_pipe_exec(t_exec_redir *t, t_command cmd)
+{
+	t->pipe_tools.len_pipe = ret_nr_pipe(cmd);
+	t->pipe_tools.aux = 0;
+	t->pipe_tools.fd_in = 0;
+}
+
 int		ft_pipe_exec(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 {
 	int		status;
 
-	t->pipe_tools.len_pipe = ret_nr_pipe(cmd);
-	t->pipe_tools.aux = 0;
-	t->pipe_tools.fd_in = 0;
+	norm_pipe_exec(t, cmd);
 	while (t->pipe_tools.aux < t->pipe_tools.len_pipe)
 	{
 		pipe(t->pipe_tools.fds);

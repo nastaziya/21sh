@@ -25,18 +25,6 @@ void	save_original_fd(t_exec_redir *t)
 		t->fd_orig[i] = dup2(i, 1500 + i);
 }
 
-void	restore_original_fd(t_exec_redir *t)
-{
-	int		i;
-
-	i = -1;
-	while (++i < 3)
-	{
-		dup2(t->fd_orig[i], i);
-		close(t->fd_orig[i]);
-	}
-}
-
 int		ft_or_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 {
 	char	**cmd_expended;

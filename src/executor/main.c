@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 19:19:18 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/15 15:14:08 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -39,7 +39,7 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 	i = 0;
 	t.i_hdoc = 0;
 	t.heredoc = heredoc;
-	check_op_first_exec(cmd, env, &t, &i);	
+	check_op_first_exec(cmd, env, &t, &i);
 	while (++i < cmd.used_space && cmd.command[i].tok != -1)
 	{
 		if (i == cmd.used_space - 1 || cmd.command[i + 1].used_space == 0)
