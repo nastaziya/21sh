@@ -24,6 +24,18 @@ void	norm_exec(pid_t *pid, int fork_val)
 		*pid = 0;
 }
 
+int		right_return(int status)
+{
+	int res;
+
+	res = 0;
+	if (WIFEXITED(status))
+		res = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		res = manage_sig_term_ret_1(WTERMSIG(status));
+	return (res);
+}
+
 int		exec(char *path, char **str, char **env, int fork_val)
 {
 	pid_t	pid;
@@ -37,10 +49,7 @@ int		exec(char *path, char **str, char **env, int fork_val)
 		if (pid == -1)
 			return (-1);
 		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			res = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			res = manage_sig_term_ret_1(WTERMSIG(status));
+		res = right_return(status);
 		if (res > 0)
 			return (res);
 	}

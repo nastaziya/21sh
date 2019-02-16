@@ -17,15 +17,12 @@
 
 int		ret_nr_pipe(t_command cmd, int i)
 {
-	//int i;
 	int nr_pipe;
 
-	//i = 0;
 	nr_pipe = 0;
 	while (cmd.command[i].tok == T_PIPE)
 	{
-		//if (cmd.command[i].tok == T_PIPE)
-			nr_pipe++;
+		nr_pipe++;
 		i++;
 	}
 	return (nr_pipe + 1);
@@ -44,7 +41,7 @@ int		exec_in_child(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 	if ((ret = process_redirections(t, cmd.command[*i], env)))
 		return (ret);
 	close(t->pipe_tools.fds[0]);
-	env->g_return_value = ft_exec_command(env, command, t->pipe_tools.pid);
+	ret = ft_exec_command(env, command, t->pipe_tools.pid);
 	if (is_built_in(command) || (env->g_return_value != 0))
 		exit(EXIT_FAILURE);
 	free_str(command);
@@ -81,8 +78,9 @@ int		ft_pipe_exec(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 			(*i)--;
 	}
 	waitpid(t->pipe_tools.pid, &status, 0);
+	env->g_return_value = right_return(status);
 	while (wait(NULL) > 0)
 		;
 	(*i)--;
-	return (manage_sig_term_ret_1(status));
+	return (env->g_return_value);
 }

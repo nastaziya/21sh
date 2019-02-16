@@ -54,7 +54,8 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 			ft_pipe_exec(env, cmd, &i, &t);
 		else if (cmd.command[i].tok == T_DBLAND)
 			ft_and_exec(env, cmd, i + 1, &t);
-		else if (cmd.command[i].tok == T_SEMI)
+		else if (cmd.command[i].tok == T_SEMI &&
+		cmd.command[i + 1].tok != T_PIPE)
 			ft_semi_exec(env, cmd, i + 1, &t);
 		restore_original_fd(&t);
 	}

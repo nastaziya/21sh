@@ -58,6 +58,7 @@ int				ft_or_exec(t_env_tools *env, t_command cmd, int i,
 void			save_original_fd(t_exec_redir *t);
 void			restore_original_fd(t_exec_redir *t);
 int				manage_sig_term_ret_1(int ret);
+int				right_return(int status);
 
 /*
 *** - FILE : redirections.c
