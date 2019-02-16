@@ -60,7 +60,7 @@ static int		ft_putc_if(char c)
 
 static void		ctrl_c_norm(void)
 {
-	if (ft_strcmp(g_caps.prompt, "bash > ") && (g_caps.sz_str = 10))
+	if (ft_strcmp(g_caps.prompt, "bash » ") && (g_caps.sz_str = 10))
 	{
 		free(g_caps.str[0]);
 		g_keeprun = 2;

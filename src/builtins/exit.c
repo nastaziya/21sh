@@ -17,7 +17,7 @@
 
 int		ft_print_usage_error_exit(char *btwn)
 {
-	ft_putstr_fd("bash: exit: ", 2);
+	ft_putstr_fd(": exit: ", 2);
 	ft_putstr_fd(btwn, 2);
 	ft_putendl_fd(": numeric argument required", 2);
 	exit(255);

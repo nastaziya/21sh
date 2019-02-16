@@ -105,7 +105,6 @@ t_lexer		final_tokens(t_dlist **history)
 {
 	char	*cmd;
 	t_lexer	lexer;
-
 	ft_get_entire_line(&cmd, "bash » ", history);
 	lexer_init(&lexer);
 	if (cmd && ft_strlen(cmd) > 0)
