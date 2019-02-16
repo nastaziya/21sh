@@ -19,6 +19,7 @@ void			command_init(t_command *cmd)
 	cmd->av_space = TAB_INITIAL_CAPACITY;
 	if (!(cmd->command = malloc(sizeof(t_simp_com) * cmd->av_space)))
 		return ;
+	tab_init(cmd->command);
 }
 
 static void		norm_tab_red_assign(t_red *redir, t_lexer lex, int j, int k)

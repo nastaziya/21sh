@@ -83,18 +83,13 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 */
 void	display_bash(char *str)
 {
-	char *tmp;
-	char dst[5];
-
-	tmp = ft_strncpy(dst, str, 5);
 	ft_putstr_fd("\033[1;32m", 1);
-	ft_putstr_fd(tmp, 1);
-		ft_putstr_fd("\033[0;m", 1);
-
-	ft_putstr_fd("\033[0;m", 1);
+	write(1, str, 4);
+	ft_putstr_fd("\033[1;33m", 1);
 	ft_putstr_fd(ft_strchr(str, ' '), 1);
 	ft_putstr_fd("\033[0;m", 1);
 }
+
 void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 {
 	int		ret;

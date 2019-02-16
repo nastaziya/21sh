@@ -88,7 +88,7 @@ int		check_errors_exec(char *path, char **str, int in_env)
 	struct stat	buf;
 
 	res = 0;
-	if (access(path, F_OK))
+	if (path == NULL || access(path, F_OK))
 		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
 			": No such file or directory", 127);
 	else if (!(stat(path, &buf) == -1))

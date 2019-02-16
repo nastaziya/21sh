@@ -39,8 +39,10 @@ void		free_struct(t_command *cmd)
 			free_str(cmd->command[i].cmd_simple);
 		free_str_2(cmd->command[i].redirection.file,
 			cmd->command[i].redirection.used_space);
+		free(cmd->command[i].redirection.red);
 		free(cmd->command[i].redirection.fd);
 		i++;
 	}
 	free(cmd->command);
 }
+//sf'lfks
