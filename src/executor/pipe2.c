@@ -84,3 +84,4 @@ int		ft_pipe_exec(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 	(*i)--;
 	return (env->g_return_value);
 }
+//valgrind --leak-check=full --tool=memcheck --track-origins=yes --dsymutil=yes ./a.out

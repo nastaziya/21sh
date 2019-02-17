@@ -94,6 +94,7 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t,
 	char		*tmp;
 	char		*tmp2;
 
+	//stat(&buf);
 	if (expand_filename(cmd, t, i, env))
 		return (1);
 	norm_manage_file(&tmp, &tmp2, t, &buf);

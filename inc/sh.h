@@ -49,6 +49,7 @@ void				free_str(char **str);
 
 void				free_struct(t_command *cmd);
 void				free_the_op_content_array_token(t_lexer *lexer);
+void				free_the_op_content_array_token_after_error(t_lexer *lexer);
 void				free_str_2(char **str, int size);
 char				**expense_cmd(t_command cmd, t_env_tools env, int i);
 char				*env_var(t_env_tools env, char *str, int size);

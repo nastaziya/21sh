@@ -118,6 +118,7 @@ void	add_simple_command(t_command *cmd, t_lexer lex, t_dlist **history,
 	i = -1;
 	j = 0;
 	size_simple_cmd = 0;
+	
 	ft_manage_heredoc(&lex, heredoc, history);
 	if (parse_errors(lex, -1))
 	{
@@ -125,4 +126,6 @@ void	add_simple_command(t_command *cmd, t_lexer lex, t_dlist **history,
 		while (++i < lex.used_size && j <= size_simple_cmd)
 			complete_simple_command_and_red(cmd, lex, i, &j);
 	}
+	else
+		free_the_op_content_array_token_after_error(&lex);
 }

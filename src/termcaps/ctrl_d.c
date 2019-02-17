@@ -52,7 +52,7 @@ int				ctrl_d_management(t_tcap *caps)
 {
 	if (((caps->sz_str - caps->size_prompt) == 0))
 	{
-		if (!ft_strcmp(caps->prompt, "bash » "))
+		if (!ft_strcmp(caps->prompt, "bash > "))
 		{
 			free(caps->str[0]);
 			caps->str[0] = ft_strdup("exit");

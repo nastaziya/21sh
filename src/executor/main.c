@@ -38,6 +38,8 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 
 	i = 0;
 	t.i_hdoc = 0;
+	t.file_name = NULL;
+	t.fdoutred = 0;
 	t.heredoc = heredoc;
 	check_op_first_exec(cmd, env, &t, &i);
 	while (++i < cmd.used_space && cmd.command[i].tok != -1)

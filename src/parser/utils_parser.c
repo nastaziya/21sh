@@ -13,14 +13,34 @@
 
 #include "../../inc/sh.h"
 
+
+void		red_init_first(t_red *redir)
+{
+	redir->used_space = 0;
+	redir->av_space = TAB_INITIAL_CAPACITY;
+	redir->fd = 0;
+	redir->file = NULL;
+	redir->red = NULL;
+}
+
 void			command_init(t_command *cmd)
 {
 	cmd->used_space = 0;
 	cmd->av_space = TAB_INITIAL_CAPACITY;
 	if (!(cmd->command = malloc(sizeof(t_simp_com) * cmd->av_space)))
 		return ;
-	tab_init(cmd->command);
+	cmd->command->av_space = TAB_INITIAL_CAPACITY;
+	cmd->command->cmd_simple = NULL;
+	cmd->command->tok = 0;
+	cmd->command->used_space = 0;
+	cmd->command->redirection.red = NULL;
+	cmd->command->redirection.file = NULL;
+	cmd->command->redirection.fd = NULL;
+	cmd->command->redirection.av_space = TAB_INITIAL_CAPACITY;
+	cmd->command->redirection.used_space = 0;
+	//red_init_first(&cmd->command->redirection);
 }
+
 
 static void		norm_tab_red_assign(t_red *redir, t_lexer lex, int j, int k)
 {
