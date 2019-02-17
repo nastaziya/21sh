@@ -95,7 +95,8 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 	int		ret;
 	char	type_quote;
 
-	display_bash(str);
+	//display_bash(str);
+	ft_putstr_fd(str, 1);
 	ret = get_line_term(cmd, str, history);
 	if (ret != 2)
 	{
