@@ -43,6 +43,11 @@ typedef struct	s_exec_redir
 	char		*file_name;
 }				t_exec_redir;
 
+typedef struct	s_all_struct
+{
+
+}				t_all_struct;
+
 /*
 *** - FILE : exec_all_cases.c
 */

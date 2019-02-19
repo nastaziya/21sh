@@ -25,14 +25,20 @@ void		red_init_first(t_red *redir)
 
 void			command_init(t_command *cmd)
 {
+	int i;
+
+	i = -1;
 	cmd->used_space = 0;
 	cmd->av_space = TAB_INITIAL_CAPACITY;
 	if (!(cmd->command = malloc(sizeof(t_simp_com) * cmd->av_space)))
 		return ;
-	cmd->command->av_space = TAB_INITIAL_CAPACITY;
-	cmd->command->cmd_simple = NULL;
-	cmd->command->tok = 0;
-	cmd->command->used_space = 0;
+	while(++i < cmd->av_space)
+	{
+		cmd->command[i].av_space = TAB_INITIAL_CAPACITY;
+		cmd->command[i].cmd_simple = NULL;
+		cmd->command[i].tok = 0;
+		cmd->command[i].used_space = 0;
+	}
 }
 
 
