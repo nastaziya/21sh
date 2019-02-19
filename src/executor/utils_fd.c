@@ -86,17 +86,18 @@ void		clear_fd(t_exec_redir *t, int end)
 *** - will return : 3 which equals to "plus"
 */
 
-int			ft_calcul_pos_last_heredoc(t_simp_com cmd)
+int			ft_calcul_pos_last_heredoc(t_exec_redir *t, t_simp_com *cmd)
 {
 	int		i;
 	int		count;
 
 	i = -1;
 	count = -1;
-	while (++i < cmd.redirection.used_space)
+	copy_fds(t, cmd);
+	while (++i < (*cmd).redirection.used_space)
 	{
-		if (cmd.redirection.red[i] == T_DBL_LESS ||
-			cmd.redirection.red[i] == T_DBL_LESS_DASH)
+		if ((*cmd).redirection.red[i] == T_DBL_LESS ||
+			(*cmd).redirection.red[i] == T_DBL_LESS_DASH)
 			count++;
 	}
 	return (count);

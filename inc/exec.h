@@ -101,6 +101,6 @@ int				manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t);
 *** - utils_fd.c
 */
 
-int				ft_calcul_pos_last_heredoc(t_simp_com cmd);
+int			ft_calcul_pos_last_heredoc(t_exec_redir *t, t_simp_com *cmd);
 
 #endif

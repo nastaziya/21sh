@@ -55,8 +55,6 @@ int			expand_filename(t_simp_com cmd, t_exec_redir *t, int i,
 {
 	char *temp;
 
-	// if (t->file_name && (ft_strlen(t->file_name) == 0))
-	// 	free(t->file_name);
 	t->file_name = NULL;
 	temp = ft_strdup(cmd.redirection.file[i]);
 	expanded_dynamic_table(&temp, *env, 0);
@@ -130,8 +128,7 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 
 	i = -1;
 	ret = 0;
-	copy_fds(t, &cmd);
-	pos_heredoc = ft_calcul_pos_last_heredoc(cmd);
+	pos_heredoc = ft_calcul_pos_last_heredoc(t, &cmd);
 	while (++i < cmd.redirection.used_space && ret == 0)
 	{
 		if (cmd.redirection.red[i] == T_REDIR_LESS
