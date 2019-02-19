@@ -22,7 +22,7 @@ void		free_the_op_content_array_token(t_lexer *lexer)
 	{
 		if (lexer->used_size == 1)
 			break ;
-		else if (lexer->tokens[i].type != T_WORD && !is_red(*lexer, i))
+		else if (lexer->tokens[i].type != T_WORD) //  && !is_red(*lexer, i)
 			free(lexer->tokens[i].content);
 	}
 	free(lexer->tokens);
@@ -36,7 +36,7 @@ void		free_the_op_content_array_token_after_error(t_lexer *lexer)
 	{
 		if (lexer->used_size == 1)
 			break ;
-		else if (lexer->tokens[i].type == T_WORD && !is_red(*lexer, i))
+		else if (lexer->tokens[i].type == T_WORD) //  && !is_red(*lexer, i)
 			free(lexer->tokens[i].content);
 	}
 }
