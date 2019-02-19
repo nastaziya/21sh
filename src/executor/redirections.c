@@ -55,6 +55,8 @@ int			expand_filename(t_simp_com cmd, t_exec_redir *t, int i,
 {
 	char *temp;
 
+	// if (t->file_name && (ft_strlen(t->file_name) == 0))
+	// 	free(t->file_name);
 	t->file_name = NULL;
 	temp = ft_strdup(cmd.redirection.file[i]);
 	expanded_dynamic_table(&temp, *env, 0);
@@ -111,7 +113,6 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t,
 		cmd.redirection.file[i], ": Is a directory", 2));
 	}
 	free(tmp2);
-	free(t->file_name);
 	return (0);
 }
 
@@ -144,6 +145,7 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 		}
 		else
 			ret = manage_file(cmd, i, t, env);
+		free(t->file_name);
 	}
 	clear_fd(t, cmd.redirection.used_space);
 	return (ret);
