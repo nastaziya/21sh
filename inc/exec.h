@@ -43,11 +43,6 @@ typedef struct	s_exec_redir
 	char		*file_name;
 }				t_exec_redir;
 
-typedef struct	s_all_struct
-{
-
-}				t_all_struct;
-
 /*
 *** - FILE : exec_all_cases.c
 */
@@ -101,6 +96,6 @@ int				manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t);
 *** - utils_fd.c
 */
 
-int			ft_calcul_pos_last_heredoc(t_exec_redir *t, t_simp_com *cmd);
+int				ft_calcul_pos_last_heredoc(t_simp_com cmd);
 
 #endif
