@@ -33,8 +33,17 @@ void		free_the_content_array_token(t_lexer *lexer)
 
 void		lexer_init(t_lexer *lexer)
 {
+	int i;
+
+	i = -1;
 	lexer->used_size = 0;
 	lexer->capacity = LEXER_INITIAL_CAPACITY;
 	if (!(lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity)))
 		return ;
+	while (++i < lexer->capacity)
+	{
+		lexer->tokens[i].content = NULL;
+		lexer->tokens[i].size = 0;
+		lexer->tokens[i].type = -1;
+	}
 }

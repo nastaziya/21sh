@@ -33,12 +33,6 @@ void			command_init(t_command *cmd)
 	cmd->command->cmd_simple = NULL;
 	cmd->command->tok = 0;
 	cmd->command->used_space = 0;
-	cmd->command->redirection.red = NULL;
-	cmd->command->redirection.file = NULL;
-	cmd->command->redirection.fd = NULL;
-	cmd->command->redirection.av_space = TAB_INITIAL_CAPACITY;
-	cmd->command->redirection.used_space = 0;
-	//red_init_first(&cmd->command->redirection);
 }
 
 
