@@ -13,7 +13,7 @@
 
 #include "../../inc/sh.h"
 
-int		is_red(t_lexer lex, int i)
+int				is_red(t_lexer lex, int i)
 {
 	if ((lex.tokens[i].type == T_GREAT || lex.tokens[i].type == T_LESS ||
 		lex.tokens[i].type == T_DBL_GREAT || lex.tokens[i].type == T_DBL_LESS)
@@ -24,7 +24,7 @@ int		is_red(t_lexer lex, int i)
 	return (0);
 }
 
-int		is_built_in(char **cmd)
+int				is_built_in(char **cmd)
 {
 	if (cmd && cmd[0])
 	{
@@ -39,32 +39,42 @@ int		is_built_in(char **cmd)
 	return (0);
 }
 
-int		is_op(t_lexer lex, int i)
+int				is_op(t_lexer lex, int i)
 {
 	if (lex.tokens[i].type >= T_DBLAND && lex.tokens[i].type <= T_AND)
 		return (1);
 	return (0);
 }
 
-int		parse_errors(t_lexer lex, int i)
+static int		parse_errors_norm(t_lexer lex, int i)
+{
+	if ((is_op(lex, i) && i == 0) || lex.tokens[i].type == T_DBL_SEMI)
+	{
+		ft_putstr_fd("bash: syntax error near unexpected token ", 2);
+		ft_putendl_fd(lex.tokens[i].content, 2);
+		free(lex.tokens[i].content);
+		return (1);
+	}
+	return (0);
+}
+
+int				parse_errors(t_lexer lex, int i)
 {
 	while (++i < lex.used_size)
 	{
-		if ((is_op(lex, i) && i == 0) || lex.tokens[i].type == T_DBL_SEMI)
-		{
-			ft_putstr_fd("bash: syntax error near unexpected token ", 2);
-			ft_putendl_fd(lex.tokens[i].content, 2);
+		if (parse_errors_norm(lex, i))
 			return (0);
-		}
 		if ((is_red(lex, i) && (is_red(lex, i + 1) || is_op(lex, i + 1))) ||
 		(is_op(lex, i) && is_op(lex, i + 1)))
 		{
 			ft_putstr_fd("bash: syntax error near unexpected token ", 2);
 			ft_putendl_fd(lex.tokens[i + 1].content, 2);
+			free(lex.tokens[i].content);
 			return (0);
 		}
 		if (is_red(lex, i) && lex.tokens[i + 1].type != T_WORD)
 		{
+			free(lex.tokens[i].content);
 			ft_putendl_fd("bash: syntax error near unexpected token `newline'",
 				2);
 			return (0);
@@ -82,7 +92,7 @@ int		parse_errors(t_lexer lex, int i)
 *** - car << EOF << PU ;; -> Shall heredoc for the EOF and PU keywords
 */
 
-int		ft_parse_error_for_heredoc(t_lexer lex)
+int				ft_parse_error_for_heredoc(t_lexer lex)
 {
 	int	i;
 
