@@ -41,6 +41,9 @@ int			copy_fds(t_exec_redir *t, t_simp_com *cmd)
 	if (!(t->fdoutred = (int*)malloc(sizeof(int)
 		* cmd->redirection.used_space)))
 		return (1);
+	while (++i < cmd->redirection.used_space)
+		t->fdoutred[i] = 0;
+	i = -1;
 	ft_memset(t->fdoutred, -1, cmd->redirection.used_space);
 	while (++i < cmd->redirection.used_space)
 	{

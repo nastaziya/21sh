@@ -22,18 +22,18 @@
 */
 
 static int	manage_file_norm(t_simp_com cmd, int i, t_exec_redir *t,
-				struct stat buf)
+				struct stat *buf)
 {
 	if (cmd.redirection.red[i] == T_GREAT)
 	{
-		if (S_ISDIR(buf.st_mode))
+		if (S_ISDIR((*buf).st_mode))
 			return (ft_perror_norm_dir(cmd.redirection.file[i], 2));
 		t->fdoutred[i] = open(t->file_name,
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	}
 	else if (cmd.redirection.red[i] == T_DBL_GREAT)
 	{
-		if (S_ISDIR(buf.st_mode))
+		if (S_ISDIR((*buf).st_mode))
 			return (ft_perror_norm_dir(cmd.redirection.file[i], 2));
 		t->fdoutred[i] = open(t->file_name,
 			O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -94,11 +94,10 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t,
 	char		*tmp;
 	char		*tmp2;
 
-	//stat(&buf);
 	if (expand_filename(cmd, t, i, env))
 		return (1);
 	norm_manage_file(&tmp, &tmp2, t, &buf);
-	if (manage_file_norm(cmd, i, t, buf) && !ft_free(tmp2))
+	if (manage_file_norm(cmd, i, t, &buf) && !ft_free(tmp2))
 		return (1);
 	if (t->fdoutred[i] < 0)
 	{
