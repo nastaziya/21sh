@@ -25,13 +25,17 @@ static void		ctrl_d_management_norm(t_tcap *caps)
 	if (!ft_strcmp(caps->prompt, "dquote > ") ||
 			!ft_strcmp(caps->prompt, "squote > "))
 	{
-		ft_putstr_fd("bash: unexpected EOF while looking for matching `\"\'\n"
+		ft_putstr_fd("\nbash: unexpected EOF while looking for matching `\"\'"
 				, 2);
 		caps->str[0] = !ft_strcmp(caps->prompt, "dquote > ") ? ft_strdup("\"")
 			: ft_strdup("\'");
 	}
 	else if (!ft_strcmp(caps->prompt, "Missing arguments > "))
+	{
+		ft_putstr_fd("\nbash: syntax error: unexpected end of file"
+			, 2);
 		caps->str[0] = ft_strdup("oui");
+	}
 	else if (!ft_strcmp(caps->prompt, "Heredoc > ")
 			|| !ft_strcmp(caps->prompt, "\nHeredoc > "))
 	{
@@ -62,6 +66,10 @@ int				ctrl_d_management(t_tcap *caps)
 		return (1);
 	}
 	else
+	{
+		dprintf(1, "passe dans le ctrl\n");
 		tputs(tgetstr("bl", NULL), 1, ft_outc);
+		// probleme : essaie de printer alors que dois juste refaire
+	}
 	return (0);
 }

@@ -65,8 +65,9 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 			free(tmp);
 		}
 		free(line);
+		line = NULL;
 		if (!(type_quote = ft_count_quote(*cmd))
-				|| (line && ft_strlen(line) == 0 && type_quote == '\\'))
+				|| (!line && type_quote == '\\'))
 			break ;
 	}
 }
