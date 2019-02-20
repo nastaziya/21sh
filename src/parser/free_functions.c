@@ -18,16 +18,12 @@ void		free_the_op_content_array_token(t_lexer *lexer)
 	int	i;
 
 	i = -1;
-	dprintf(1, "debug_avant: |%d|\n", lexer->used_size);
 	while (++i < lexer->used_size)
 	{
-		dprintf(1, "debug_free_op_content: [%s]\n", lexer->tokens[i].content);
 		if (lexer->used_size == 1)
 			break ;
-		else if (lexer->tokens[i].type != T_WORD && lexer->tokens[i].content) // && !is_red(*lexer, i)
+		else if (lexer->tokens[i].type != T_WORD && lexer->tokens[i].content)
 			free(lexer->tokens[i].content);
-		// else if (is_red(*lexer, i) && lexer->tokens[i].type)
-		// 	free(lexer->tokens[i].content);
 	}
 	free(lexer->tokens);
 }
@@ -40,7 +36,7 @@ void		free_the_op_content_array_token_after_error(t_lexer *lexer)
 	{
 		if (lexer->used_size == 1)
 			break ;
-		else if (lexer->tokens[i].type == T_WORD) // && lexer->tokens[i].content
+		else if (lexer->tokens[i].type == T_WORD)
 		{
 			free(lexer->tokens[i].content);
 			lexer->tokens[i].content = NULL;

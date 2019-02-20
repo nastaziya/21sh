@@ -13,6 +13,14 @@
 
 #include "../../inc/sh.h"
 
+void			norm_check_if_scroll(int *x, int *y, int *keeptrack,
+					int curs[2])
+{
+	*x = curs[0];
+	*y = curs[1];
+	*keeptrack = -1;
+}
+
 int				check_if_scroll(t_tcap *caps, char *str, int i)
 {
 	int	curs[2];
@@ -23,8 +31,7 @@ int				check_if_scroll(t_tcap *caps, char *str, int i)
 
 	cursor_position(curs);
 	size_windows(caps);
-	x = curs[0];
-	y = curs[1];
+	norm_check_if_scroll(&x, &y, &keeptrack, curs);
 	count_up = 0;
 	while (str && str[++i])
 	{
