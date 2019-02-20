@@ -75,6 +75,7 @@ int				parse_errors(t_lexer lex, int i)
 		if (is_red(lex, i) && lex.tokens[i + 1].type != T_WORD)
 		{
 			free(lex.tokens[i].content);
+			lex.tokens[i].content = NULL;
 			ft_putendl_fd("bash: syntax error near unexpected token `newline'",
 				2);
 			return (0);
