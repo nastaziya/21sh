@@ -30,17 +30,20 @@ void	check_op_first_exec(t_command cmd, t_env_tools *env, t_exec_redir *t,
 	}
 	restore_original_fd(t);
 }
-
+void	init_red_struct(t_exec_redir *t_red, char ***heredoc)
+{
+	t_red->i_hdoc = 0;
+	t_red->file_name = NULL;
+	t_red->fdoutred = 0;
+	t_red->heredoc = heredoc;
+}
 void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 {
 	t_exec_redir	t;
 	int				i;
 
 	i = 0;
-	t.i_hdoc = 0;
-	t.file_name = NULL;
-	t.fdoutred = 0;
-	t.heredoc = heredoc;
+	init_red_struct(&t, heredoc);
 	check_op_first_exec(cmd, env, &t, &i);
 	while (++i < cmd.used_space && cmd.command[i].tok != -1)
 	{

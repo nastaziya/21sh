@@ -118,32 +118,57 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t,
 ***	- Aim of the function :
 *** - Redirect to the proper redirection
 */
-
+int	check_red_index(t_simp_com cmd, int i)
+{
+	while(i < cmd.redirection.used_space)
+	{
+		if ((cmd.redirection.red[i] == T_DBL_LESS
+			|| cmd.redirection.red[i] == T_DBL_LESS_DASH))
+			return(i);
+		i++;
+	}
+	return (-1);
+}
 int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 				t_env_tools *env)
 {
 	int		i;
 	int		ret;
 	int		pos_heredoc;
+	int		check_here;
 
-	i = -1;
+	i = 0;
 	ret = 0;
 	pos_heredoc = ft_calcul_pos_last_heredoc(t, &cmd);
-	while (++i < cmd.redirection.used_space && ret == 0)
+	check_here = 1;		
+	while (i < cmd.redirection.used_space && ret == 0)
 	{
-		if (cmd.redirection.red[i] == T_REDIR_LESS
-			|| cmd.redirection.red[i] == T_REDIR_GREAT)
+		if (check_red_index(cmd, i) >= 0)
+		{
+			i = check_red_index(cmd, i);
+			check_here = 0;
+		}
+		if ((cmd.redirection.red[i] == T_REDIR_LESS
+			|| cmd.redirection.red[i] == T_REDIR_GREAT) && check_here)
 			ret = manage_aggreg(cmd, i, t);
 		else if ((cmd.redirection.red[i] == T_DBL_LESS
-			|| cmd.redirection.red[i] == T_DBL_LESS_DASH))
+			|| cmd.redirection.red[i] == T_DBL_LESS_DASH) && !check_here)
 		{
 			if (i == pos_heredoc)
 				ret = manage_here_doc(cmd, i, t);
+			check_here = 1;
+			i = 0;
 		}
-		else
+		else if (check_here)
 			ret = manage_file(cmd, i, t, env);
-		free(t->file_name);
+		if (t->file_name != NULL)
+		{
+			free(t->file_name);
+			t->file_name = NULL;
+		}
+		i++;
 	}
 	clear_fd(t, cmd.redirection.used_space);
 	return (ret);
 }
+//cat > io < <e (double free)
