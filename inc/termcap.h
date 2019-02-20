@@ -217,6 +217,7 @@ int						alt_s(t_tcap *caps);
 int						alt_w(t_tcap *caps);
 int						alt_s(t_tcap *caps);
 int						alt_p(t_tcap *caps);
+int						ctrl_dnorm(t_tcap *caps);
 
 /*
 *** - control_commands.c

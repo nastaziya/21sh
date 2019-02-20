@@ -67,7 +67,7 @@ int				ctrl_d_management(t_tcap *caps)
 	}
 	else
 	{
-		dprintf(1, "passe dans le ctrl\n");
+		// dprintf(1, "passe dans le ctrl\n");
 		tputs(tgetstr("bl", NULL), 1, ft_outc);
 		// probleme : essaie de printer alors que dois juste refaire
 	}

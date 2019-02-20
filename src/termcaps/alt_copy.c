@@ -77,3 +77,15 @@ int			alt_p(t_tcap *caps)
 		tputs(tgetstr("bl", NULL), 1, ft_outc);
 	return (0);
 }
+
+/*
+*** - Aim of the function:
+*** - Norm of the ctrl_behavior. It stops the
+*** - while, so we don't write
+*/
+
+int			ctrl_dnorm(t_tcap *caps)
+{
+	(void)caps;
+	return (0);
+}
