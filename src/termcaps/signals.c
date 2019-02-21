@@ -13,6 +13,37 @@
 
 #include "../../inc/sh.h"
 
+// void			norm_check_curs_window(int *x, int *y, int curs[2])
+// {
+// 	*x = curs[0];
+// 	*y = curs[1];
+// }
+
+int				check_curs_window(t_tcap *caps, char *str, int i)
+{
+	// int	curs[2];
+	int	x;
+	// int	y;
+	
+	size_windows(caps);
+	// home_key(caps);
+	// cursor_position(curs);
+	// norm_check_curs_window(&x, &y, curs);
+	x = caps->size_prompt + 1;
+	while (str && str[++i])
+	{
+		if (x == caps->window_size[1] || str[i] == '\n')
+		// {
+			// y++;
+			x = 1;
+		// }
+		else
+			x++;
+	}
+	dprintf(3, "-check_curs_window: x |%d| w_x |%d|\n", x, caps->window_size[1]); // , x_curs-pos: [%d]
+	return (x);
+}
+
 /*
 ** Handles the resizing of the terminal window
 ** do not forget to free the copy of the prompt when exit termcaps
@@ -22,11 +53,13 @@
 
 void			win_resize(int sig)
 {
-	(void)sig;
 	// int ret = 0;
-
+	int	curs[2];
+	
 	// ret = check_if_scroll(&g_caps, g_caps.str[0], -1);
+	// if ()
 	// dprintf(3, "return_ret: %d\n", ret);
+	(void)sig;
 	end_key(&g_caps);
 	tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
 	tputs(tgetstr("cd", NULL), 1, ft_outc);
@@ -39,8 +72,17 @@ void			win_resize(int sig)
 		g_caps.char_pos[1] < g_caps.window_size[0])
 		&& g_caps.window_size[1] > g_caps.size_prompt)
 	{
+		// dprintf(3, "debug_x: [%d], window_size: [%d]\n", g_caps.char_pos[0], g_caps.window_size[1]);//, x_curs-pos: [%d]
 		if (g_caps.sz_str > g_caps.size_prompt)
 			ft_putstr_fd(g_caps.str[0], 1);
+		cursor_position(curs);
+		if (check_curs_window(&g_caps, g_caps.str[0], -1) == 1 && g_caps.sz_str > g_caps.size_prompt + 1)
+			tputs(tgoto(tgetstr("cm", NULL), 0, curs[1]), 1, ft_outc);
+
+		// cursor_position(curs);
+		// if (curs[0] == g_caps.window_size[1])
+		
+		
 	}
 	else
 	{

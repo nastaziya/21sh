@@ -135,7 +135,7 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 	int		i;
 	int		ret;
 	int		pos_heredoc;
-	int		check_here;
+	// int		check_here;
 
 	i = 0;
 	ret = 0;
@@ -164,5 +164,5 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 	clear_fd(t, cmd.redirection.used_space);
 	return (ret);
 }
-//cat > io < <e (double free)
+//cat > io <<e (double free)
 //;dsd
