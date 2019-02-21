@@ -46,12 +46,22 @@ int				is_op(t_lexer lex, int i)
 	return (0);
 }
 
+void	free_content_after_error(t_lexer *lex, int i)
+{
+	if (lex->tokens[i].content != NULL)
+		{
+			free(lex->tokens[i].content);
+			lex->tokens[i].content = NULL;
+		}
+}
+
 static int		parse_errors_norm(t_lexer lex, int i)
 {
 	if ((is_op(lex, i) && i == 0) || lex.tokens[i].type == T_DBL_SEMI)
 	{
 		ft_putstr_fd("bash: syntax error near unexpected token ", 2);
 		ft_putendl_fd(lex.tokens[i].content, 2);
+		free_content_after_error(&lex, i);
 		return (1);
 	}
 	return (0);
@@ -68,11 +78,12 @@ int				parse_errors(t_lexer lex, int i)
 		{
 			ft_putstr_fd("bash: syntax error near unexpected token ", 2);
 			ft_putendl_fd(lex.tokens[i + 1].content, 2);
+			free_content_after_error(&lex, i);
 			return (0);
 		}
 		if (is_red(lex, i) && lex.tokens[i + 1].type != T_WORD)
 		{
-			lex.tokens[i].content = NULL;
+			free_content_after_error(&lex, i);
 			ft_putendl_fd("bash: syntax error near unexpected token `newline'",
 				2);
 			return (0);
