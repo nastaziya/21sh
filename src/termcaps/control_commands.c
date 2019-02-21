@@ -27,6 +27,7 @@ int			ctrl_l(t_tcap *caps)
 			tputs(tgetstr("sf", NULL), 1, ft_outc);
 		tputs(tgoto(tgetstr("cm", NULL), caps->size_prompt, 0), 0, ft_outc);
 		end_key(caps);
+		caps->y_prompt = 1;
 	}
 	return (0);
 }

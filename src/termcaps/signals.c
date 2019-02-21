@@ -90,7 +90,7 @@ void			win_resize(int sig)
 		tputs(tgetstr("cd", NULL), 1, ft_outc);
 		ft_putstr_fd("make a larger screen", 1);
 	}
-	g_caps.y_prompt = 0;
+	g_caps.y_prompt = 1;
 	g_caps.cursor = g_caps.sz_str;
 }
 
