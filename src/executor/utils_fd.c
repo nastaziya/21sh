@@ -102,27 +102,3 @@ int			ft_calcul_pos_last_heredoc(t_exec_redir *t, t_simp_com *cmd)
 	}
 	return (count);
 }
-
-/*
-***	- Aim of the function :
-*** - Calculate the index corresponding to the last heredoc
-*** - Example : cat << oui << non << plus
-*** - will return : 3 which equals to "plus"
-*/
-/*
-int			ft_calcul_pos_last_heredoc(t_exec_redir *t, t_simp_com *cmd)
-{
-	int		i;
-	// int		count;
-
-	i = cmd->redirection.used_space;
-	// count = -1;
-	copy_fds(t, cmd);
-	while (i-- >= 0)
-	{
-		if ((*cmd).redirection.red[i] == T_DBL_LESS ||
-			(*cmd).redirection.red[i] == T_DBL_LESS_DASH)
-			break ;
-	}
-	return (i);
-}*/

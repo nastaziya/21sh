@@ -30,13 +30,18 @@ void	check_op_first_exec(t_command cmd, t_env_tools *env, t_exec_redir *t,
 	}
 	restore_original_fd(t);
 }
+
 void	init_red_struct(t_exec_redir *t_red, char ***heredoc)
 {
 	t_red->i_hdoc = 0;
 	t_red->file_name = NULL;
 	t_red->fdoutred = 0;
 	t_red->heredoc = heredoc;
+	t_red->pipe_tools = (t_pipe) {.fds = 0, .fd_in = 0,
+	.aux = 0, .pid = -1, .len_pipe = 0};
+	ft_bzero(t_red->fd_orig, 3);
 }
+
 void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 {
 	t_exec_redir	t;

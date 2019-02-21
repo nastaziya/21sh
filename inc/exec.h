@@ -39,7 +39,6 @@ typedef struct	s_exec_redir
 	char		***heredoc;
 	int			i_hdoc;
 	t_pipe		pipe_tools;
-	pid_t		pid;
 	char		*file_name;
 }				t_exec_redir;
 

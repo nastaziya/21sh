@@ -38,6 +38,7 @@ void			command_init(t_command *cmd)
 		cmd->command[i].cmd_simple = NULL;
 		cmd->command[i].tok = 0;
 		cmd->command[i].used_space = 0;
+		red_init_first(&cmd->command[i].redirection);
 	}
 }
 

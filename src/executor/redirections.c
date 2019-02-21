@@ -94,6 +94,7 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t,
 	char		*tmp;
 	char		*tmp2;
 
+	buf.st_mode = 0;
 	if (expand_filename(cmd, t, i, env))
 		return (1);
 	norm_manage_file(&tmp, &tmp2, t, &buf);
@@ -118,24 +119,13 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t,
 ***	- Aim of the function :
 *** - Redirect to the proper redirection
 */
-int	check_red_index(t_simp_com cmd, int i)
-{
-	while(i < cmd.redirection.used_space)
-	{
-		if ((cmd.redirection.red[i] == T_DBL_LESS
-			|| cmd.redirection.red[i] == T_DBL_LESS_DASH))
-			return(i);
-		i++;
-	}
-	return (-1);
-}
+
 int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 				t_env_tools *env)
 {
 	int		i;
 	int		ret;
 	int		pos_heredoc;
-	// int		check_here;
 
 	i = 0;
 	ret = 0;
