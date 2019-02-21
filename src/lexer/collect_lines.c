@@ -22,17 +22,17 @@ char		*ft_manage_prompt(char type_quote)
 {
 	if (type_quote == '"')
 	{
-		ft_putstr_fd("\ndquote > ", 1);
+		display_bash("\ndquote > ");
 		return ("dquote > ");
 	}
 	else if (type_quote == '\'')
 	{
-		ft_putstr_fd("\nsquote > ", 1);
+		display_bash("\nsquote > ");
 		return ("squote > ");
 	}
 	else if (type_quote == '\\')
 	{
-		ft_putstr_fd("\n> ", 1);
+		display_bash("\n> ");
 		return ("> ");
 	}
 	return (NULL);
@@ -84,8 +84,12 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 */
 void	display_bash(char *str)
 {
+	int i;
+
+	i = -1;
 	ft_putstr_fd("\033[1;32m", 1);
-	write(1, str, 4);
+	while (str[++i] != ' ')
+		write(1, str + i, 1);
 	ft_putstr_fd("\033[1;33m", 1);
 	ft_putstr_fd(ft_strchr(str, ' '), 1);
 	ft_putstr_fd("\033[0;m", 1);

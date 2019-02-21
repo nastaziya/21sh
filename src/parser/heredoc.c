@@ -78,8 +78,8 @@ static int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer,
 	if (h->i_words > 0)
 		while (h->k < h->i_words && !g_keeprun)
 		{
-			h->obool > 0 ? ft_putstr_fd("\nHeredoc > ", 1)
-				: ft_putstr_fd("Heredoc > ", 1);
+			h->obool > 0 ? display_bash("\nHeredoc > ")
+				: display_bash("Heredoc > ");
 			h->obool > 0 ? get_line_term(&h->cmd, "\nHeredoc > ", history)
 				: get_line_term(&h->cmd, "Heredoc > ", history);
 			if (h->k < h->i_words - 1)

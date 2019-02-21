@@ -169,6 +169,7 @@ int						string_to_lexer(const char *s, t_lexer *lexer);
 t_lexer					final_tokens(t_dlist **history);
 int						ft_manage_string_to_lexer(const char *s,
 							t_lexer *lexer, t_dlist **history);
+void					display_bash(char *str);
 
 /*
 *** - Autre
