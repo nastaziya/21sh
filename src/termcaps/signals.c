@@ -23,11 +23,15 @@
 void			win_resize(int sig)
 {
 	(void)sig;
+	// int ret = 0;
+
+	// ret = check_if_scroll(&g_caps, g_caps.str[0], -1);
+	// dprintf(3, "return_ret: %d\n", ret);
 	end_key(&g_caps);
 	tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
 	tputs(tgetstr("cd", NULL), 1, ft_outc);
 	size_windows(&g_caps);
-	ft_putstr_fd(g_caps.prompt, 1);
+	display_bash(g_caps.prompt);
 	g_caps.cursor = g_caps.size_prompt + 1;
 	pos_char_in_window_in_str(g_caps.cursor,
 		&g_caps, g_caps.sz_str, 0);
