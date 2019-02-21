@@ -65,12 +65,22 @@ int			ft_manage_option_i_env(char ***cp_c_env, char **env)
 
 	i = -1;
 	ft_free_av(*cp_c_env);
-	if (!(cp_c_env[0] = (char**)malloc(sizeof(char*) * 2)))
+	if (!(cp_c_env[0] = (char**)malloc(sizeof(char*) * 6)))
 		return (1);
 	while (env[++i])
+	{
 		if (!ft_strncmp(env[i], "PATH=", 5))
 			cp_c_env[0][0] = ft_strdup(env[i]);
-	cp_c_env[0][1] = NULL;
+		else if (!ft_strncmp(env[i], "SHLVL=", 6))
+			cp_c_env[0][1] = ft_strdup(env[i]);
+		else if (!ft_strncmp(env[i], "PWD=", 4))
+			cp_c_env[0][2] = ft_strdup(env[i]);
+		else if (!ft_strncmp(env[i], "HOME=", 5))
+			cp_c_env[0][3] = ft_strdup(env[i]);
+		else if (!ft_strncmp(env[i], "TERM=", 5))
+			cp_c_env[0][4] = ft_strdup(env[i]);
+	}
+	cp_c_env[0][5] = NULL;
 	return (0);
 }
 
