@@ -238,4 +238,10 @@ int						initialize_signals(void);
 
 int						print_buf(t_tcap *caps, char *buf);
 
+/*
+*** - win_resize.c
+*/
+
+void					win_resize(int sig);
+
 #endif
