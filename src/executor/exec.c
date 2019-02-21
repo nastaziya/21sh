@@ -88,7 +88,12 @@ int		check_errors_exec(char *path, char **str, int in_env)
 	struct stat	buf;
 
 	res = 0;
-	if (path == NULL || access(path, F_OK))
+	if (path == NULL)
+	{
+		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
+			": command not found", 127);
+	}
+	else if (access(path, F_OK) == -1)
 		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
 			": No such file or directory", 127);
 	else if (!(stat(path, &buf) == -1))
@@ -110,6 +115,7 @@ int		error_exec_or_exec(char **paths, char **str,
 	char		*path;
 
 	path = NULL;
+	res = 0;
 	if (str[0] && ft_strchr(str[0], '/'))
 		path = ft_strdup(str[0]);
 	else
@@ -121,9 +127,7 @@ int		error_exec_or_exec(char **paths, char **str,
 		else
 			res = exec(path, str, env, in_env);
 	}
-	else
-		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
-			": command not found", 127);
+	
 	if (path != NULL)
 		free(path);
 	return (res);
