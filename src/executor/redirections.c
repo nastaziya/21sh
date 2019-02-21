@@ -140,26 +140,19 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 	i = 0;
 	ret = 0;
 	pos_heredoc = ft_calcul_pos_last_heredoc(t, &cmd);
-	check_here = 1;		
 	while (i < cmd.redirection.used_space && ret == 0)
 	{
-		if (check_red_index(cmd, i) >= 0)
-		{
-			i = check_red_index(cmd, i);
-			check_here = 0;
-		}
+		
 		if ((cmd.redirection.red[i] == T_REDIR_LESS
-			|| cmd.redirection.red[i] == T_REDIR_GREAT) && check_here)
+			|| cmd.redirection.red[i] == T_REDIR_GREAT))
 			ret = manage_aggreg(cmd, i, t);
 		else if ((cmd.redirection.red[i] == T_DBL_LESS
-			|| cmd.redirection.red[i] == T_DBL_LESS_DASH) && !check_here)
+			|| cmd.redirection.red[i] == T_DBL_LESS_DASH))
 		{
-			if (i == pos_heredoc)
+			if (cmd.redirection.used_space - i - 1 == pos_heredoc)
 				ret = manage_here_doc(cmd, i, t);
-			check_here = 1;
-			i = 0;
 		}
-		else if (check_here)
+		else
 			ret = manage_file(cmd, i, t, env);
 		if (t->file_name != NULL)
 		{
@@ -172,3 +165,4 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 	return (ret);
 }
 //cat > io < <e (double free)
+//;dsd
