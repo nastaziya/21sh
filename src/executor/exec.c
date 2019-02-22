@@ -89,20 +89,15 @@ int		check_errors_exec(char *path, char **str, int in_env)
 
 	res = 0;
 	if (path == NULL)
-	{
 		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
 			": command not found", 127);
-	}
 	else if (access(path, F_OK) == -1)
 		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
 			": No such file or directory", 127);
-	else if (!(stat(path, &buf) == -1))
-	{
-		if ((buf.st_mode & S_IFMT) == S_IFDIR)
+	else if (!(stat(path, &buf) == -1) && (buf.st_mode & S_IFMT) == S_IFDIR)
 			res = error_command(in_env == 2 ? "env: " : "bash: ",
 				str, ": is a directory", 126);
-	}
-	else if ((stat(path, &buf) == 0 && buf.st_mode & S_IXUSR) == 0)
+	else if ((stat(path, &buf) == 0 && (buf.st_mode & S_IXUSR) == 0))
 		res = error_command(in_env == 2 ? "env: "
 			: "bash: ", str, ": permission denied", 126);
 	return (res);
@@ -121,9 +116,9 @@ int		error_exec_or_exec(char **paths, char **str,
 	else
 		check_path(paths, &path, str);
 	if ((res = check_errors_exec(path, str, in_env)))
-			;
-		else
-			res = exec(path, str, env, in_env);
+		;
+	else
+		res = exec(path, str, env, in_env);
 	if (path != NULL)
 		free(path);
 	return (res);
