@@ -120,14 +120,10 @@ int		error_exec_or_exec(char **paths, char **str,
 		path = ft_strdup(str[0]);
 	else
 		check_path(paths, &path, str);
-	if (path || (in_env == 1) || (in_env == 2))
-	{
-		if ((res = check_errors_exec(path, str, in_env)))
+	if ((res = check_errors_exec(path, str, in_env)))
 			;
 		else
 			res = exec(path, str, env, in_env);
-	}
-	
 	if (path != NULL)
 		free(path);
 	return (res);

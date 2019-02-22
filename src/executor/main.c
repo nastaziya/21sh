@@ -37,8 +37,6 @@ void	init_red_struct(t_exec_redir *t_red, char ***heredoc)
 	t_red->file_name = NULL;
 	t_red->fdoutred = 0;
 	t_red->heredoc = heredoc;
-	t_red->pipe_tools = (t_pipe) {.fds = {0, 0}, .fd_in = 0,
-	.aux = 0, .pid = -1, .len_pipe = 0};
 	ft_bzero(t_red->fd_orig, 3);
 }
 
