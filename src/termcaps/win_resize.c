@@ -40,7 +40,8 @@ void			win_resize_norm(void)
     if (g_caps.sz_str > g_caps.size_prompt)
         ft_putstr_fd(g_caps.str[0], 1);
     cursor_position(curs);
-    if (check_curs_window(&g_caps, g_caps.str[0], -1) == 1 && g_caps.sz_str > g_caps.size_prompt + 1)
+    if (check_curs_window(&g_caps, g_caps.str[0], -1) == 1
+        && g_caps.sz_str > g_caps.size_prompt + 1)
         tputs(tgoto(tgetstr("cm", NULL), 0, curs[1]), 1, ft_outc);
 }
 
