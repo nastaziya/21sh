@@ -93,7 +93,7 @@ char	**copy_env(char **environ, int size, t_env_tools *envi)
 	}
 	env[0] = getenv("PATH") ? env[0] : get_envpath_from_file();
 	envi->home = getenv("HOME") ? ft_strdup(getenv("HOME"))
-		: ft_strdup("/Users/home"); // Vérifier au 101
+		: ft_strdup("/Users/gurival-"); // Vérifier au 101
 	// dprintf(3, "envi->home: [%s]", envi->home);
 	return (env);
 }
