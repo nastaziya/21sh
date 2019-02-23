@@ -23,7 +23,7 @@ int		terminal_data(t_term *term)
 	char	*name_term;
 
 	if ((name_term = getenv("TERM")) == NULL)
-		return (-1);
+		name_term = "xterm-256color"; // vérifier si c'est le bon au 101
 	if (tgetent(NULL, name_term) <= 0)
 		return (-1);
 	if (tcgetattr(0, term) == -1)

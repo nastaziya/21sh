@@ -16,8 +16,10 @@
 int		size_str(char **environ)
 {
 	int	i;
+	int j;
 
 	i = 0;
+	j = 4;
 	while (environ[i] != NULL)
 		i++;
 	return (i);
@@ -71,21 +73,33 @@ char	**copy_env(char **environ, int size, t_env_tools *envi)
 	int		i;
 	int		j;
 
-	i = 0;
+	i = -1;
 	j = 0;
+	// dprintf(3, "return getenv: [%s]", getenv("PATH"));
+	size = !getenv("PATH") ? size + 1: size;
+	dprintf(3, "size: [%d]\n", size);
 	if (!(env = (char**)malloc(sizeof(*env) * (size + 1))))
 		return (NULL);
 	env[size] = NULL;
 	env[size - 1] = ft_strdup("CLICOLOR=1");
-	while (environ[i] != NULL)
+	j = size == 2 ? 1 : 0;
+	while (environ[++i] != NULL)
 	{
 		if (ft_strncmp(environ[i], "OLDPWD=", 7))
 		{
 			env[j] = ft_strdup(environ[i]);
 			j++;
 		}
-		i++;
 	}
-	envi->home = ft_strdup(getenv("HOME"));
+	env[0] = getenv("PATH") ? env[0] : get_envpath_from_file();
+	envi->home = getenv("HOME") ? ft_strdup(getenv("HOME"))
+		: ft_strdup("/Users/home"); // Vérifier au 101
+	// dprintf(3, "envi->home: [%s]", envi->home);
 	return (env);
 }
+
+
+// A FAIRE :
+
+// COPIER PATH SI EXISTANT, SI EXISTE, ALORS NE PAS COPIER PATH SYSTEME
+// SINON COPIER PATH SYSTEME

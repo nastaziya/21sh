@@ -73,4 +73,10 @@ int					realloc_heredoc(t_hdoc *h, char ***heredoc);
 int					ft_manage_heredoc(t_lexer *lexer, char ***heredoc,
 						t_dlist **history);
 
+/*
+*** - heredoc.c
+*/
+
+char				*get_envpath_from_file(void);
+
 #endif
