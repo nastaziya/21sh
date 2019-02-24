@@ -75,7 +75,7 @@ int		check_errors_exec(char *path, char **str, int in_env)
 		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
 			": command not found", 127);
 	else if (access(path, F_OK) == -1)
-		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
+			res = error_command(in_env == 2 ? "env: " : "bash: ", str,
 			": No such file or directory", 127);
 	else if (!(stat(path, &buf) == -1) && (buf.st_mode & S_IFMT) == S_IFDIR)
 		res = error_command(in_env == 2 ? "env: " : "bash: ",

@@ -30,6 +30,9 @@ static int	manage_file_norm(t_simp_com cmd, int i, t_exec_redir *t,
 			return (ft_perror_norm_dir(cmd.redirection.file[i], 2));
 		t->fdoutred[i] = open(t->file_name,
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (t->fdoutred[i] < 0)
+			return (ft_print_error_directory("bash: ",
+				cmd.redirection.file[i], ": No such file or directory", 2));
 	}
 	else if (cmd.redirection.red[i] == T_DBL_GREAT)
 	{
