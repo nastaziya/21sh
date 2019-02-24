@@ -113,10 +113,10 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 		else if (*cmd && ft_strlen(*cmd) > 0)
 			if ((type_quote = ft_count_quote(*cmd)))
 			{
-				ft_dlstadd(history, ft_dlstnew(*cmd));
+				//ft_dlstadd(history, ft_dlstnew(*cmd));
 				ft_new_prompt(cmd, type_quote, history);
-				if (!g_keeprun && ((*history) = (*history)->next))
-					ft_dlstdelone(&(*history)->prev);
+				//if (!g_keeprun && ((*history) = (*history)->next))
+					//ft_dlstdelone(&(*history)->prev);
 			}
 	}
 	ft_putchar_fd('\n', 1);

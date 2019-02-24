@@ -97,7 +97,7 @@ void	all_exec(char **environ, char ***heredoc)
 	}
 	if (env.env_cpy != NULL)
 		free_str(env.env_cpy);
-	ft_dlstdel(&history);
+	//ft_dlstdel(&history);
 }
 
 int		main(int argc, char **argv, char **environ)
