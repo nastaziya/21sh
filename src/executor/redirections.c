@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/15 15:14:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:44:57 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -47,26 +47,6 @@ static int	manage_file_norm(t_simp_com cmd, int i, t_exec_redir *t,
 	}
 	else if (cmd.redirection.red[i] == T_REDIR_LESSGREAT)
 		t->fdoutred[i] = open(t->file_name, O_RDWR);
-	return (0);
-}
-
-int			expand_filename(t_simp_com cmd, t_exec_redir *t, int i,
-				t_env_tools *env)
-{
-	char *temp;
-
-	t->file_name = NULL;
-	temp = ft_strdup(cmd.redirection.file[i]);
-	expanded_dynamic_table(&temp, *env, 0);
-	t->file_name = ft_strdup(temp);
-	free(temp);
-	if (temp && ft_strlen(t->file_name) == 0)
-	{
-		free(t->file_name);
-		ft_print_error_directory("bash: ",
-			cmd.redirection.file[i], ": ambiguous redirect", 2);
-		return (1);
-	}
 	return (0);
 }
 
@@ -115,8 +95,18 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t,
 	return (0);
 }
 
+void		process_redir_norm(t_exec_redir *t, int *i)
+{
+	if (t->file_name != NULL)
+	{
+		free(t->file_name);
+		t->file_name = NULL;
+	}
+	(*i)++;
+}
+
 /*
-***	- Aim of the function :
+*** - Aim of the function :
 *** - Redirect to the proper redirection
 */
 
@@ -132,7 +122,6 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 	pos_heredoc = ft_calcul_pos_last_heredoc(t, &cmd);
 	while (i < cmd.redirection.used_space && ret == 0)
 	{
-		
 		if ((cmd.redirection.red[i] == T_REDIR_LESS
 			|| cmd.redirection.red[i] == T_REDIR_GREAT))
 			ret = manage_aggreg(cmd, i, t);
@@ -144,15 +133,8 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 		}
 		else
 			ret = manage_file(cmd, i, t, env);
-		if (t->file_name != NULL)
-		{
-			free(t->file_name);
-			t->file_name = NULL;
-		}
-		i++;
+		process_redir_norm(t, &i);
 	}
 	clear_fd(t, cmd.redirection.used_space);
 	return (ret);
 }
-//cat > io <<e (double free)
-//;dsd

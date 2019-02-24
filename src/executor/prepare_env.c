@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 19:20:09 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:37:34 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -75,8 +75,7 @@ char	**copy_env(char **environ, int size, t_env_tools *envi)
 
 	i = -1;
 	j = 0;
-	// dprintf(3, "return getenv: [%s]", getenv("PATH"));
-	size = !getenv("PATH") ? size + 1: size;
+	size = !getenv("PATH") ? size + 1 : size;
 	dprintf(3, "size: [%d]\n", size);
 	if (!(env = (char**)malloc(sizeof(*env) * (size + 1))))
 		return (NULL);
@@ -93,13 +92,6 @@ char	**copy_env(char **environ, int size, t_env_tools *envi)
 	}
 	env[0] = getenv("PATH") ? env[0] : get_envpath_from_file();
 	envi->home = getenv("HOME") ? ft_strdup(getenv("HOME"))
-		: ft_strdup("/Users/gurival-"); // Vérifier au 101
-	// dprintf(3, "envi->home: [%s]", envi->home);
+		: ft_strdup("/Users/gurival-");
 	return (env);
 }
-
-
-// A FAIRE :
-
-// COPIER PATH SI EXISTANT, SI EXISTE, ALORS NE PAS COPIER PATH SYSTEME
-// SINON COPIER PATH SYSTEME

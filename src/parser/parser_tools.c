@@ -6,23 +6,12 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/09 22:03:18 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 22:04:44 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:56:48 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "../../inc/sh.h"
-
-int				is_red(t_lexer lex, int i)
-{
-	if ((lex.tokens[i].type == T_GREAT || lex.tokens[i].type == T_LESS ||
-		lex.tokens[i].type == T_DBL_GREAT || lex.tokens[i].type == T_DBL_LESS)
-		|| lex.tokens[i].type == T_TRL_LESS
-		|| lex.tokens[i].type == T_REDIR_LESS
-		|| lex.tokens[i].type == T_REDIR_GREAT)
-		return (1);
-	return (0);
-}
 
 int				is_built_in(char **cmd)
 {
@@ -39,20 +28,13 @@ int				is_built_in(char **cmd)
 	return (0);
 }
 
-int				is_op(t_lexer lex, int i)
-{
-	if (lex.tokens[i].type >= T_DBLAND && lex.tokens[i].type <= T_AND)
-		return (1);
-	return (0);
-}
-
-void	free_content_after_error(t_lexer *lex, int i)
+void			free_content_after_error(t_lexer *lex, int i)
 {
 	if (lex->tokens[i].content != NULL)
-		{
-			free(lex->tokens[i].content);
-			lex->tokens[i].content = NULL;
-		}
+	{
+		free(lex->tokens[i].content);
+		lex->tokens[i].content = NULL;
+	}
 }
 
 static int		parse_errors_norm(t_lexer lex, int i)

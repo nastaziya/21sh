@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/09 21:48:35 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 21:49:41 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:55:38 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -30,6 +30,7 @@ void		free_the_op_content_array_token(t_lexer *lexer)
 	}
 	free(lexer->tokens);
 }
+
 void		free_the_op_content_array_token_after_error(t_lexer *lexer)
 {
 	int	i;

@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 22:58:48 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 17:02:43 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -23,7 +23,7 @@ int		terminal_data(t_term *term)
 	char	*name_term;
 
 	if ((name_term = getenv("TERM")) == NULL)
-		name_term = "xterm-256color"; // vérifier si c'est le bon au 101
+		name_term = "xterm-256color";
 	if (tgetent(NULL, name_term) <= 0)
 		return (-1);
 	if (tcgetattr(0, term) == -1)

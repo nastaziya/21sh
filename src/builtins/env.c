@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 22:17:47 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:34:15 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -72,7 +72,7 @@ int			ft_manage_option_i_env(char ***cp_c_env, char **env)
 		if (!ft_strncmp(env[i], "PATH=", 5))
 			size++;
 	}
-	if (!(cp_c_env[0] = (char**)malloc(sizeof(char*) * (size + 1))))//6
+	if (!(cp_c_env[0] = (char**)malloc(sizeof(char*) * (size + 1))))
 		return (1);
 	i = -1;
 	while (env[++i])
@@ -80,7 +80,7 @@ int			ft_manage_option_i_env(char ***cp_c_env, char **env)
 		if (!ft_strncmp(env[i], "PATH=", 5))
 			cp_c_env[0][0] = ft_strdup(env[i]);
 	}
-	cp_c_env[0][size] = NULL;//5
+	cp_c_env[0][size] = NULL;
 	return (0);
 }
 

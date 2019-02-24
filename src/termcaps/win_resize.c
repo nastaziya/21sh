@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 22:54:56 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 17:03:50 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -16,7 +16,7 @@
 int				check_curs_window(t_tcap *caps, char *str, int i)
 {
 	int	x;
-	
+
 	size_windows(caps);
 	x = caps->size_prompt + 1;
 	while (str && str[++i])
@@ -35,14 +35,14 @@ int				check_curs_window(t_tcap *caps, char *str, int i)
 
 void			win_resize_norm(void)
 {
-    int	curs[2];
+	int	curs[2];
 
-    if (g_caps.sz_str > g_caps.size_prompt)
-        ft_putstr_fd(g_caps.str[0], 1);
-    cursor_position(curs);
-    if (check_curs_window(&g_caps, g_caps.str[0], -1) == 1
-        && g_caps.sz_str > g_caps.size_prompt + 1)
-        tputs(tgoto(tgetstr("cm", NULL), 0, curs[1]), 1, ft_outc);
+	if (g_caps.sz_str > g_caps.size_prompt)
+		ft_putstr_fd(g_caps.str[0], 1);
+	cursor_position(curs);
+	if (check_curs_window(&g_caps, g_caps.str[0], -1) == 1
+		&& g_caps.sz_str > g_caps.size_prompt + 1)
+		tputs(tgoto(tgetstr("cm", NULL), 0, curs[1]), 1, ft_outc);
 }
 
 /*
@@ -66,7 +66,7 @@ void			win_resize(int sig)
 	if ((g_caps.char_pos[0] < g_caps.window_size[1] &&
 		g_caps.char_pos[1] < g_caps.window_size[0])
 		&& g_caps.window_size[1] > g_caps.size_prompt)
-        win_resize_norm();
+		win_resize_norm();
 	else
 	{
 		tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);

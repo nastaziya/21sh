@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 22:00:38 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:57:23 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -118,7 +118,6 @@ void	add_simple_command(t_command *cmd, t_lexer lex, t_dlist **history,
 	i = -1;
 	j = 0;
 	size_simple_cmd = 0;
-	
 	ft_manage_heredoc(&lex, heredoc, history);
 	if (parse_errors(lex, -1))
 	{

@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/15 15:14:08 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:41:27 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -29,15 +29,6 @@ void	check_op_first_exec(t_command cmd, t_env_tools *env, t_exec_redir *t,
 			(*i)--;
 	}
 	restore_original_fd(t);
-}
-
-void	init_red_struct(t_exec_redir *t_red, char ***heredoc)
-{
-	t_red->i_hdoc = 0;
-	t_red->file_name = NULL;
-	t_red->fdoutred = 0;
-	t_red->heredoc = heredoc;
-	ft_bzero(t_red->fd_orig, 3);
 }
 
 void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
@@ -111,17 +102,11 @@ void	all_exec(char **environ, char ***heredoc)
 
 int		main(int argc, char **argv, char **environ)
 {
-	// t_term		term;
 	char		**heredoc;
 
 	(void)argc;
 	(void)argv;
 	heredoc = NULL;
-	// if (terminal_data(&term) < 0)
-	// {
-	// 	ft_putstr_fd("envoie les bonnes infos ma gueule !!!\n", 2);
-	// 	exit(0);
-	// }
 	all_exec(environ, &heredoc);
 	return (0);
 }

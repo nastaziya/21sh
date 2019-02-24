@@ -13,6 +13,13 @@
 
 #include "../../inc/sh.h"
 
+int				is_op(t_lexer lex, int i)
+{
+	if (lex.tokens[i].type >= T_DBLAND && lex.tokens[i].type <= T_AND)
+		return (1);
+	return (0);
+}
+
 static void		ft_initialize_heredoc_norm(char ***heredoc, int nb_to_malloc)
 {
 	int	i;

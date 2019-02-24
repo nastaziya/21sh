@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 21:36:00 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:54:22 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -82,7 +82,8 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 *** - returns 3 when ctrl_l key is being pressed, and doesn't print the
 *** - \n in this case
 */
-void	display_bash(char *str)
+
+void		display_bash(char *str)
 {
 	int i;
 

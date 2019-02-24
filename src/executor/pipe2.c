@@ -6,14 +6,13 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/12 22:17:57 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/15 15:16:43 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:40:18 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "../../inc/sh.h"
 #include "../../inc/exec.h"
-
 
 int		ret_nr_pipe(t_command cmd, int i)
 {
@@ -56,6 +55,13 @@ void	norm_pipe_exec(t_exec_redir *t, t_command cmd, int i)
 	t->pipe_tools.fd_in = 0;
 }
 
+void	ft_exec_command_norm(int *i)
+{
+	while (wait(NULL) > 0)
+		;
+	(*i)--;
+}
+
 int		ft_pipe_exec(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 {
 	int		status;
@@ -80,9 +86,6 @@ int		ft_pipe_exec(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 	}
 	waitpid(t->pipe_tools.pid, &status, 0);
 	env->g_return_value = right_return(status);
-	while (wait(NULL) > 0)
-		;
-	(*i)--;
+	ft_exec_command_norm(i);
 	return (env->g_return_value);
 }
-//valgrind --leak-check=full --tool=memcheck --track-origins=yes --dsymutil=yes ./a.out

@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/06 01:05:33 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/06 01:36:43 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 17:04:48 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -184,7 +184,7 @@ int						print_buf(t_tcap *caps, char *buf);
 *** - print_2.c
 */
 
-void		    		print_middle_line(t_tcap *caps, char *string, char *tmp,
+void					print_middle_line(t_tcap *caps, char *string, char *tmp,
 							char *tmp2);
 int						check_if_scroll(t_tcap *caps, char *str, int i);
 

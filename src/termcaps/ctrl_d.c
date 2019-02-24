@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 22:34:17 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 17:02:15 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -66,10 +66,6 @@ int				ctrl_d_management(t_tcap *caps)
 		return (1);
 	}
 	else
-	{
-		// dprintf(1, "passe dans le ctrl\n");
 		tputs(tgetstr("bl", NULL), 1, ft_outc);
-		// probleme : essaie de printer alors que dois juste refaire
-	}
 	return (0);
 }

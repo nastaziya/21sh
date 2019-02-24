@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 21:38:19 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:54:59 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -105,7 +105,7 @@ t_lexer		final_tokens(t_dlist **history)
 {
 	char	*cmd;
 	t_lexer	lexer;
-	
+
 	ft_get_entire_line(&cmd, "bash > ", history);
 	lexer_init(&lexer);
 	if (cmd && ft_strlen(cmd) > 0)

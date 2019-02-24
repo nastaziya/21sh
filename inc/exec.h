@@ -97,4 +97,11 @@ int				manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t);
 
 int				ft_calcul_pos_last_heredoc(t_exec_redir *t, t_simp_com *cmd);
 
+/*
+*** - exec_norm.c
+*/
+void			init_red_struct(t_exec_redir *t_red, char ***heredoc);
+int				expand_filename(t_simp_com cmd, t_exec_redir *t, int i,
+					t_env_tools *env);
+
 #endif

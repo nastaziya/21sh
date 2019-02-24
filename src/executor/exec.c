@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 22:20:50 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:36:16 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -62,23 +62,6 @@ int		exec(char *path, char **str, char **env, int fork_val)
 }
 
 /*
-*** - function tells if the word after the >& && <& is a redir number
-*/
-
-int		ft_isnumber_redir(char *str)
-{
-	int	i;
-
-	i = -1;
-	if (!ft_strcmp(str, "-"))
-		return (0);
-	while (str[++i])
-		if (!ft_isdigit(str[i]))
-			return (1);
-	return (0);
-}
-
-/*
 *** - Place it somewhere else for the norm
 */
 
@@ -95,8 +78,8 @@ int		check_errors_exec(char *path, char **str, int in_env)
 		res = error_command(in_env == 2 ? "env: " : "bash: ", str,
 			": No such file or directory", 127);
 	else if (!(stat(path, &buf) == -1) && (buf.st_mode & S_IFMT) == S_IFDIR)
-			res = error_command(in_env == 2 ? "env: " : "bash: ",
-				str, ": is a directory", 126);
+		res = error_command(in_env == 2 ? "env: " : "bash: ",
+			str, ": is a directory", 126);
 	else if ((stat(path, &buf) == 0 && (buf.st_mode & S_IXUSR) == 0))
 		res = error_command(in_env == 2 ? "env: "
 			: "bash: ", str, ": permission denied", 126);

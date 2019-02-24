@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/15 15:20:51 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/15 15:20:53 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/24 16:41:03 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -79,12 +79,12 @@ void		clear_fd(t_exec_redir *t, int end)
 	free(t->fdoutred);
 }
 
-// /*
-// ***	- Aim of the function :
-// *** - Calculate the index corresponding to the last heredoc
-// *** - Example : cat << oui << non << plus
-// *** - will return : 3 which equals to "plus"
-// */
+/*
+*** - Aim of the function :
+*** - Calculate the index corresponding to the last heredoc
+*** - Example : cat << oui << non << plus
+*** - will return : 3 which equals to "plus"
+*/
 
 int			ft_calcul_pos_last_heredoc(t_exec_redir *t, t_simp_com *cmd)
 {
