@@ -27,6 +27,7 @@ int		ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
 {
 	int		count;
 	char	*tmp;
+	int		ret;
 
 	count = 0;
 	while ((*c_env)[count] && ft_strncmp((*c_env)[count],
@@ -36,8 +37,8 @@ int		ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
 	{
 		tmp = ft_strdup(ft_strchr((*c_env)[count], '=') + 1);
 		n->dash = 1;
-		ft_change_dir_and_pwds(&tmp, c_env, env, n);
-		if (c == '-')
+		ret = ft_change_dir_and_pwds(&tmp, c_env, env, n);
+		if (c == '-' && !ret)
 			ft_putendl_fd(tmp, 1);
 		free(tmp);
 	}

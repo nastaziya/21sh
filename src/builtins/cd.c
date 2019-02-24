@@ -102,7 +102,7 @@ static int		ft_change_dir_and_free(char **av, char ***c_env,
 	int ret;
 
 	ret = ft_change_dir_and_pwds(av, c_env, env, n_cd);
-	free(av);
+	free(*av);
 	return (ret);
 }
 
