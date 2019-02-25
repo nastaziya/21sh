@@ -76,7 +76,7 @@ char	**copy_env(char **environ, int size, t_env_tools *envi)
 	i = -1;
 	j = 0;
 	size = !getenv("PATH") ? size + 1 : size;
-	dprintf(3, "size: [%d]\n", size);
+	// dprintf(3, "size: [%d]\n", size);
 	if (!(env = (char**)malloc(sizeof(*env) * (size + 1))))
 		return (NULL);
 	env[size] = NULL;

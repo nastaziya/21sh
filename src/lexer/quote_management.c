@@ -52,7 +52,7 @@ void		ft_find_closing_quote(const char **s, t_norm *nm)
 	{
 		while (**s && ++(*s) && *s < nm->end)
 		{
-			dprintf(3, "bloqué dans les nymphes\n");
+			// dprintf(3, "bloqué dans les nymphes\n");
 			if ((**s == nm->type_quote && nm->type_quote != '\'' &&
 				!manage_back_quote(*s, nm->prev))
 					|| (nm->type_quote == '\'' && **s == '\''))
@@ -73,8 +73,8 @@ void		ft_tokenize_quote_management(const char **s, t_lexer *lexer,
 	nm->quote_done = 1;
 }
 
-void		ft_string_to_lexer_quote_management(const char **s, t_lexer *lexer,
-				t_norm *nm)
+void		ft_string_to_lexer_quote_management(const char **s,
+				t_lexer *lexer, t_norm *nm)
 {
 	while (*s && **s)
 	{

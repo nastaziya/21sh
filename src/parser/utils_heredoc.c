@@ -106,7 +106,7 @@ int				realloc_heredoc(t_hdoc *h, char ***heredoc)
 {
 	char	*tmp;
 
-	dprintf(3, "avant: [[%s]]\n", heredoc[0][h->command]);
+	// dprintf(3, "avant: [[%s]]\n", heredoc[0][h->command]);
 	tmp = heredoc[0][h->command];
 	heredoc[0][h->command] = ft_strjoin(tmp, h->cmd);
 	free(tmp);
@@ -117,6 +117,6 @@ int				realloc_heredoc(t_hdoc *h, char ***heredoc)
 	else
 		heredoc[0][h->command] = ft_strdup(tmp);
 	free(tmp);
-	dprintf(3, "après: [[%s]]\n", heredoc[0][h->command]);
+	// dprintf(3, "après: [[%s]]\n", heredoc[0][h->command]);
 	return (1);
 }

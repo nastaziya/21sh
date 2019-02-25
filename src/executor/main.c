@@ -89,7 +89,7 @@ void	all_exec(char **environ, char ***heredoc)
 	while (42)
 	{
 		lex = final_tokens(&history);
-		print(&lex);
+		// print(&lex);
 		command_init(&cmd);
 		add_simple_command(&cmd, lex, &history, heredoc);
 		print_struct(cmd);
