@@ -92,6 +92,7 @@ void	all_exec(char **environ, char ***heredoc)
 		print(&lex);
 		command_init(&cmd);
 		add_simple_command(&cmd, lex, &history, heredoc);
+		print_struct(cmd);
 		norm_all_exec(&env, cmd, heredoc);
 		free_the_op_content_array_token(&lex);
 		free_struct(&cmd);
