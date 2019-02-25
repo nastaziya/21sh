@@ -99,31 +99,21 @@ int			string_to_lexer(const char *s, t_lexer *lexer)
 	ft_initialize_nm(s, &nm);
 	while (s && *s)
 	{
-		dprintf(3, "passe 2ème fois\n");
 		nm.current = type_of_token(s);
 		if ((*s == '>' || *s == '<') && ft_isdigit(*nm.prev)
 			&& (s-nm.prev == 1))
 			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_IO_NUMB);
 		else if (S_QUOTE && !manage_back_quote(s, nm.prev))
 			ft_string_to_lexer_quote_management(&s, lexer, &nm);
-		else if ((((*s == '\n' || *s == ' ') && manage_back_quote(s, nm.prev))// check if space between // and char
+		else if ((((*s == '\n' || *s == ' ') && manage_back_quote(s, nm.prev))
 		|| (nm.current.type != 0 && manage_back_quote(s, nm.prev))) && ++s)
-		{
-			dprintf(3, "putain de continue\n");
 			continue ;
-		}
 		else if (nm.current.op != 0 && nm.prev != s)
 			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_WORD);
-		if (*s && (nm.current.op != 0 || nm.quote_done == 1))// && (nm.end - s > 1)
-		{
-				dprintf(3, "j'avance encore et encore");
+		if (*s && (nm.current.op != 0 || nm.quote_done == 1))
 			ft_string_to_lexer_advance(&s, lexer, &nm);
-		}
 		else if (*s)
-		{
 			++s;
-			dprintf(3, "j'avance");
-		}
 	}
 	if (nm.prev != s)
 		add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_WORD);

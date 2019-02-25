@@ -48,7 +48,7 @@ int			manage_back_quote(const char *s, const char *begin)
 void		ft_find_closing_quote(const char **s, t_norm *nm)
 {
 	nm->type_quote = **s;
-	if (nm->type_quote == '\'' || nm->type_quote == '"') //  && !manage_back_quote(*s, nm->start)
+	if (nm->type_quote == '\'' || nm->type_quote == '"')
 	{
 		while (**s && ++(*s) && *s < nm->end)
 		{
@@ -59,13 +59,8 @@ void		ft_find_closing_quote(const char **s, t_norm *nm)
 				break ;
 		}
 	}
-	// dprintf(3, "close_quote : |**s: %c|\n", **s);
 	if (*s < nm->end)
-	{
-		// dprintf()
 		++(*s);
-	}
-	// dprintf(3, "close_quote_apres : |**s: %c|\n", **s);
 }
 
 void		ft_tokenize_quote_management(const char **s, t_lexer *lexer,
@@ -85,33 +80,21 @@ void		ft_string_to_lexer_quote_management(const char **s, t_lexer *lexer,
 	{
 		if (**s == ' ' && --(*s))
 			break ;
-		dprintf(3, "merde, je boucleinf-%c-%s\n", **s, *s);
 		ft_find_closing_quote(s, nm);
-		dprintf(3, "apresclosingquote: -%c\n", **s);
-		if (!**s) //  || (*s - begin == 0 && )
-		{
-			dprintf(3, "jebreakaupremier\n");
+		if (!**s)
 			break ;
-		}
 		while (**s && **s != '\'' && **s != '"' && **s != ' ')
 			++(*s);
 		if (manage_back_quote(*s, nm->prev))
-		{
-			dprintf(3, "jesuisdansmanage_backquote\n");
 			++(*s);
-		}
-		// else if (!manage_back_quote(*s, nm->prev) && )
 		else if (**s && **s != '\'' && **s != '"')
 		{
 			while (**s == ' ')
 				--(*s);
-			dprintf(3, "jebreak\n");
 			break ;
 		}
 	}
-	// (void)lexer;
 	ft_tokenize_quote_management(s, lexer, nm);
-	// ++(*s);
 }
 
 /*
