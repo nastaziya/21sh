@@ -86,9 +86,10 @@ static int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer,
 			{
 				tmp = ft_strdup(lexer->tokens[h->words[h->k]].content);
 				expanded_dynamic_table_heredoc(&tmp, 0);
-				if (ft_strcmp(tmp, h->cmd) == 0)
+				if (h->cmd && ft_strcmp(tmp, h->cmd) == 0)
 					(h->k)++;
-				free(h->cmd);
+				if (h->cmd)
+					free(h->cmd);
 				free(tmp);
 			}
 			else if (h->k == h->i_words - 1)

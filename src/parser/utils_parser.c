@@ -30,7 +30,7 @@ void			red_init_first(t_red *redir)
 	redir->av_space = TAB_INITIAL_CAPACITY;
 	redir->fd = 0;
 	redir->file = NULL;
-	redir->red = NULL;
+	redir->red = 0;
 }
 
 void			command_init(t_command *cmd)
@@ -40,6 +40,7 @@ void			command_init(t_command *cmd)
 	i = -1;
 	cmd->used_space = 0;
 	cmd->av_space = TAB_INITIAL_CAPACITY;
+	cmd->command = NULL;
 	if (!(cmd->command = malloc(sizeof(t_simp_com) * cmd->av_space)))
 		return ;
 	while (++i < cmd->av_space)

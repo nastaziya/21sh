@@ -39,9 +39,9 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 	i = 0;
 	init_red_struct(&t, heredoc);
 	check_op_first_exec(cmd, env, &t, &i);
-	while (++i < cmd.used_space && cmd.command[i].tok != -1)
+	while (++i < cmd.used_space)
 	{
-		if (i == cmd.used_space - 1 || cmd.command[i + 1].used_space == 0)
+		if (i == cmd.used_space - 1)// || cmd.command[i + 1].used_space == 0)
 			break ;
 		save_original_fd(&t);
 		if (cmd.command[i].tok == T_DBLOR)

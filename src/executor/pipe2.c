@@ -44,6 +44,8 @@ int		exec_in_child(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 	env->g_return_value = ret;
 	if (is_built_in(command) || (env->g_return_value != 0))
 		exit(EXIT_FAILURE);
+	if (command[0] == NULL)
+		exit(EXIT_FAILURE);
 	free_str(command);
 	return (ret);
 }

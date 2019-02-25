@@ -62,7 +62,7 @@ typedef struct		s_hdoc
 
 void				print_array(int size, char **cmd);
 void				print_struct(t_command cmd);
-void				tab_init(t_simp_com *simple_cmd);
+int					tab_init(t_simp_com *simple_cmd);
 void				tab_red_init(t_red *redir);
 void				tab_assign(t_simp_com *simple_cmd, t_lexer lex, int j);
 void				simple_cmd_assign(t_command *cmd, t_simp_com simple_cmd);
