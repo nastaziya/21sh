@@ -48,49 +48,70 @@ int			manage_back_quote(const char *s, const char *begin)
 void		ft_find_closing_quote(const char **s, t_norm *nm)
 {
 	nm->type_quote = **s;
-	while (**s && ++(*s))
-		if ((**s == nm->type_quote && nm->type_quote != '\'' &&
-			!manage_back_quote(*s, nm->start))
-				|| (nm->type_quote == '\'' && **s == '\''))
-			break ;
+	if (nm->type_quote == '\'' || nm->type_quote == '"') //  && !manage_back_quote(*s, nm->start)
+	{
+		while (**s && ++(*s) && *s < nm->end)
+		{
+			dprintf(3, "bloqué dans les nymphes\n");
+			if ((**s == nm->type_quote && nm->type_quote != '\'' &&
+				!manage_back_quote(*s, nm->prev))
+					|| (nm->type_quote == '\'' && **s == '\''))
+				break ;
+		}
+	}
+	// dprintf(3, "close_quote : |**s: %c|\n", **s);
+	if (*s < nm->end)
+	{
+		// dprintf()
+		++(*s);
+	}
+	// dprintf(3, "close_quote_apres : |**s: %c|\n", **s);
 }
 
 void		ft_tokenize_quote_management(const char **s, t_lexer *lexer,
 				t_norm *nm)
 {
-	if (nm->prev != *s && ++(*s))
+	if (nm->prev != *s && **s ? ++(*s) : *s)
 		add_token_to_lexer(lexer, nm->prev, *s - nm->prev, T_WORD);
+	if (!**s)
+		nm->prev = *s;
 	nm->quote_done = 1;
 }
 
 void		ft_string_to_lexer_quote_management(const char **s, t_lexer *lexer,
 				t_norm *nm)
 {
-	while (42)
+	while (*s && **s)
 	{
-		ft_find_closing_quote(s, nm);
-		if (*s < nm->end && (*(*s + 1) == '"' || *(*s + 1) == '\'') && ++(*s))
-			continue ;
-		else if (**s && *(*s + 1) && !(*(*s + 1) >= 8 && *(*s + 1) <= 13)
-			&& *(*s + 1) != 32)
-		{
-			++(*s);
-			while (**s && ((**s == '\n' && *(*s - 1) == '\\') ? ++(*s) : *s) &&
-				ft_isalnum(*(*s + 1)) && *(*s + 1) != '"' && *(*s + 1) != '\'')
-				++(*s);
-			if (((*(*s + 1) == '"') || (*(*s + 1) == '\'')) && ++(*s))
-				continue ;
-			else if ((*(*s + 1) == 32 || (*(*s + 1) >= 8 && *(*s + 1) <= 13)))
-				++(*s);
-		}
-		else if (*s < nm->end && (*(*s + 1) == 32 || (*(*s + 1) >= 8 &&
-			*(*s + 1) <= 13)))
-			++(*s);
-		if (((**s >= 8 && **s <= 13) || **s == 32 || !**s) &&
-			(*s = ((**s >= 8 && **s <= 13) || **s == 32 || !**s) ? --(*s) : *s))
+		if (**s == ' ' && --(*s))
 			break ;
+		dprintf(3, "merde, je boucleinf-%c-%s\n", **s, *s);
+		ft_find_closing_quote(s, nm);
+		dprintf(3, "apresclosingquote: -%c\n", **s);
+		if (!**s) //  || (*s - begin == 0 && )
+		{
+			dprintf(3, "jebreakaupremier\n");
+			break ;
+		}
+		while (**s && **s != '\'' && **s != '"' && **s != ' ')
+			++(*s);
+		if (manage_back_quote(*s, nm->prev))
+		{
+			dprintf(3, "jesuisdansmanage_backquote\n");
+			++(*s);
+		}
+		// else if (!manage_back_quote(*s, nm->prev) && )
+		else if (**s && **s != '\'' && **s != '"')
+		{
+			while (**s == ' ')
+				--(*s);
+			dprintf(3, "jebreak\n");
+			break ;
+		}
 	}
+	// (void)lexer;
 	ft_tokenize_quote_management(s, lexer, nm);
+	// ++(*s);
 }
 
 /*

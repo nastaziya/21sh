@@ -23,7 +23,6 @@
 # include "parser.h"
 # include "termcap.h"
 
-# define SBS (*(s - 1) == '\\')
 # define S_QUOTE (*s == '"' || *s == '\'')
 
 typedef struct		s_env_tools
