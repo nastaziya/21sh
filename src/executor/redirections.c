@@ -110,16 +110,8 @@ void		process_redir_norm(t_exec_redir *t, int *i)
 
 /*
 *** - Aim of the function :
-*** - Redirect to the proper redirection
+*** - Redirect to the proper fd
 */
-
-int		close_condition(t_exec_redir *t, int ret)
-{
-	if (ret == 0)
-		return (1);
-	free(t->fdoutred);
-	return (0);
-}
 
 int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 				t_env_tools *env)
@@ -146,8 +138,6 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 			ret = manage_file(cmd, i, t, env);
 		process_redir_norm(t, &i);
 	}
-	if(close_condition(t, ret))
-		clear_fd(t, cmd.redirection.used_space);
+	clear_fd(t, cmd.redirection.used_space);
 	return (ret);
 }
-// echo oui > testfile1///2>df
