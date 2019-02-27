@@ -25,12 +25,23 @@
 
 # define S_QUOTE (*s == '"' || *s == '\'')
 
+typedef struct		s_norm_all
+{
+	t_dlist			**history;
+	t_lexer			*lex;
+	t_command		*cmd;
+	char			***cmd_expended;
+	char			***heredoc;
+}					t_norm_all;
+
 typedef struct		s_env_tools
 {
 	char			**env_cpy;
 	char			**paths;
 	char			*home;
 	int				g_return_value;
+	t_norm_all		p;
+
 }					t_env_tools;
 
 int					size_str(char **environ);

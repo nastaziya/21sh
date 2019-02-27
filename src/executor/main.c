@@ -75,6 +75,13 @@ void	norm_all_exec(t_env_tools *env, t_command cmd, char ***heredoc)
 	}
 }
 
+void	norm_for_exit(t_dlist **history, t_lexer *lex, t_command *cmd, t_env_tools *env)
+{
+	env->p.history = history;
+	env->p.lex = lex;
+	env->p.cmd = cmd;
+}
+
 void	all_exec(char **environ, char ***heredoc)
 {
 	t_dlist			*history;
@@ -92,13 +99,14 @@ void	all_exec(char **environ, char ***heredoc)
 		// print(&lex);
 		command_init(&cmd);
 		add_simple_command(&cmd, lex, &history, heredoc);
-		print_struct(cmd);
+		norm_for_exit(&history, &lex, &cmd, &env);
+		// print_struct(cmd);
 		norm_all_exec(&env, cmd, heredoc);
 		free_the_op_content_array_token(&lex);
 		free_struct(&cmd);
 	}
-	if (env.env_cpy != NULL)
-		free_str(env.env_cpy);
+	// if (env.env_cpy != NULL)
+	// 	free_str(env.env_cpy);
 	//ft_dlstdel(&history);
 }
 

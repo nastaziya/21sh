@@ -156,7 +156,7 @@ char			**ft_find_path_and_split(char **c_env);
 *** - exit.c
 */
 
-int				ft_builtin_exit(char **cmd);
+int				ft_builtin_exit(char **cmd, t_env_tools *env);
 
 /*
 *** - ctrl_d.c
