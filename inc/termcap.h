@@ -20,19 +20,6 @@
 
 typedef struct termios	t_term;
 
-# define EN_K1 (g_caps.buf[0] == 10 && g_caps.buf[1] == 0)
-# define EN_K2 (g_caps.buf[2] == 0 && g_caps.buf[3] == 0 && g_caps.buf[4] == 0)
-
-# define CL_K1 (g_caps.buf[0] == 12 && g_caps.buf[1] == 0 && g_caps.buf[2] == 0)
-# define CL_K2 (g_caps.buf[3] == 0 && g_caps.buf[4] == 0)
-
-# define CD_K1 (g_caps.buf[0] == 4 && g_caps.buf[1] == 0 && g_caps.buf[2] == 0)
-# define CD_K2 (g_caps.buf[3] == 0 && g_caps.buf[4] == 0)
-
-# define EQ1 (g_caps.buf[0] == tmp_tab->key0 && g_caps.buf[1] == tmp_tab->key1)
-# define EQ2 (g_caps.buf[2] == tmp_tab->key2 && g_caps.buf[3] == tmp_tab->key3)
-# define EQ3 (g_caps.buf[4] == tmp_tab->key4)
-
 /*
 *** - Structure that contains all the required info
 *** - to manage the termcaps :
@@ -244,5 +231,13 @@ int						print_buf(t_tcap *caps, char *buf);
 */
 
 void					win_resize(int sig);
+
+/*
+*** - norm_termcap.c
+*/
+
+int						new_line(t_tcap *caps);
+int     				ctrlld(t_tcap *caps);
+int     				equality(t_tcap *caps, t_tab *tmp_tab);
 
 #endif

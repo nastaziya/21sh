@@ -68,18 +68,18 @@ int			get_line_term_termcaps(char **res, char *str, t_dlist **history)
 	while ((tmp_tab = (ttab - 1)) && !ft_clean(g_caps.buf, 2048)
 		&& (read(0, g_caps.buf, 2047) >= 0))
 	{
-		if (EN_K1 && EN_K2 && !end_key(&g_caps)
+		if (!new_line(&g_caps) && !end_key(&g_caps)
 			&& ((g_caps.sz_str - g_caps.size_prompt) == 0)
 				&& (*res = NULL) && (g_caps.str[0] ?
 					!ft_free(g_caps.str[0]) : 1) && (g_caps.keeprun == 3 ?
 						0 : g_caps.keeprun) && !ft_free_char_char(g_caps.str))
 			return (2);
-		else if (EN_K1 && EN_K2 && !end_key(&g_caps))
+		else if (!new_line(&g_caps) && !end_key(&g_caps))
 			break ;
-		if (CD_K1 && CD_K2 && ctrl_d_management(&g_caps))
+		if (!ctrlld(&g_caps) && ctrl_d_management(&g_caps))
 			break ;
 		while ((++tmp_tab)->cmd)
-			if (EQ1 && EQ2 && EQ3 && !(tmp_tab->ptr(&g_caps)))
+			if (!equality(&g_caps, tmp_tab) && !(tmp_tab->ptr(&g_caps)))
 				break ;
 		if (!tmp_tab->cmd)
 			print_buf(&g_caps, g_caps.buf);
