@@ -38,7 +38,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 		@ar rcs $(NAME) $(OBJ)
 
-%.o: %.c $(INC_DIR)
+%.o: %.c $(INC_DIR) 
 		@printf "$(GREEN)Created $@\r"
 		@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
 
