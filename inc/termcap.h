@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/06 01:05:33 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/28 13:40:00 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 15:06:23 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -71,7 +71,7 @@ typedef struct			s_tcap
 	int				ct_arrow;
 	char			*copy_str;
 	char			*prompt;
-	int				keeprun;
+	// int				keeprun;
 }						t_tcap;
 
 t_tcap					g_caps;
@@ -102,6 +102,8 @@ typedef struct			s_tab
 	char			key4;
 	char			*cmd;
 }						t_tab;
+
+int					g_keeprun;
 
 /*
 ** - cursor_position.c
@@ -180,7 +182,8 @@ int						check_if_scroll(t_tcap *caps, char *str, int i);
 *** -  termcap.c - MAIN FILE
 */
 
-int						get_line_term(char **cmd, char *str, t_dlist **history);
+int						get_term(char **cmd, char *str, t_dlist **history,
+							t_tcap *caps);
 
 /*
 *** - up_down_key.c

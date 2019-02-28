@@ -52,7 +52,7 @@ int			alt_w(t_tcap *caps)
 /*
 *** Aim of the function: paste the str
 *** --> WILL NEED TO FREE THE CUT STR, NOW OR AFTER ?
-*** --> I think when exit of function get_line_term,
+*** --> I think when exit of function get_term,
 *** --> free all the str that need to be free
 */
 

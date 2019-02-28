@@ -33,15 +33,15 @@ int				check_curs_window(t_tcap *caps, char *str, int i)
 *** - Norm function
 */
 
-void			win_resize_norm(void)
+void			win_resize_norm(t_tcap *caps)
 {
 	int	curs[2];
 
-	if (g_caps.sz_str > g_caps.size_prompt)
-		ft_putstr_fd(g_caps.str[0], 1);
+	if (caps->sz_str > caps->size_prompt)
+		ft_putstr_fd(caps->str[0], 1);
 	cursor_position(curs);
-	if (check_curs_window(&g_caps, g_caps.str[0], -1) == 1
-		&& g_caps.sz_str > g_caps.size_prompt + 1)
+	if (check_curs_window(caps, caps->str[0], -1) == 1
+		&& caps->sz_str > caps->size_prompt + 1)
 		tputs(tgoto(tgetstr("cm", NULL), 0, curs[1]), 1, ft_outc);
 }
 
@@ -54,25 +54,28 @@ void			win_resize_norm(void)
 
 void			win_resize(int sig)
 {
+	t_tcap	*caps;
+
+	caps = &g_caps;
 	(void)sig;
-	end_key(&g_caps);
+	end_key(caps);
 	tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
 	tputs(tgetstr("cd", NULL), 1, ft_outc);
-	size_windows(&g_caps);
-	display_bash(g_caps.prompt);
-	g_caps.cursor = g_caps.size_prompt + 1;
-	pos_char_in_window_in_str(g_caps.cursor,
-		&g_caps, g_caps.sz_str, 0);
-	if ((g_caps.char_pos[0] < g_caps.window_size[1] &&
-		g_caps.char_pos[1] < g_caps.window_size[0])
-		&& g_caps.window_size[1] > g_caps.size_prompt)
-		win_resize_norm();
+	size_windows(caps);
+	display_bash(caps->prompt);
+	caps->cursor = caps->size_prompt + 1;
+	pos_char_in_window_in_str(caps->cursor,
+		caps, caps->sz_str, 0);
+	if ((caps->char_pos[0] < caps->window_size[1] &&
+		caps->char_pos[1] < caps->window_size[0])
+		&& caps->window_size[1] > caps->size_prompt)
+		win_resize_norm(caps);
 	else
 	{
 		tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
 		tputs(tgetstr("cd", NULL), 1, ft_outc);
 		ft_putstr_fd("make a larger screen", 1);
 	}
-	g_caps.y_prompt = 1;
-	g_caps.cursor = g_caps.sz_str;
+	caps->y_prompt = 1;
+	caps->cursor = caps->sz_str;
 }

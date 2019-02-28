@@ -21,7 +21,7 @@ static void		ctrl_d_management_norm(t_tcap *caps)
 {
 	caps->sz_str = 10;
 	free(caps->str[0]);
-	caps->keeprun = 5;
+	g_keeprun = 5;
 	if (!ft_strcmp(caps->prompt, "dquote > ") ||
 			!ft_strcmp(caps->prompt, "squote > "))
 	{
@@ -39,7 +39,7 @@ static void		ctrl_d_management_norm(t_tcap *caps)
 	else if (!ft_strcmp(caps->prompt, "Heredoc > ")
 			|| !ft_strcmp(caps->prompt, "\nHeredoc > "))
 	{
-		caps->keeprun = 4;
+		g_keeprun = 4;
 		caps->str[0] = ft_memalloc(1);
 		caps->sz_str = ft_strlen(caps->prompt);
 	}

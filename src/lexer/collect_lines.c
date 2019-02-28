@@ -54,7 +54,8 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 
 	while (42)
 	{
-		ret = get_line_term(&line, ft_manage_prompt(type_quote), history);
+		ret = get_term(&line, ft_manage_prompt(type_quote), history,
+			&g_caps);
 		if (line && ft_strlen(line) > 0)
 		{
 			tmp = *cmd;
@@ -102,7 +103,7 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 	char	type_quote;
 
 	display_bash(str);
-	ret = get_line_term(cmd, str, history);
+	ret = get_term(cmd, str, history, &g_caps);
 	if (ret != 2)
 	{
 		if (ret != 0)

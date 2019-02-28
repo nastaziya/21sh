@@ -51,66 +51,68 @@ int			ft_clean(void *s, size_t n)
 	return (0);
 }
 
-void		ft_initialize_get_line(t_tab **ttab, char *str, t_dlist **history)
+void		ft_initialize_get_line(t_tab **ttab, char *str, t_dlist **history,
+				t_tcap *caps)
 {
 	*ttab = tab_termcaps();
-	initialize_caps(&g_caps, str);
+	initialize_caps(caps, str);
 	initialize_signals();
-	g_caps.history = history;
+	caps->history = history;
 }
 
-int			get_line_term_termcaps(char **res, char *str, t_dlist **history)
+int			get_line_term_termcaps(char **res, char *str, t_dlist **history,
+				t_tcap *caps)
 {
 	t_tab		*ttab;
 	t_tab		*tmp_tab;
 
-	ft_initialize_get_line(&ttab, str, history);
-	while ((tmp_tab = (ttab - 1)) && !ft_clean(g_caps.buf, 2048)
-		&& (read(0, g_caps.buf, 2047) >= 0))
+	ft_initialize_get_line(&ttab, str, history, caps);
+	while ((tmp_tab = (ttab - 1)) && !ft_clean(caps->buf, 2048)
+		&& (read(0, caps->buf, 2047) >= 0))
 	{
-		if (!new_line(&g_caps) && !end_key(&g_caps)
-			&& ((g_caps.sz_str - g_caps.size_prompt) == 0)
-				&& (*res = NULL) && (g_caps.str[0] ?
-					!ft_free(g_caps.str[0]) : 1) && (g_caps.keeprun == 3 ?
-						0 : g_caps.keeprun) && !ft_free_char_char(g_caps.str))
+		if (!new_line(caps) && !end_key(caps)
+			&& ((caps->sz_str - caps->size_prompt) == 0)
+				&& (*res = NULL) && (caps->str[0] ?
+					!ft_free(caps->str[0]) : 1) && (g_keeprun == 3 ?
+						0 : g_keeprun) && !ft_free_char_char(caps->str))
 			return (2);
-		else if (!new_line(&g_caps) && !end_key(&g_caps))
+		else if (!new_line(caps) && !end_key(caps))
 			break ;
-		if (!ctrlld(&g_caps) && ctrl_d_management(&g_caps))
+		if (!ctrlld(caps) && ctrl_d_management(caps))
 			break ;
 		while ((++tmp_tab)->cmd)
-			if (!equality(&g_caps, tmp_tab) && !(tmp_tab->ptr(&g_caps)))
+			if (!equality(caps, tmp_tab) && !(tmp_tab->ptr(caps)))
 				break ;
 		if (!tmp_tab->cmd)
-			print_buf(&g_caps, g_caps.buf);
+			print_buf(caps, caps->buf);
 	}
 	return (0);
 }
 
-int			get_line_term(char **res, char *str, t_dlist **history)
+int			get_term(char **res, char *str, t_dlist **history, t_tcap *caps)
 {
 	t_term		term;
 	int			ret;
 
 	terminal_data(&term);
 	modify_terminos(&term);
-	g_caps.keeprun = 3;
-	if ((ret = get_line_term_termcaps(res, str, history)))
+	g_keeprun = 3;
+	if ((ret = get_line_term_termcaps(res, str, history, caps)))
 		return (ret);
-	*res = g_caps.str[0];
-	if (g_caps.tmp_str)
-		free(g_caps.tmp_str);
-	g_caps.tmp_str = NULL;
-	if (g_caps.prompt)
-		free(g_caps.prompt);
-	g_caps.prompt = NULL;
-	if (g_caps.copy_str)
-		free(g_caps.copy_str);
-	g_caps.copy_str = NULL;
-	free(g_caps.str);
-	g_caps.str = NULL;
-	if (g_caps.keeprun == 3)
-		g_caps.keeprun = 0;
+	*res = caps->str[0];
+	if (caps->tmp_str)
+		free(caps->tmp_str);
+	caps->tmp_str = NULL;
+	if (caps->prompt)
+		free(caps->prompt);
+	caps->prompt = NULL;
+	if (caps->copy_str)
+		free(caps->copy_str);
+	caps->copy_str = NULL;
+	free(caps->str);
+	caps->str = NULL;
+	if (g_keeprun == 3)
+		g_keeprun = 0;
 	reset_termios(&term);
 	return (0);
 }
