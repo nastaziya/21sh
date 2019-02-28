@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 22:50:24 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 22:49:51 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -57,12 +57,12 @@ static void		print_normal_free_no_pr(char *string, char *tmp2)
 
 static void		print_normal_char_norm(t_tcap *caps, char **string, char **tmp2)
 {
-		size_windows(caps);
-		pos_char_in_window_in_str(caps->cursor,
-			caps, caps->sz_str, 0);
-		*string = ft_strndup(caps->buf, 1);
-		*tmp2 = ft_strjoin(*string, caps->str[0] +
-			(caps->cursor - caps->size_prompt));
+	size_windows(caps);
+	pos_char_in_window_in_str(caps->cursor,
+		caps, caps->sz_str, 0);
+	*string = ft_strndup(caps->buf, 1);
+	*tmp2 = ft_strjoin(*string, caps->str[0] +
+		(caps->cursor - caps->size_prompt));
 }
 
 /*
