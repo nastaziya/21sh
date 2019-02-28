@@ -19,20 +19,6 @@
 *** - Checked, it's ok now;
 */
 
-void		print(const t_lexer *lexer)
-{
-	int	i;
-
-	i = 0;
-	while (i < lexer->used_size)
-	{
-		printf("{ |%s| (%i) } ", lexer->tokens[i].content,
-			lexer->tokens[i].type);
-		++i;
-	}
-	printf("\n");
-}
-
 static void	ft_manage_string_to_lexer_realloc_arguments(t_lexer *lexer,
 				t_dlist **history)
 {

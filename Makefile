@@ -1,8 +1,9 @@
-.PHONY : clean fclean all re
+.PHONY : clean fclean all re 
 
 NOCOLOR=\033[0m
 VERT=\033[32;05m
 JAUNE=\033[33m
+PURPLE=\033[0;35m
 
 NAME =		21sh
 CC = 		gcc
@@ -66,7 +67,6 @@ PARSER_FILES =	free_functions.c\
 				parser.c\
 				parser_alloc.c\
 				parser_tools.c\
-				print.c\
 				utils_heredoc.c\
 				utils_parser.c\
 
@@ -109,30 +109,34 @@ INC_FILES = 	builtin.h\
 
 INC_DIR = $(addprefix $(INC_PATH), $(INC_FILES))
 
-all: $(NAME) libft/libft.a
+all: $(NAME) 
 
-$(NAME): $(OBJ)
-	@$(MAKE) -C ./libft
-	@$(CC) $(FLAGS) $(OBJ) -o $(NAME) -L $(LIB_PATH) -lft -lncurses
-	@echo "$(VERT)$(NAME): compilation success!$(NOCOLOR)\n"
-
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c $(INC_DIR) libft/libft.h
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c $(INC_DIR)
 	@mkdir -p $(OBJ_PATH)/builtins
 	@mkdir -p $(OBJ_PATH)/executor
 	@mkdir -p $(OBJ_PATH)/expansion
 	@mkdir -p $(OBJ_PATH)/lexer
 	@mkdir -p $(OBJ_PATH)/parser
 	@mkdir -p $(OBJ_PATH)/termcaps
-	$(CC) -c $(FLAGS) $(INC) -o $@ $<
+	@printf "$(PURPLE)Created $@\r"
+	@$(CC) -c $(FLAGS) $(INC) -o $@ $<
+
+LIB :
+		@printf "\n"
+		@make -C ./libft
+
+$(NAME): $(OBJ) LIB
+	@$(CC) $(FLAGS) $(OBJ) -o $(NAME) -L $(LIB_PATH) -lft -lncurses
+	@printf "$(VERT)COMPILED SUCCESSFULLY$(NOCOLOR)"
 
 clean:
 	@/bin/rm -rf $(OBJ_PATH)
-	@$(MAKE) clean -C  libft
+	@$(MAKE) clean -C  ./libft
 	@echo "$(JAUNE)$(NAME): Removing $(NAME) ./obj/$(NOCOLOR)"
 
 fclean: clean
 	@/bin/rm -f $(NAME)
-	@$(MAKE) fclean -C libft
+	@$(MAKE) fclean -C ./libft
 	@echo "$(JAUNE)$(NAME): Removing executable$(NOCOLOR)"
 
 re: fclean all
