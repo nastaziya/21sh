@@ -71,8 +71,8 @@ int			get_line_term_termcaps(char **res, char *str, t_dlist **history)
 		if (EN_K1 && EN_K2 && !end_key(&g_caps)
 			&& ((g_caps.sz_str - g_caps.size_prompt) == 0)
 				&& (*res = NULL) && (g_caps.str[0] ?
-					!ft_free(g_caps.str[0]) : 1) && (g_keeprun == 3 ?
-						0 : g_keeprun) && !ft_free_char_char(g_caps.str))
+					!ft_free(g_caps.str[0]) : 1) && (g_caps.keeprun == 3 ?
+						0 : g_caps.keeprun) && !ft_free_char_char(g_caps.str))
 			return (2);
 		else if (EN_K1 && EN_K2 && !end_key(&g_caps))
 			break ;
@@ -94,7 +94,7 @@ int			get_line_term(char **res, char *str, t_dlist **history)
 
 	terminal_data(&term);
 	modify_terminos(&term);
-	g_keeprun = 3;
+	g_caps.keeprun = 3;
 	if ((ret = get_line_term_termcaps(res, str, history)))
 		return (ret);
 	*res = g_caps.str[0];
@@ -109,8 +109,8 @@ int			get_line_term(char **res, char *str, t_dlist **history)
 	g_caps.copy_str = NULL;
 	free(g_caps.str);
 	g_caps.str = NULL;
-	if (g_keeprun == 3)
-		g_keeprun = 0;
+	if (g_caps.keeprun == 3)
+		g_caps.keeprun = 0;
 	reset_termios(&term);
 	return (0);
 }

@@ -26,9 +26,12 @@ void	ft_free_all(t_env_tools *env)
 		ft_free_av(env->paths);
 	if (env->home)
 		free(env->home);
-	// if (env->env_cpy)
-	// 	free(env->env_cpy);
 	ft_free_av(*(env->p.cmd_expended));
+	if (*(env->p.heredoc))
+	{
+		ft_free_av(*(env->p.heredoc));
+		*(env->p.heredoc) = NULL;
+	}
 }
 
 int		ft_print_usage_error_exit(char *btwn)

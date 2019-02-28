@@ -32,6 +32,7 @@ typedef struct		s_norm_all
 	t_command		*cmd;
 	char			***cmd_expended;
 	char			***heredoc;
+	int				nb_to_malloc;
 }					t_norm_all;
 
 typedef struct		s_env_tools

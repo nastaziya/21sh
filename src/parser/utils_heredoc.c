@@ -106,17 +106,15 @@ int				realloc_heredoc(t_hdoc *h, char ***heredoc)
 {
 	char	*tmp;
 
-	// dprintf(3, "avant: [[%s]]\n", heredoc[0][h->command]);
 	tmp = heredoc[0][h->command];
 	heredoc[0][h->command] = ft_strjoin(tmp, h->cmd);
 	free(tmp);
 	free(h->cmd);
 	tmp = heredoc[0][h->command];
-	if (g_keeprun != 4)
+	if (g_caps.keeprun != 4)
 		heredoc[0][h->command] = ft_strjoin(tmp, "\n");
 	else
 		heredoc[0][h->command] = ft_strdup(tmp);
 	free(tmp);
-	// dprintf(3, "après: [[%s]]\n", heredoc[0][h->command]);
 	return (1);
 }

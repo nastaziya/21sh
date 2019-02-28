@@ -48,7 +48,7 @@ static int		ft_manage_last_keyword(t_hdoc *h, t_lexer *lexer,
 	{
 		if (heredoc[0][h->command] == NULL)
 		{
-			if (g_keeprun != 4)
+			if (g_caps.keeprun != 4)
 				heredoc[0][h->command] = ft_strjoin(h->cmd, "\n");
 			else
 				heredoc[0][h->command] = ft_strdup(h->cmd);
@@ -76,7 +76,7 @@ static int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer,
 	char *tmp;
 
 	if (h->i_words > 0)
-		while (h->k < h->i_words && !g_keeprun)
+		while (h->k < h->i_words && !g_caps.keeprun)
 		{
 			h->obool > 0 ? display_bash("\nHeredoc > ")
 				: display_bash("Heredoc > ");
@@ -120,7 +120,7 @@ int				ft_manage_heredoc(t_lexer *lexer, char ***heredoc,
 	h.command = 0;
 	h.obool = 0;
 	ft_initialize_heredoc(lexer, heredoc, 0, 0);
-	while (h.j < lexer->used_size - 1 && !g_keeprun)
+	while (h.j < lexer->used_size - 1 && !g_caps.keeprun)
 	{
 		ft_find_end_command_and_nb_kewyords(&h, lexer);
 		ft_collect_line_and_realloc_heredoc(&h, lexer, heredoc, history);

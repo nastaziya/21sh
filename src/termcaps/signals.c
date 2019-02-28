@@ -28,7 +28,7 @@ static void		ctrl_c_norm(void)
 	if (ft_strcmp(g_caps.prompt, "bash > ") && (g_caps.sz_str = 10))
 	{
 		free(g_caps.str[0]);
-		g_keeprun = 2;
+		g_caps.keeprun = 2;
 		if (!ft_strcmp(g_caps.prompt, "dquote > "))
 			g_caps.str[0] = ft_strdup("\"");
 		else if (!ft_strcmp(g_caps.prompt, "squote > "))
@@ -54,9 +54,9 @@ void			ctrl_c(int sig)
 
 	(void)sig;
 	c = 10;
-	if (g_keeprun != 3 && !ft_putc_if('\n'))
+	if (g_caps.keeprun != 3 && !ft_putc_if('\n'))
 		return ;
-	g_keeprun = 1;
+	g_caps.keeprun = 1;
 	end_key(&g_caps);
 	if (g_caps.str[0])
 		free(g_caps.str[0]);

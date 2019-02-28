@@ -62,11 +62,11 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 
 void	norm_all_exec(t_env_tools *env, t_command cmd, char ***heredoc)
 {
-	if (g_keeprun == 1 || g_keeprun == 2)
+	if (g_caps.keeprun == 1 || g_caps.keeprun == 2)
 		env->g_return_value = 1;
-	else if (g_keeprun == 5)
+	else if (g_caps.keeprun == 5)
 		env->g_return_value = 258;
-	if (!g_keeprun || g_keeprun == 4)
+	if (!g_caps.keeprun || g_caps.keeprun == 4)
 		check_op(cmd, env, heredoc);
 	if (*heredoc)
 	{
@@ -92,7 +92,7 @@ void	all_exec(char **environ, char ***heredoc)
 	env.env_cpy = copy_env(environ, size_str(environ), &env);
 	path_str(env.env_cpy, &env.paths);
 	history = ft_dlstnew(NULL);
-	g_keeprun = 0;
+	g_caps.keeprun = 0;
 	while (42)
 	{
 		lex = final_tokens(&history);
@@ -100,14 +100,12 @@ void	all_exec(char **environ, char ***heredoc)
 		command_init(&cmd);
 		add_simple_command(&cmd, lex, &history, heredoc);
 		norm_for_exit(&history, &lex, &cmd, &env);
+		env.p.heredoc = heredoc;
 		// print_struct(cmd);
 		norm_all_exec(&env, cmd, heredoc);
 		free_the_op_content_array_token(&lex);
 		free_struct(&cmd);
 	}
-	// if (env.env_cpy != NULL)
-	// 	free_str(env.env_cpy);
-	//ft_dlstdel(&history);
 }
 
 int		main(int argc, char **argv, char **environ)

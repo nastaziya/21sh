@@ -19,7 +19,7 @@
 # include "../libft/libft.h"
 
 typedef struct termios	t_term;
-int						g_keeprun;
+// int						g_keeprun;
 
 # define EN_K1 (g_caps.buf[0] == 10 && g_caps.buf[1] == 0)
 # define EN_K2 (g_caps.buf[2] == 0 && g_caps.buf[3] == 0 && g_caps.buf[4] == 0)
@@ -84,6 +84,7 @@ typedef struct			s_tcap
 	int				ct_arrow;
 	char			*copy_str;
 	char			*prompt;
+	int				keeprun;
 }						t_tcap;
 
 t_tcap					g_caps;
