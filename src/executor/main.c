@@ -75,14 +75,6 @@ void	norm_all_exec(t_env_tools *env, t_command cmd, char ***heredoc)
 	}
 }
 
-void	norm_for_exit(t_dlist **history, t_lexer *lex, t_command *cmd,
-			t_env_tools *env)
-{
-	env->p.history = history;
-	env->p.lex = lex;
-	env->p.cmd = cmd;
-}
-
 void	all_exec(char **environ, char ***heredoc)
 {
 	t_dlist			*history;

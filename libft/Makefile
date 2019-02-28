@@ -1,10 +1,14 @@
-.PHONY: all clean fclean re
+NAME = libft.a
 
 CC = gcc
-NAME = libft.a
-FLAGS = -Wall
-OBJECT_FILES = $(SRCS:.c=.o)
-SRCS = ft_atoi.c ft_isalnum.c ft_isalpha.c ft_isascii.c ft_toupper.c \
+
+CFLAGS = -Wall -Werror -Wextra
+
+INC_PATH = ./
+
+INC_DIR = ./libft.h
+
+FILES = ft_atoi.c ft_isalnum.c ft_isalpha.c ft_isascii.c ft_toupper.c \
 			ft_isclear.c ft_isdigit.c ft_islower.c ft_isprint.c ft_isupper.c\
 			ft_itoa.c ft_memalloc.c ft_memccpy.c ft_memchr.c ft_memcmp.c \
 			ft_memcpy.c ft_memdel.c ft_memmove.c ft_memset.c ft_putchar.c \
@@ -21,21 +25,30 @@ SRCS = ft_atoi.c ft_isalnum.c ft_isalpha.c ft_isascii.c ft_toupper.c \
 			ft_strsplit_quote.c ft_strsplit_quote_new.c ft_strndup.c \
 			ft_dlstdel.c ft_dlstdelone.c ft_dlstadd.c ft_dlstnew.c
 
+SRC = $(FILES)
+
+GREEN = \033[0;32m
+
+OBJ = $(SRC:.c=.o)
+
+INC = $(addprefix -I,$(INC_PATH))
+
 all: $(NAME)
 
-$(NAME): $(OBJECT_FILES)
-	@ar rcs $(NAME) $(OBJECT_FILES)
+$(NAME): $(OBJ)
+		@ar rcs $(NAME) $(OBJ)
 
-$(OBJECT_FILES):  $(SRCS)
-	$(CC) $(FLAGS) -c $(SRCS)
-
-./%.o: ./%.c
-	$(CC) $(FLAGS) -o $@ -c $<
+%.o: %.c $(INC_DIR)
+		@printf "$(GREEN)Created $@\r"
+		@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
 
 clean:
-	@rm -f $(OBJECT_FILES)
+		@/bin/rm -f $(OBJ)
 
 fclean: clean
-	@rm -f $(NAME)
+		@/bin/rm -f $(NAME)
+
 
 re: fclean all
+
+.PHONY : clean fclean all re

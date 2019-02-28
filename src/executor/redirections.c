@@ -102,16 +102,6 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t,
 	return (0);
 }
 
-void		process_redir_norm(t_exec_redir *t, int *i)
-{
-	if (t->file_name != NULL)
-	{
-		free(t->file_name);
-		t->file_name = NULL;
-	}
-	(*i)++;
-}
-
 /*
 *** - Aim of the function :
 *** - Redirect to the proper fd

@@ -1,5 +1,3 @@
-.PHONY: all clean fclean re
-
 NOCOLOR=\033[0m
 VERT=\033[32;05m
 JAUNE=\033[33m
@@ -13,70 +11,129 @@ SRC_PATH = ./src/
 INC_PATH = ./inc/
 OBJ_PATH = ./obj/
 LIB_PATH = ./libft/
+EXEC = executor/
+EXEC_FILES = 	env_from_file.c\
+				exec.c\
+				exec_2.c\
+				exec_all_cases.c\
+				exec_err_return.c\
+				exec_norm.c\
+				exec_utils.c\
+				main.c\
+				pipe2.c\
+				prepare_env.c\
+				redirections.c\
+				utils_fd.c\
 
-SRC = $(addprefix $(SRC_PATH),$(N_SRCS))
-OBJ = $(addprefix $(OBJ_PATH), $(N_SRCS:.c=.o))
-INC = -I $(INC_PATH) -I $(LIB_PATH)inc/
+EXEC_SRC = $(addprefix $(EXEC), $(EXEC_FILES)) 
+TERM = termcaps/
+TERM_FILES = 	alt_copy.c\
+				alt_right_left_key.c\
+				alt_up_down_key.c\
+				control_commands.c\
+				ctrl_d.c\
+				cursor_position.c\
+				del_key.c\
+				expanse_heredoc.c\
+				home_end.c\
+				left_right_key.c\
+				norm_termcap.c\
+				pos_char.c\
+				print.c\
+				print_2.c\
+				print_buf.c\
+				signals.c\
+				termcap.c\
+				termios.c\
+				up_down_key.c\
+				utils.c\
+				win_resize.c\
 
-N_SRCS = 	executor/exec.c\
-			executor/main.c\
-			executor/prepare_env.c\
-			expansion/expansion_tools.c\
-			expansion/expansion.c\
-			expansion/init_array.c\
-			expansion/recover_env.c\
-			expansion/treat_special_chars.c\
-			lexer/collect_lines.c\
-			lexer/lexer.c\
-			lexer/quote_management.c\
-			lexer/tokenization.c\
-			lexer/utils_lexer.c\
-			parser/free_functions.c\
-			parser/parser_alloc.c\
-			parser/parser_tools.c\
-			parser/parser.c\
-			parser/print.c\
-			termcaps/alt_copy.c\
-			termcaps/alt_right_left_key.c\
-			termcaps/alt_up_down_key.c\
-			termcaps/control_commands.c\
-			termcaps/cursor_position.c\
-			termcaps/del_key.c\
-			termcaps/home_end.c\
-			termcaps/left_right_key.c\
-			termcaps/pos_char.c\
-			termcaps/print_buf.c\
-			termcaps/print.c\
-			termcaps/signals.c\
-			termcaps/termcap.c\
-			termcaps/termios.c\
-			termcaps/up_down_key.c\
-			termcaps/utils.c\
+TERM_SRC = $(addprefix $(TERM), $(TERM_FILES)) 
+LEX = lexer/
+LEX_FILES =		collect_lines.c\
+				lexer.c\
+				quote_management.c\
+				tokenization.c\
+				utils_lexer.c\
+
+LEX_SRC = $(addprefix $(LEX), $(LEX_FILES)) 
+PARSER = parser/
+PARSER_FILES =	free_functions.c\
+				heredoc.c\
+				parser.c\
+				parser_alloc.c\
+				parser_tools.c\
+				print.c\
+				utils_heredoc.c\
+				utils_parser.c\
+
+PARSER_SRC = $(addprefix $(PARSER), $(PARSER_FILES)) 
+BUILTINS = builtins/
+BUILT_FILES = 	builtin.c\
+				cd.c\
+				cd2.c\
+				cd_utils.c\
+				echo.c\
+				env.c\
+				exit.c\
+				setenv.c\
+				unsetenv.c\
+				utils_2.c\
+				utils_env.c\
+				utils_env_2.c\
+
+BUILTINS_SRC = $(addprefix $(BUILTINS), $(BUILT_FILES)) 
+EXP = expansion/
+EXP_FILES =		expansion.c\
+				expansion_tools.c\
+				init_array.c\
+				recover_env.c\
+				treat_special_chars.c\
+
+EXP_SRC = $(addprefix $(EXP), $(EXP_FILES)) 
+SRC = $(addprefix $(SRC_PATH), $(EXP_SRC) $(BUILTINS_SRC) $(LEX_SRC) $(PARSER_SRC) $(TERM_SRC) $(EXEC_SRC))
+OBJ = $(addprefix $(OBJ_PATH), $(EXP_SRC:.c=.o) $(BUILTINS_SRC:.c=.o) $(LEX_SRC:.c=.o) $(PARSER_SRC:.c=.o) $(TERM_SRC:.c=.o) $(EXEC_SRC:.c=.o))
+
+INC = $(addprefix -I, $(INC_PATH))
+
+INC_FILES = 	builtin.h\
+				exec.h\
+				expansion.h\
+				lexer.h\
+				parser.h\
+				sh.h\
+				termcap.h\
+
+INC_DIR = $(addprefix $(INC_PATH), $(INC_FILES))
 
 all: $(NAME)
 
-$(NAME):	$(OBJ)
-	@$(MAKE) -C $(LIB_PATH)
-	@$(CC) $(FLAGS) $(OBJ) $(INC) -L$(LIB_PATH) -lncurses -lft -o $(NAME)
+$(NAME): $(OBJ)
+	@$(MAKE) -C ./libft
+	@$(CC) $(FLAGS) $(OBJ) -o $(NAME) -L $(LIB_PATH) -lft -lncurses
 	@echo "$(VERT)$(NAME): compilation success!$(NOCOLOR)"
 
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p $(OBJ_PATH)
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c $(INC_DIR)
+	@mkdir -p $(OBJ_PATH)/builtins
 	@mkdir -p $(OBJ_PATH)/executor
 	@mkdir -p $(OBJ_PATH)/expansion
 	@mkdir -p $(OBJ_PATH)/lexer
 	@mkdir -p $(OBJ_PATH)/parser
 	@mkdir -p $(OBJ_PATH)/termcaps
+	@printf "$(GREEN)Created $@\n"
 	$(CC) -c $(FLAGS) $(INC) -o $@ $<
 
 clean:
-	@$(MAKE) -C $(LIB_PATH) clean
-	@$(DEL) $(OBJ_PATH)
+	@/bin/rm -rf $(OBJ_PATH)
+	@$(MAKE) clean -C  libft
 	@echo "$(JAUNE)$(NAME): Removing $(NAME) ./obj/$(NOCOLOR)"
 
 fclean: clean
-	@$(MAKE) -C $(LIB_PATH) fclean
-	@$(DEL) $(NAME)
+	@/bin/rm -f $(NAME)
+	@$(MAKE) fclean -C libft
 	@echo "$(JAUNE)$(NAME): Removing executable$(NOCOLOR)"
 
 re: fclean all
+
+.PHONY : clean fclean all re

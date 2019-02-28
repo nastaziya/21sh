@@ -101,3 +101,21 @@ int			ft_calcul_pos_last_heredoc(t_exec_redir *t, t_simp_com *cmd)
 	}
 	return (count);
 }
+
+void		process_redir_norm(t_exec_redir *t, int *i)
+{
+	if (t->file_name != NULL)
+	{
+		free(t->file_name);
+		t->file_name = NULL;
+	}
+	(*i)++;
+}
+
+void		norm_for_exit(t_dlist **history, t_lexer *lex, t_command *cmd,
+			t_env_tools *env)
+{
+	env->p.history = history;
+	env->p.lex = lex;
+	env->p.cmd = cmd;
+}
