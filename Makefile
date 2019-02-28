@@ -1,3 +1,5 @@
+.PHONY : clean fclean all re
+
 NOCOLOR=\033[0m
 VERT=\033[32;05m
 JAUNE=\033[33m
@@ -107,21 +109,20 @@ INC_FILES = 	builtin.h\
 
 INC_DIR = $(addprefix $(INC_PATH), $(INC_FILES))
 
-all: $(NAME)
+all: $(NAME) libft/libft.a
 
 $(NAME): $(OBJ)
 	@$(MAKE) -C ./libft
 	@$(CC) $(FLAGS) $(OBJ) -o $(NAME) -L $(LIB_PATH) -lft -lncurses
-	@echo "$(VERT)$(NAME): compilation success!$(NOCOLOR)"
+	@echo "$(VERT)$(NAME): compilation success!$(NOCOLOR)\n"
 
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c $(INC_DIR)
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c $(INC_DIR) libft/libft.h
 	@mkdir -p $(OBJ_PATH)/builtins
 	@mkdir -p $(OBJ_PATH)/executor
 	@mkdir -p $(OBJ_PATH)/expansion
 	@mkdir -p $(OBJ_PATH)/lexer
 	@mkdir -p $(OBJ_PATH)/parser
 	@mkdir -p $(OBJ_PATH)/termcaps
-	@printf "$(GREEN)Created $@\n"
 	$(CC) -c $(FLAGS) $(INC) -o $@ $<
 
 clean:
@@ -136,4 +137,3 @@ fclean: clean
 
 re: fclean all
 
-.PHONY : clean fclean all re
