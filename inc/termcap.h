@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/06 01:05:33 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/24 17:04:48 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 13:40:00 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -19,7 +19,6 @@
 # include "../libft/libft.h"
 
 typedef struct termios	t_term;
-// int						g_keeprun;
 
 # define EN_K1 (g_caps.buf[0] == 10 && g_caps.buf[1] == 0)
 # define EN_K2 (g_caps.buf[2] == 0 && g_caps.buf[3] == 0 && g_caps.buf[4] == 0)
@@ -62,6 +61,7 @@ typedef struct termios	t_term;
 *** - char		*copy_str; // copy of str when copy_paste
 *** - char		*prompt; // copy of the prompt str for the resize
 *** - of the window management
+*** - int		keeprun -> manage ctrl_c
 */
 
 typedef struct			s_tcap

@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/24 16:41:27 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 13:42:12 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -41,7 +41,7 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 	check_op_first_exec(cmd, env, &t, &i);
 	while (++i < cmd.used_space)
 	{
-		if (i == cmd.used_space - 1)// || cmd.command[i + 1].used_space == 0)
+		if (i == cmd.used_space - 1)
 			break ;
 		save_original_fd(&t);
 		if (cmd.command[i].tok == T_DBLOR)
@@ -75,7 +75,8 @@ void	norm_all_exec(t_env_tools *env, t_command cmd, char ***heredoc)
 	}
 }
 
-void	norm_for_exit(t_dlist **history, t_lexer *lex, t_command *cmd, t_env_tools *env)
+void	norm_for_exit(t_dlist **history, t_lexer *lex, t_command *cmd,
+			t_env_tools *env)
 {
 	env->p.history = history;
 	env->p.lex = lex;
@@ -96,12 +97,10 @@ void	all_exec(char **environ, char ***heredoc)
 	while (42)
 	{
 		lex = final_tokens(&history);
-		// print(&lex);
 		command_init(&cmd);
 		add_simple_command(&cmd, lex, &history, heredoc);
 		norm_for_exit(&history, &lex, &cmd, &env);
 		env.p.heredoc = heredoc;
-		// print_struct(cmd);
 		norm_all_exec(&env, cmd, heredoc);
 		free_the_op_content_array_token(&lex);
 		free_struct(&cmd);

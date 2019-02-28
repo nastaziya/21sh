@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/24 16:44:57 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 14:00:12 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -15,6 +15,12 @@
 #include "../../inc/exec.h"
 #include "../../inc/builtin.h"
 #include "../../inc/expansion.h"
+
+int			fnorm_print_error(t_simp_com cmd, int i)
+{
+	return (ft_print_error_directory("bash: ",
+			cmd.redirection.file[i], ": No such file or directory", 2));
+}
 
 /*
 *** - Aim of the function :
@@ -31,8 +37,7 @@ static int	manage_file_norm(t_simp_com cmd, int i, t_exec_redir *t,
 		t->fdoutred[i] = open(t->file_name,
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (t->fdoutred[i] < 0)
-			return (ft_print_error_directory("bash: ",
-				cmd.redirection.file[i], ": No such file or directory", 2));
+			return (fnorm_print_error(cmd, i));
 	}
 	else if (cmd.redirection.red[i] == T_DBL_GREAT)
 	{
@@ -45,8 +50,7 @@ static int	manage_file_norm(t_simp_com cmd, int i, t_exec_redir *t,
 	{
 		t->fdoutred[i] = open(t->file_name, O_RDONLY);
 		if (t->fdoutred[i] < 0)
-			return (ft_print_error_directory("bash: ",
-				cmd.redirection.file[i], ": No such file or directory", 2));
+			return (fnorm_print_error(cmd, i));
 	}
 	else if (cmd.redirection.red[i] == T_REDIR_LESSGREAT)
 		t->fdoutred[i] = open(t->file_name, O_RDWR);

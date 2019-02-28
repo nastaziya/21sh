@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 21:46:31 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 13:50:16 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -52,7 +52,6 @@ void		ft_find_closing_quote(const char **s, t_norm *nm)
 	{
 		while (**s && ++(*s) && *s < nm->end)
 		{
-			// dprintf(3, "bloqué dans les nymphes\n");
 			if ((**s == nm->type_quote && nm->type_quote != '\'' &&
 				!manage_back_quote(*s, nm->prev))
 					|| (nm->type_quote == '\'' && **s == '\''))

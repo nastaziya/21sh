@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/24 16:54:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 13:49:59 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -111,13 +111,10 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 			exit(1);
 		}
 		else if (*cmd && ft_strlen(*cmd) > 0)
+		{
 			if ((type_quote = ft_count_quote(*cmd)))
-			{
-				//ft_dlstadd(history, ft_dlstnew(*cmd));
 				ft_new_prompt(cmd, type_quote, history);
-				//if (!g_keeprun && ((*history) = (*history)->next))
-					//ft_dlstdelone(&(*history)->prev);
-			}
+		}
 	}
 	ft_putchar_fd('\n', 1);
 }

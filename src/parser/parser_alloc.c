@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 22:02:28 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 13:48:36 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -15,7 +15,6 @@
 
 int		tab_init(t_simp_com *simple_cmd)
 {
-	
 	simple_cmd->used_space = 0;
 	simple_cmd->tok = 0;
 	simple_cmd->av_space = TAB_INITIAL_CAPACITY;
@@ -86,5 +85,3 @@ void	simple_cmd_assign(t_command *cmd, t_simp_com simple_cmd)
 	cmd->command[cmd->used_space] = simple_cmd;
 	++cmd->used_space;
 }
-//<<lo<<pop
-//ls | io ; <<lo<<po

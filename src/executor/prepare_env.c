@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/24 16:37:34 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 13:41:21 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -76,7 +76,6 @@ char	**copy_env(char **environ, int size, t_env_tools *envi)
 	i = -1;
 	j = 0;
 	size = !getenv("PATH") ? size + 1 : size;
-	// dprintf(3, "size: [%d]\n", size);
 	if (!(env = (char**)malloc(sizeof(*env) * (size + 1))))
 		return (NULL);
 	env[size] = NULL;

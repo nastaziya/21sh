@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 21:47:20 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 13:50:29 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -101,7 +101,7 @@ int			string_to_lexer(const char *s, t_lexer *lexer)
 	{
 		nm.current = type_of_token(s);
 		if ((*s == '>' || *s == '<') && ft_isdigit(*nm.prev)
-			&& (s-nm.prev == 1))
+			&& (s - nm.prev == 1))
 			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_IO_NUMB);
 		else if (S_QUOTE && !manage_back_quote(s, nm.prev))
 			ft_string_to_lexer_quote_management(&s, lexer, &nm);
