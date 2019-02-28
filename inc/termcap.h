@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/06 01:05:33 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/28 15:06:23 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 15:54:09 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -71,7 +71,6 @@ typedef struct			s_tcap
 	int				ct_arrow;
 	char			*copy_str;
 	char			*prompt;
-	// int				keeprun;
 }						t_tcap;
 
 t_tcap					g_caps;
@@ -240,7 +239,7 @@ void					win_resize(int sig);
 */
 
 int						new_line(t_tcap *caps);
-int     				ctrlld(t_tcap *caps);
-int     				equality(t_tcap *caps, t_tab *tmp_tab);
+int						ctrlld(t_tcap *caps);
+int						equality(t_tcap *caps, t_tab *tmp_tab);
 
 #endif

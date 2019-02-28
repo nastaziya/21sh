@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 22:54:56 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 15:56:02 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -50,8 +50,8 @@ static void		ctrl_c_norm(t_tcap *caps)
 
 void			ctrl_c(int sig)
 {
-	char c;
-	t_tcap *caps;
+	char	c;
+	t_tcap	*caps;
 
 	(void)sig;
 	caps = &g_caps;
