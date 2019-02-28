@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/17 18:56:52 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/17 18:56:58 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 23:29:25 by canastas    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -18,7 +18,7 @@ void	ft_dlstadd(t_dlist **alst, t_dlist *new)
 	if (alst != NULL)
 	{
 		new->next = *alst;
-        (*alst)->prev = new;
+		(*alst)->prev = new;
 		*alst = new;
 		new->prev = NULL;
 	}

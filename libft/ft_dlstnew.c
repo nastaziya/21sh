@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:17 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:17 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 23:29:56 by canastas    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -23,8 +23,8 @@ t_dlist	*ft_dlstnew(void const *content)
 	if (!content)
 		list->content = NULL;
 	else
-        list->content = ft_strdup(content);
+		list->content = ft_strdup(content);
 	list->next = NULL;
-    list->prev = NULL;
+	list->prev = NULL;
 	return (list);
 }
