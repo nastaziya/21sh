@@ -48,14 +48,21 @@ static void		print_normal_char_initialization_first_passage(t_tcap *caps,
 	write(1, caps->buf, 3);
 }
 
+static void		print_normal_free_no_pr(char *string, char *tmp2)
+{
+	free(string);
+	free(tmp2);
+	tputs(tgetstr("bl", NULL), 1, ft_outc);
+}
+
 static void		print_normal_char_norm(t_tcap *caps, char **string, char **tmp2)
 {
-	size_windows(caps);
-	pos_char_in_window_in_str(caps->cursor,
-		caps, caps->sz_str, 0);
-	*string = ft_strndup(caps->buf, 1);
-	*tmp2 = ft_strjoin(*string, caps->str[0] +
-		(caps->cursor - caps->size_prompt));
+		size_windows(caps);
+		pos_char_in_window_in_str(caps->cursor,
+			caps, caps->sz_str, 0);
+		*string = ft_strndup(caps->buf, 1);
+		*tmp2 = ft_strjoin(*string, caps->str[0] +
+			(caps->cursor - caps->size_prompt));
 }
 
 /*
@@ -86,6 +93,6 @@ int				print_normal_char(t_tcap *caps)
 			print_end_line(caps, string, tmp);
 	}
 	else if (caps->buf[0] != 9)
-		tputs(tgetstr("bl", NULL), 1, ft_outc);
+		print_normal_free_no_pr(string, tmp2);
 	return (0);
 }
