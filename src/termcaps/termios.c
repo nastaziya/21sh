@@ -40,8 +40,8 @@ int		modify_terminos(t_term *term)
 {
 	term->c_lflag &= ~(ICANON);
 	term->c_lflag &= ~(ECHO);
-	term->c_cc[VMIN] = 1;
-	term->c_cc[VTIME] = 0;
+	term->c_cc[VMIN] = 0;
+	term->c_cc[VTIME] = 1;
 	if (tcsetattr(0, TCSADRAIN, term) == -1)
 		return (-1);
 	return (0);

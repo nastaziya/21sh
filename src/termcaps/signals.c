@@ -74,9 +74,9 @@ void			ctrl_c(int sig)
 *** Handles the resizing of the terminal window and the ctrl_c signal
 */
 
-int				initialize_signals(void)
-{
-	signal(SIGWINCH, win_resize);
-	signal(SIGINT, ctrl_c);
-	return (1);
-}
+// int				initialize_signals(void)
+// {
+// 	signal(SIGWINCH, win_resize);
+// 	signal(SIGINT, ctrl_c);
+// 	return (1);
+// }

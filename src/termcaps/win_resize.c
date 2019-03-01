@@ -52,12 +52,13 @@ void			win_resize_norm(t_tcap *caps)
 *** - do nothing (return)
 */
 
-void			win_resize(int sig)
+// void			win_resize(int sig)
+void			win_resize(t_tcap *caps)
 {
-	t_tcap	*caps;
+	// t_tcap	*caps;
 
-	caps = &g_caps;
-	(void)sig;
+	// caps = &g_caps;
+	// (void)sig;
 	end_key(caps);
 	tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
 	tputs(tgetstr("cd", NULL), 1, ft_outc);
