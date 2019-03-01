@@ -95,9 +95,11 @@ int			ft_calcul_pos_last_heredoc(t_exec_redir *t, t_simp_com *cmd)
 	copy_fds(t, cmd);
 	while (++i < (*cmd).redirection.used_space)
 	{
+		printf("count : %d\n", (*cmd).redirection.red[i] == T_DBL_LESS);
 		if ((*cmd).redirection.red[i] == T_DBL_LESS ||
 			(*cmd).redirection.red[i] == T_DBL_LESS_DASH)
 			count++;
+		printf("count : %d\n", count);
 	}
 	return (count);
 }

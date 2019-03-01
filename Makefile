@@ -7,7 +7,7 @@ PURPLE=\033[0;35m
 
 NAME =		21sh
 CC = 		gcc
-FLAGS = 	-g -Wall -Werror -Wextra
+FLAGS = 	-g 
 DEL =		rm -rf
 
 SRC_PATH = ./src/
