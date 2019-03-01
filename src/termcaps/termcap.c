@@ -57,7 +57,6 @@ void		ft_initialize_get_line(t_tab **ttab, char *str, t_dlist **history,
 {
 	*ttab = tab_termcaps();
 	initialize_caps(caps, str);
-	// initialize_signals();
 	caps->history = history;
 }
 
@@ -128,5 +127,6 @@ int			get_term(char **res, char *str, t_dlist **history, t_tcap *caps)
 	if (g_keeprun == 3)
 		g_keeprun = 0;
 	reset_termios(&term);
+	initialize_signals();
 	return (0);
 }

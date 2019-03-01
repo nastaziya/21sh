@@ -69,13 +69,19 @@ int			ctrl_c(t_tcap *caps)
 	return (0);
 }
 
+void			ctrl_clast(int sig)
+{
+	(void)sig;
+	ft_putstr_fd("\n", 1);
+}
+
 /*
 *** Handles the resizing of the terminal window and the ctrl_c signal
 */
 
-// int				initialize_signals(void)
-// {
-// 	signal(SIGWINCH, win_resize);
-// 	signal(SIGINT, ctrl_c);
-// 	return (1);
-// }
+int				initialize_signals(void)
+{
+	// signal(SIGWINCH, win_resize);
+	signal(SIGINT, ctrl_clast);
+	return (1);
+}
