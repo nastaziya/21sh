@@ -52,7 +52,7 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 	char	*line;
 	char	*tmp;
 
-	while (42)
+	while (42 && !g_keeprun)
 	{
 		ret = get_term(&line, ft_manage_prompt(type_quote), history,
 			&g_caps);

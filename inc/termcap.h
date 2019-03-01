@@ -220,7 +220,7 @@ int						ctrl_d(t_tcap *caps);
 *** - signals.c
 */
 
-// int						initialize_signals(void);
+int						initialize_signals(void);
 int						ctrl_c(t_tcap *caps);
 
 
