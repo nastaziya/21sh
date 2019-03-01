@@ -38,8 +38,10 @@ int		terminal_data(t_term *term)
 
 int		modify_terminos(t_term *term)
 {
+	// raw_mode.c_lflag &= ~(ECHO | ICANON | ISIG);
 	term->c_lflag &= ~(ICANON);
 	term->c_lflag &= ~(ECHO);
+	term->c_lflag &= ~(ISIG);
 	term->c_cc[VMIN] = 0;
 	term->c_cc[VTIME] = 1;
 	if (tcsetattr(0, TCSADRAIN, term) == -1)
@@ -54,7 +56,7 @@ int		modify_terminos(t_term *term)
 
 int		reset_termios(t_term *term)
 {
-	term->c_lflag |= (ECHO | ICANON);
+	term->c_lflag |= (ECHO | ICANON | ISIG);
 	if (tcsetattr(0, TCSADRAIN, term) == -1)
 		return (-1);
 	return (0);

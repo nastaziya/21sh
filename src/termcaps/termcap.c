@@ -21,7 +21,7 @@
 
 t_tab		*tab_termcaps(void)
 {
-	static t_tab ttab[18] = {
+	static t_tab ttab[19] = {
 		{&left_key, 27, 91, 68, 0, 0, "le"},
 		{&right_key, 27, 91, 67, 0, 0, "nd"},
 		{&del_key, 127, 0, 0, 0, 0, "del"},
@@ -39,6 +39,7 @@ t_tab		*tab_termcaps(void)
 		{&alt_w, -30, -128, -71, 0, 0, "alt_w"},
 		{&alt_p, -49, -128, 0, 0, 0, "alt_p"},
 		{&ctrl_dnorm, 4, 0, 0, 0, 0, "ctrl_dnorm"},
+		{&ctrl_c, 3, 0, 0, 0, 0, "ctrl_c"},
 		{NULL, 0, 0, 0, 0, 0, NULL}
 	};
 

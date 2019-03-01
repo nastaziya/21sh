@@ -48,16 +48,14 @@ static void		ctrl_c_norm(t_tcap *caps)
 *** - do not forget to free the copy of the prompt when exit termcaps
 */
 
-void			ctrl_c(int sig)
+// void			ctrl_c(int sig)
+int			ctrl_c(t_tcap *caps)
 {
 	char	c;
-	t_tcap	*caps;
 
-	(void)sig;
-	caps = &g_caps;
 	c = 10;
 	if (g_keeprun != 3 && !ft_putc_if('\n'))
-		return ;
+		return (0);
 	g_keeprun = 1;
 	end_key(caps);
 	if (caps->str[0])
@@ -68,6 +66,7 @@ void			ctrl_c(int sig)
 		caps->history[0] = caps->history[0]->prev;
 	ctrl_c_norm(caps);
 	ioctl(0, TIOCSTI, &c);
+	return (0);
 }
 
 /*
