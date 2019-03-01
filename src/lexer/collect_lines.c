@@ -51,7 +51,9 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 	int		ret;
 	char	*line;
 	char	*tmp;
+	int		count;
 
+	count = 0;
 	while (42 && !g_keeprun)
 	{
 		ret = get_term(&line, ft_manage_prompt(type_quote), history,
@@ -59,16 +61,20 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 		if (line && ft_strlen(line) > 0)
 		{
 			tmp = *cmd;
-			*cmd = ft_strjoin(tmp, "\n");
+			*cmd = ft_count_quote(line) == '\\' ? ft_strjoin(tmp, " ") : ft_strjoin(tmp, "\n");
 			free(tmp);
 			tmp = *cmd;
 			*cmd = ft_strjoin(tmp, line);
 			free(tmp);
 		}
+		if (ft_count_quote(*cmd) == '\\' && line == NULL)
+			count++;
+		dprintf(3, "line: |%s|\n", line);
 		free(line);
 		line = NULL;
+		dprintf(3, "type_quote: %c\n", ft_count_quote(*cmd));
 		if (!(type_quote = ft_count_quote(*cmd))
-				|| (!line && !type_quote))
+				|| (!line && !type_quote) || (count > 0 && !line))
 			break ;
 	}
 }
