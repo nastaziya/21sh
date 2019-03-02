@@ -61,7 +61,7 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 		if (line && ft_strlen(line) > 0)
 		{
 			tmp = *cmd;
-			*cmd = ft_count_quote(line) == '\\' ? ft_strjoin(tmp, " ") : ft_strjoin(tmp, "\n");
+			*cmd = ft_strjoin(tmp, "\n");
 			free(tmp);
 			tmp = *cmd;
 			*cmd = ft_strjoin(tmp, line);
@@ -69,7 +69,7 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 		}
 		if (ft_count_quote(*cmd) == '\\' && line == NULL)
 			count++;
-		dprintf(3, "line: |%s|\n", line);
+		dprintf(3, "line: |%s| cmd: |%s|\n", line, *cmd);
 		free(line);
 		line = NULL;
 		dprintf(3, "type_quote: %c\n", ft_count_quote(*cmd));
