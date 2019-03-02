@@ -108,6 +108,9 @@ void		treat_backslash(char **str, int i, int *j,
 				t_dynamic_array *final_array)
 {
 	(*j)++;
+	if (str[i][*j] == '\n')
+		(*j)++;
+	dprintf(3, "add_char_to_array: |%c|\n", str[i][*j]);
 	add_char_to_array(final_array, str[i][*j]);
 	(*j)++;
 }
