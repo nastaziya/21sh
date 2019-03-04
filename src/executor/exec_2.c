@@ -48,12 +48,13 @@ int			ft_perror_norm_dir(char *str1, int fd)
 *** - Handle [n]<<[delimiter]
 */
 
-int			manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t)
+int			manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t, int k)
 {
 	int		ret;
 	int		fd[2];
 
 	pipe(fd);
+	t->i_hdoc = k;
 	if (t->heredoc && t->heredoc[0] && t->heredoc[0][t->i_hdoc])
 		write(fd[1], t->heredoc[0][t->i_hdoc],
 			ft_strlen(t->heredoc[0][t->i_hdoc]));

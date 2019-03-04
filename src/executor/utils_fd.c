@@ -85,25 +85,6 @@ void		clear_fd(t_exec_redir *t, int end)
 *** - will return : 3 which equals to "plus"
 */
 
-int			ft_calcul_pos_last_heredoc(t_exec_redir *t, t_simp_com *cmd)
-{
-	int		i;
-	int		count;
-
-	i = -1;
-	count = -1;
-	copy_fds(t, cmd);
-	while (++i < (*cmd).redirection.used_space)
-	{
-		printf("count : %d\n", (*cmd).redirection.red[i] == T_DBL_LESS);
-		if ((*cmd).redirection.red[i] == T_DBL_LESS ||
-			(*cmd).redirection.red[i] == T_DBL_LESS_DASH)
-			count++;
-		printf("count : %d\n", count);
-	}
-	return (count);
-}
-
 void		process_redir_norm(t_exec_redir *t, int *i)
 {
 	if (t->file_name != NULL)

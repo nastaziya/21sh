@@ -123,7 +123,9 @@ void	add_simple_command(t_command *cmd, t_lexer lex, t_dlist **history,
 	{
 		add_token_val(cmd, lex, &size_simple_cmd);
 		while (++i < lex.used_size && j <= size_simple_cmd)
+		{
 			complete_simple_command_and_red(cmd, lex, i, &j);
+		}
 	}
 	else
 		free_the_op_content_array_token_after_error(&lex);

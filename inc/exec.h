@@ -64,7 +64,7 @@ int				right_return(int status);
 */
 
 int				process_redirections(t_exec_redir *t, t_simp_com cmd,
-					t_env_tools *env);
+					t_env_tools *env, int k);
 void			clear_fd(t_exec_redir *t, int end);
 int				copy_fds(t_exec_redir *t, t_simp_com *cmd);
 
@@ -89,7 +89,7 @@ int				manage_aggreg(t_simp_com cmd, int i, t_exec_redir *t);
 int				ft_perror_norm_dir(char *str1, int fd);
 int				ft_print_error_directory(char *str, char *str1, char *str2,
 					int fd);
-int				manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t);
+int				manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t, int k);
 
 /*
 *** - utils_fd.c

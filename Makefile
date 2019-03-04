@@ -6,7 +6,7 @@ JAUNE=\033[33m
 PURPLE=\033[0;35m
 
 NAME =		21sh
-CC = 		gcc
+CC = 		gcc -Wall -Wextra -Werror
 FLAGS = 	-g 
 DEL =		rm -rf
 

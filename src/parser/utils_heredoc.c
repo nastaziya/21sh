@@ -57,7 +57,8 @@ int				ft_initialize_heredoc(t_lexer *lexer, char ***heredoc,
 				previous_command++;
 			else if ((lexer->tokens[i].type == T_DBLOR
 				|| lexer->tokens[i].type == T_SEMI
-					|| lexer->tokens[i].type == T_DBLAND))
+					|| lexer->tokens[i].type == T_DBLAND ||
+					lexer->tokens[i].type == T_PIPE))
 				other_command++;
 			else if (lexer->tokens[i].type == T_DBL_LESS
 			&& (other_command != previous_command)
@@ -83,6 +84,7 @@ int				ft_find_end_command_and_nb_kewyords(t_hdoc *h, t_lexer *lexer)
 	while (lexer->tokens[h->j].type != T_DBLOR
 		&& lexer->tokens[h->j].type != T_DBLAND
 			&& lexer->tokens[h->j].type != T_SEMI
+			&& lexer->tokens[h->j].type != T_PIPE
 				&& h->j < ft_parse_error_for_heredoc(*lexer))
 		++(h->j);
 	h->i_words = 0;

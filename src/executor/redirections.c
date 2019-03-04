@@ -108,47 +108,24 @@ static int	manage_file(t_simp_com cmd, int i, t_exec_redir *t,
 */
 
 int			process_redirections(t_exec_redir *t, t_simp_com cmd,
-				t_env_tools *env)
+				t_env_tools *env, int k)
 {
 	int		i;
 	int		ret;
-	int		pos_heredoc;
-	int		count_red;
-
+	
 	i = 0;
-	count_red = 0;
 	ret = 0;
-	pos_heredoc = ft_calcul_pos_last_heredoc(t, &cmd);
-	int j = -1;
-	while (j++ < cmd.redirection.used_space)
-	{
-		dprintf(1, " cmd.redirection.red[j]: %d|", cmd.redirection.red[j]);
-	}
+	copy_fds(t, &cmd);
 	while (i < cmd.redirection.used_space && ret == 0)
 	{
-		dprintf(1, "index_here : %d\n", pos_heredoc );
-		dprintf(1, "i : %d\n", i);
 		if ((cmd.redirection.red[i] == T_REDIR_LESS
 			|| cmd.redirection.red[i] == T_REDIR_GREAT))
-		{
-			count_red++;
 			ret = manage_aggreg(cmd, i, t);
-		}
 		else if ((cmd.redirection.red[i] == T_DBL_LESS
 			|| cmd.redirection.red[i] == T_DBL_LESS_DASH))
-		{
-
-			if (i == pos_heredoc + count_red)
-			{
-				ret = manage_here_doc(cmd, i, t);
-				
-			}
-		}
+				ret = manage_here_doc(cmd, i, t, k);
 		else
-		{
-			count_red++;
-			ret = manage_file(cmd, i, t, env);	
-		}
+			ret = manage_file(cmd, i, t, env);
 		process_redir_norm(t, &i);
 	}
 	clear_fd(t, cmd.redirection.used_space);
