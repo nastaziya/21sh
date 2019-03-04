@@ -35,8 +35,25 @@ char		*ft_manage_prompt(char type_quote)
 		display_bash("\n> ");
 		return ("> ");
 	}
+	else if (type_quote == '&')
+	{
+		display_bash("\nMissing arguments > ");
+		return ("Missing arguments > ");
+	}
 	return (NULL);
 }
+
+/*
+*** - Aim of the function :
+*** - check wether the string ends with a backslah but with a
+*** - "|| or &&" separator
+*** - => don't loop until the 
+*/
+
+// int			check_separators(char *cmd, char *type_quote)
+// {
+
+// }
 
 /*
 *** - Aim of the function :
@@ -58,25 +75,30 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 	{
 		ret = get_term(&line, ft_manage_prompt(type_quote), history,
 			&g_caps);
-		if (line && ft_strlen(line) > 0)
-		{
 			tmp = *cmd;
-			*cmd = ft_strjoin(tmp, "\n");
-			free(tmp);
-			tmp = *cmd;
-			*cmd = ft_strjoin(tmp, line);
-			free(tmp);
-		}
-		if (ft_count_quote(*cmd) == '\\' && line == NULL)
-			count++;
-		dprintf(3, "line: |%s| cmd: |%s|\n", line, *cmd);
-		free(line);
+			if (ft_count_quote(*cmd) == '\\')
+			{
+				// dprintf(3, "passe par ici\n");
+				*cmd = ft_strjoin(ft_strsub(tmp, 0, ft_strrchr(tmp, '\\') - tmp), line);
+				free(tmp);
+			}
+			else if (line && ft_strlen(line) > 0)
+			{
+				*cmd = ft_strjoin(tmp, "\n");
+				free(tmp);
+				tmp = *cmd;
+				*cmd = ft_strjoin(tmp, line);
+				free(tmp);
+			}
+		if (line)
+			free(line);
 		line = NULL;
-		dprintf(3, "type_quote: %c\n", ft_count_quote(*cmd));
+		// dprintf(3, "type_quote: %c\n", ft_count_quote(*cmd));
 		if (!(type_quote = ft_count_quote(*cmd))
-				|| (!line && !type_quote) || (count > 0 && !line))
+				|| (!line && !type_quote)) //  && !check_separators(*cmd, &type_quote) \\  || (count > 0 && !line)
 			break ;
 	}
+	dprintf(3, "cmd_sortie: |%s|\n", *cmd);
 }
 
 /*
