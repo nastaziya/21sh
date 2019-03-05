@@ -71,3 +71,9 @@ void	expanded_dynamic_table_heredoc(char **str, int i)
 	str[i] = ft_strdup(array_without_backslash0.array_expanded);
 	free(array_without_backslash0.array_expanded);
 }
+
+int		ft_clean(void *s, size_t n)
+{
+	ft_bzero(s, n);
+	return (0);
+}

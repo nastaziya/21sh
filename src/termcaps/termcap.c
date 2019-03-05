@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 22:57:36 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/03/05 18:08:46 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -46,12 +46,6 @@ t_tab		*tab_termcaps(void)
 	return ((t_tab*)ttab);
 }
 
-int			ft_clean(void *s, size_t n)
-{
-	ft_bzero(s, n);
-	return (0);
-}
-
 void		ft_initialize_get_line(t_tab **ttab, char *str, t_dlist **history,
 				t_tcap *caps)
 {
@@ -81,8 +75,7 @@ int			get_line_term_termcaps(char **res, char *str, t_dlist **history,
 	while ((tmp_tab = (ttab - 1)) && !ft_clean(caps->buf, 2048)
 		&& (read(0, caps->buf, 2047) >= 0))
 	{
-		if (change_size(caps))
-			win_resize(caps);
+		change_size(caps) ? win_resize(caps) : 1;
 		if (!new_line(caps) && !end_key(caps)
 			&& ((caps->sz_str - caps->size_prompt) == 0)
 				&& (*res = NULL) && (caps->str[0] ?

@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/28 13:49:59 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/03/05 17:59:51 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -38,6 +38,27 @@ char		*ft_manage_prompt(char type_quote)
 	return (NULL);
 }
 
+void		ft_new_prompt_norm(char **cmd, char **tmp, char **line)
+{
+	char *buf;
+
+	if (ft_count_quote(*cmd) == '\\')
+	{
+		buf = ft_strsub(*tmp, 0, ft_strrchr(*tmp, '\\') - *tmp);
+		*cmd = ft_strjoin(buf, *line);
+		free(*tmp);
+		free(buf);
+	}
+	else if (*line && ft_strlen(*line) > 0)
+	{
+		*cmd = ft_strjoin(*tmp, "\n");
+		free(*tmp);
+		*tmp = *cmd;
+		*cmd = ft_strjoin(*tmp, *line);
+		free(*tmp);
+	}
+}
+
 /*
 *** - Aim of the function :
 *** - Print new promt and collect from standard entry
@@ -53,29 +74,14 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history,
 	char	*line;
 	char	*tmp;
 	int		count;
-	char	*buf;
 
 	count = 0;
 	while (42 && !g_keeprun)
 	{
 		ret = get_term(&line, ft_manage_prompt(type_quote), history,
 				caps);
-			tmp = *cmd;
-			if (ft_count_quote(*cmd) == '\\')
-			{
-				buf = ft_strsub(tmp, 0, ft_strrchr(tmp, '\\') - tmp);
-				*cmd = ft_strjoin(buf, line);
-				free(tmp);
-				free(buf);
-			}
-			else if (line && ft_strlen(line) > 0)
-			{
-				*cmd = ft_strjoin(tmp, "\n");
-				free(tmp);
-				tmp = *cmd;
-				*cmd = ft_strjoin(tmp, line);
-				free(tmp);
-			}
+		tmp = *cmd;
+		ft_new_prompt_norm(cmd, &tmp, &line);
 		if (line)
 			free(line);
 		line = NULL;

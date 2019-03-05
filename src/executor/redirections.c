@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/28 14:00:12 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/03/05 14:45:37 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -112,7 +112,7 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 {
 	int		i;
 	int		ret;
-	
+
 	i = 0;
 	ret = 0;
 	copy_fds(t, &cmd);
@@ -123,7 +123,7 @@ int			process_redirections(t_exec_redir *t, t_simp_com cmd,
 			ret = manage_aggreg(cmd, i, t);
 		else if ((cmd.redirection.red[i] == T_DBL_LESS
 			|| cmd.redirection.red[i] == T_DBL_LESS_DASH))
-				ret = manage_here_doc(cmd, i, t, k);
+			ret = manage_here_doc(cmd, i, t, k);
 		else
 			ret = manage_file(cmd, i, t, env);
 		process_redir_norm(t, &i);

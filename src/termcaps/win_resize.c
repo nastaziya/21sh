@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/24 17:03:50 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/03/05 14:53:01 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -52,13 +52,8 @@ void			win_resize_norm(t_tcap *caps)
 *** - do nothing (return)
 */
 
-// void			win_resize(int sig)
 void			win_resize(t_tcap *caps)
 {
-	// t_tcap	*caps;
-
-	// caps = &g_caps;
-	// (void)sig;
 	end_key(caps);
 	tputs(tgoto(tgetstr("cm", NULL), 0, 0), 0, ft_outc);
 	tputs(tgetstr("cd", NULL), 1, ft_outc);

@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 20:05:20 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/03/05 14:51:10 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -37,9 +37,9 @@ void		treat_expansion_cases(char **str, int i,
 				t_dynamic_array *final_array, t_env_tools env)
 {
 	t_norm_exp	n;
+
 	n.j = 0;
 	n.i = i;
-
 	tab_expansion_init(final_array);
 	while (n.j < ft_strlen(str[n.i]))
 	{

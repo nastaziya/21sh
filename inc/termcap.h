@@ -241,4 +241,10 @@ int						new_line(t_tcap *caps);
 int						ctrlld(t_tcap *caps);
 int						equality(t_tcap *caps, t_tab *tmp_tab);
 
+/*
+*** - expanse_heredoc.c
+*/
+
+int						ft_clean(void *s, size_t n);
+
 #endif

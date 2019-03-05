@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/24 17:02:43 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/03/05 14:54:11 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -38,7 +38,6 @@ int		terminal_data(t_term *term)
 
 int		modify_terminos(t_term *term)
 {
-	// raw_mode.c_lflag &= ~(ECHO | ICANON | ISIG);
 	term->c_lflag &= ~(ICANON);
 	term->c_lflag &= ~(ECHO);
 	term->c_lflag &= ~(ISIG);

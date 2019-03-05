@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 23:02:26 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/03/05 14:53:29 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -33,7 +33,7 @@ int			ft_outc(int c)
 void		initialize_caps(t_tcap *caps, char *prompt)
 {
 	int		tmp[2];
-	
+
 	caps->prompt = ft_strdup(prompt);
 	caps->size_prompt = ft_strlen(prompt);
 	caps->sz_str = caps->size_prompt;
