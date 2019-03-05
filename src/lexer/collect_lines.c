@@ -35,11 +35,6 @@ char		*ft_manage_prompt(char type_quote)
 		display_bash("\n> ");
 		return ("> ");
 	}
-	else if (type_quote == '&')
-	{
-		display_bash("\nMissing arguments > ");
-		return ("Missing arguments > ");
-	}
 	return (NULL);
 }
 
@@ -69,6 +64,7 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 	char	*line;
 	char	*tmp;
 	int		count;
+	char	*buf;
 
 	count = 0;
 	while (42 && !g_keeprun)
@@ -78,9 +74,10 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 			tmp = *cmd;
 			if (ft_count_quote(*cmd) == '\\')
 			{
-				// dprintf(3, "passe par ici\n");
-				*cmd = ft_strjoin(ft_strsub(tmp, 0, ft_strrchr(tmp, '\\') - tmp), line);
+				buf = ft_strsub(tmp, 0, ft_strrchr(tmp, '\\') - tmp);
+				*cmd = ft_strjoin(buf, line);
 				free(tmp);
+				free(buf);
 			}
 			else if (line && ft_strlen(line) > 0)
 			{
@@ -93,12 +90,11 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 		if (line)
 			free(line);
 		line = NULL;
-		// dprintf(3, "type_quote: %c\n", ft_count_quote(*cmd));
 		if (!(type_quote = ft_count_quote(*cmd))
-				|| (!line && !type_quote)) //  && !check_separators(*cmd, &type_quote) \\  || (count > 0 && !line)
+				|| (!line && !type_quote))
 			break ;
 	}
-	dprintf(3, "cmd_sortie: |%s|\n", *cmd);
+	// dprintf(3, "cmd_sortie: |%s|\n", *cmd);
 }
 
 /*
