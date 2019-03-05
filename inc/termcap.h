@@ -73,8 +73,6 @@ typedef struct			s_tcap
 	char			*prompt;
 }						t_tcap;
 
-t_tcap					g_caps;
-
 /*
 *** - Structure that will be the array
 *** - of function pointers
@@ -102,7 +100,7 @@ typedef struct			s_tab
 	char			*cmd;
 }						t_tab;
 
-int					g_keeprun;
+int						g_keeprun;
 
 /*
 ** - cursor_position.c

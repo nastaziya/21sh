@@ -58,6 +58,7 @@ typedef struct		s_hdoc
 	int			k;
 	char		*cmd;
 	int			obool;
+	t_tcap		caps;
 }					t_hdoc;
 
 void				print_array(int size, char **cmd);

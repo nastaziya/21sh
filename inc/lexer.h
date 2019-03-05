@@ -14,6 +14,7 @@
 #ifndef LEXER_H
 # define LEXER_H
 # include "../libft/libft.h"
+# include "termcap.h"
 
 # define LEXER_INITIAL_CAPACITY 100
 
@@ -140,7 +141,7 @@ char					ft_count_quote(char *str);
 void					ft_get_entire_line(char **cmd, char *str,
 							t_dlist **history);
 void					ft_new_prompt(char **cmd, char type_quote,
-							t_dlist **history);
+							t_dlist **history, t_tcap *caps);
 char					*ft_manage_prompt(char type_quote);
 
 /*

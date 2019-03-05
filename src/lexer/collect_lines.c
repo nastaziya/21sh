@@ -46,7 +46,8 @@ char		*ft_manage_prompt(char type_quote)
 *** - if yes, end, otherwise, the loop continues
 */
 
-void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
+void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history,
+				t_tcap *caps)
 {
 	int		ret;
 	char	*line;
@@ -58,7 +59,7 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 	while (42 && !g_keeprun)
 	{
 		ret = get_term(&line, ft_manage_prompt(type_quote), history,
-			&g_caps);
+				caps);
 			tmp = *cmd;
 			if (ft_count_quote(*cmd) == '\\')
 			{
@@ -112,9 +113,10 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 {
 	int		ret;
 	char	type_quote;
+	t_tcap	caps;
 
 	display_bash(str);
-	ret = get_term(cmd, str, history, &g_caps);
+	ret = get_term(cmd, str, history, &caps);
 	if (ret != 2)
 	{
 		if (ret != 0)
@@ -125,7 +127,7 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 		else if (*cmd && ft_strlen(*cmd) > 0)
 		{
 			if ((type_quote = ft_count_quote(*cmd)))
-				ft_new_prompt(cmd, type_quote, history);
+				ft_new_prompt(cmd, type_quote, history, &caps);
 		}
 	}
 	ft_putchar_fd('\n', 1);

@@ -80,8 +80,8 @@ static int		ft_collect_line_and_realloc_heredoc(t_hdoc *h, t_lexer *lexer,
 		{
 			h->obool > 0 ? display_bash("\nHeredoc > ")
 				: display_bash("Heredoc > ");
-			h->obool > 0 ? get_term(&h->cmd, "\nHeredoc > ", history, &g_caps)
-				: get_term(&h->cmd, "Heredoc > ", history, &g_caps);
+			h->obool > 0 ? get_term(&h->cmd, "\nHeredoc > ", history, &(h->caps))
+				: get_term(&h->cmd, "Heredoc > ", history, &(h->caps));
 			if (h->k < h->i_words - 1)
 			{
 				tmp = ft_strdup(lexer->tokens[h->words[h->k]].content);
