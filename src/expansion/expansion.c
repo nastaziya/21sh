@@ -37,9 +37,9 @@ void		treat_expansion_cases(char **str, int i,
 				t_dynamic_array *final_array, t_env_tools env)
 {
 	t_norm_exp	n;
-
 	n.j = 0;
 	n.i = i;
+
 	tab_expansion_init(final_array);
 	while (n.j < ft_strlen(str[n.i]))
 	{
@@ -90,6 +90,7 @@ char		**expense_cmd(t_command cmd, t_env_tools env, int i)
 		res[j] = ft_strdup(temp);
 		free(temp);
 	}
+	res[j] = NULL;
 	return (res);
 }
 

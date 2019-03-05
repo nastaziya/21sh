@@ -97,13 +97,14 @@ int			ft_builtin_env(char **av, char ***c_env)
 
 	t.ret = 0;
 	i = -1;
+	t.stop = 0;
 	t.argc = ft_len_array_char(av);
 	ft_cp_env(&(t.cp_c_env), *c_env);
 	if (t.argc == 1)
 		ft_print_env(c_env);
 	else
 	{
-		while (++i < t.argc && t.ret == 0)
+		while (++i < t.argc && t.ret == 0 && t.stop == 0)
 			ft_norm_env(av, i, &t, c_env);
 	}
 	if (t.cp_c_env && *(t.cp_c_env))

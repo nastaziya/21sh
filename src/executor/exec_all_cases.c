@@ -85,6 +85,7 @@ int		ft_first_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 	int		ret;
 
 	ret = 0;
+	cmd_expended = NULL;
 	if (cmd.used_space > 0)
 	{
 		cmd_expended = expense_cmd(cmd, *env, 0);

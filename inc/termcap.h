@@ -221,6 +221,8 @@ int						ctrl_d(t_tcap *caps);
 */
 
 int						initialize_signals(void);
+int						ctrl_c(t_tcap *caps);
+
 
 /*
 *** - print_buf.c
@@ -232,7 +234,8 @@ int						print_buf(t_tcap *caps, char *buf);
 *** - win_resize.c
 */
 
-void					win_resize(int sig);
+// void					win_resize(int sig);
+void					win_resize(t_tcap *caps);
 
 /*
 *** - norm_termcap.c

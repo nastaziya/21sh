@@ -39,6 +39,8 @@ static void		ctrl_c_norm(t_tcap *caps)
 			caps->str[0] = ft_strdup("pppppp");
 		else if (!ft_strcmp(caps->prompt, "Heredoc > "))
 			caps->str[0] = ft_strdup("pppppp");
+		else if (!ft_strcmp(caps->prompt, "> "))
+			caps->str[0] = ft_strdup("ppppppp");
 	}
 }
 
@@ -48,16 +50,13 @@ static void		ctrl_c_norm(t_tcap *caps)
 *** - do not forget to free the copy of the prompt when exit termcaps
 */
 
-void			ctrl_c(int sig)
+int				ctrl_c(t_tcap *caps)
 {
 	char	c;
-	t_tcap	*caps;
 
-	(void)sig;
-	caps = &g_caps;
 	c = 10;
 	if (g_keeprun != 3 && !ft_putc_if('\n'))
-		return ;
+		return (0);
 	g_keeprun = 1;
 	end_key(caps);
 	if (caps->str[0])
@@ -68,6 +67,17 @@ void			ctrl_c(int sig)
 		caps->history[0] = caps->history[0]->prev;
 	ctrl_c_norm(caps);
 	ioctl(0, TIOCSTI, &c);
+	return (0);
+}
+
+/*
+*** - Aim of the function :
+*** - To catch the ctrl signal when in the execution of a command
+*/
+
+static void		ctrl_clast(int sig)
+{
+	(void)sig;
 }
 
 /*
@@ -76,7 +86,6 @@ void			ctrl_c(int sig)
 
 int				initialize_signals(void)
 {
-	signal(SIGWINCH, win_resize);
-	signal(SIGINT, ctrl_c);
+	signal(SIGINT, ctrl_clast);
 	return (1);
 }

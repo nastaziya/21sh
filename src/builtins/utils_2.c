@@ -93,13 +93,18 @@ void	ft_norm_env(char **av, int i, t_norm_env *t, char ***c_env)
 		ft_manage_option_i_env(&(t->cp_c_env), *c_env);
 	else if (av[i] && av[i][0] == '-' && ft_usage_is_good("i", av[i])
 		&& (t->ret = 1))
+	{
 		ft_usage_error_env("env: illegal option -- ", av[i],
 		"\nusage: env [-i] [name=value ...] [utility [argument ...]]",
 		1);
+	}
 	else if (i == t->argc - 1 && !ft_strcmp(av[i], "env"))
 		ft_print_env(&(t->cp_c_env));
-	else if (ft_strcmp(av[i], "env"))
+	else if (ft_strcmp(av[i], "env") && !t->stop)
+	{
+		t->stop = 1;
 		t->ret = ft_builtin_env2(av, t->cp_c_env, i, 0);
+	}
 }
 
 /*

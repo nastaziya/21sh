@@ -51,21 +51,32 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 	int		ret;
 	char	*line;
 	char	*tmp;
+	int		count;
+	char	*buf;
 
-	while (42)
+	count = 0;
+	while (42 && !g_keeprun)
 	{
 		ret = get_term(&line, ft_manage_prompt(type_quote), history,
 			&g_caps);
-		if (line && ft_strlen(line) > 0)
-		{
 			tmp = *cmd;
-			*cmd = ft_strjoin(tmp, "\n");
-			free(tmp);
-			tmp = *cmd;
-			*cmd = ft_strjoin(tmp, line);
-			free(tmp);
-		}
-		free(line);
+			if (ft_count_quote(*cmd) == '\\')
+			{
+				buf = ft_strsub(tmp, 0, ft_strrchr(tmp, '\\') - tmp);
+				*cmd = ft_strjoin(buf, line);
+				free(tmp);
+				free(buf);
+			}
+			else if (line && ft_strlen(line) > 0)
+			{
+				*cmd = ft_strjoin(tmp, "\n");
+				free(tmp);
+				tmp = *cmd;
+				*cmd = ft_strjoin(tmp, line);
+				free(tmp);
+			}
+		if (line)
+			free(line);
 		line = NULL;
 		if (!(type_quote = ft_count_quote(*cmd))
 				|| (!line && !type_quote))

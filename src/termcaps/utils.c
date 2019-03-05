@@ -50,6 +50,7 @@ void		initialize_caps(t_tcap *caps, char *prompt)
 	if (!(caps->str = (char**)malloc(sizeof(char*))))
 		return ;
 	caps->str[0] = NULL;
+	size_windows(caps);
 }
 
 /*

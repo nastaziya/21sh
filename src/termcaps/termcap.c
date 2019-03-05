@@ -21,7 +21,7 @@
 
 t_tab		*tab_termcaps(void)
 {
-	static t_tab ttab[18] = {
+	static t_tab ttab[19] = {
 		{&left_key, 27, 91, 68, 0, 0, "le"},
 		{&right_key, 27, 91, 67, 0, 0, "nd"},
 		{&del_key, 127, 0, 0, 0, 0, "del"},
@@ -39,6 +39,7 @@ t_tab		*tab_termcaps(void)
 		{&alt_w, -30, -128, -71, 0, 0, "alt_w"},
 		{&alt_p, -49, -128, 0, 0, 0, "alt_p"},
 		{&ctrl_dnorm, 4, 0, 0, 0, 0, "ctrl_dnorm"},
+		{&ctrl_c, 3, 0, 0, 0, 0, "ctrl_c"},
 		{NULL, 0, 0, 0, 0, 0, NULL}
 	};
 
@@ -56,8 +57,18 @@ void		ft_initialize_get_line(t_tab **ttab, char *str, t_dlist **history,
 {
 	*ttab = tab_termcaps();
 	initialize_caps(caps, str);
-	initialize_signals();
 	caps->history = history;
+}
+
+int			change_size(t_tcap *caps)
+{
+	t_tcap buf;
+
+	size_windows(&buf);
+	if (caps->window_size[0] == buf.window_size[0] &&
+			caps->window_size[1] == buf.window_size[1])
+		return (0);
+	return (1);
 }
 
 int			get_line_term_termcaps(char **res, char *str, t_dlist **history,
@@ -70,6 +81,8 @@ int			get_line_term_termcaps(char **res, char *str, t_dlist **history,
 	while ((tmp_tab = (ttab - 1)) && !ft_clean(caps->buf, 2048)
 		&& (read(0, caps->buf, 2047) >= 0))
 	{
+		if (change_size(caps))
+			win_resize(caps);
 		if (!new_line(caps) && !end_key(caps)
 			&& ((caps->sz_str - caps->size_prompt) == 0)
 				&& (*res = NULL) && (caps->str[0] ?
@@ -114,5 +127,6 @@ int			get_term(char **res, char *str, t_dlist **history, t_tcap *caps)
 	if (g_keeprun == 3)
 		g_keeprun = 0;
 	reset_termios(&term);
+	initialize_signals();
 	return (0);
 }
