@@ -34,6 +34,7 @@ int			alt_s(t_tcap *caps)
 	if (caps->copy_str)
 		free(caps->copy_str);
 	caps->copy_str = ft_strdup(caps->str[0] + caps->cursor - caps->size_prompt);
+	dprintf(3, "alt+s: |%s|\n", caps->copy_str);
 	return (0);
 }
 
