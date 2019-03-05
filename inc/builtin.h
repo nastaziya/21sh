@@ -40,6 +40,7 @@ typedef struct	s_norm_env
 {
 	int		argc;
 	char	**cp_c_env;
+	int		stop;
 	int		ret;
 }				t_norm_env;
 

@@ -40,18 +40,6 @@ char		*ft_manage_prompt(char type_quote)
 
 /*
 *** - Aim of the function :
-*** - check wether the string ends with a backslah but with a
-*** - "|| or &&" separator
-*** - => don't loop until the 
-*/
-
-// int			check_separators(char *cmd, char *type_quote)
-// {
-
-// }
-
-/*
-*** - Aim of the function :
 *** - Print new promt and collect from standard entry
 *** - Then reallocs everything to get the new finished string
 *** - And checks if the closing matching quote is found
@@ -94,7 +82,6 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history)
 				|| (!line && !type_quote))
 			break ;
 	}
-	// dprintf(3, "cmd_sortie: |%s|\n", *cmd);
 }
 
 /*
