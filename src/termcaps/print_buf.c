@@ -27,16 +27,6 @@ int		print_buf(t_tcap *caps, char *buf)
 	str = ft_strdup(buf);
 	if (ft_strlen(str) == 1 && str[0] != 9)
 		print_normal_char(caps);
-	else if ((str[0] > 32 || str[0] == '\n') && !(str[0] == ';' &&
-		str[0] == '['))
-	{
-		while (str && str[++i])
-		{
-			ft_bzero(caps->buf, 2048);
-			caps->buf[0] = str[i];
-			print_normal_char(caps);
-		}
-	}
 	free(str);
 	return (0);
 }
