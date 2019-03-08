@@ -104,7 +104,11 @@ int			string_to_lexer(const char *s, t_lexer *lexer)
 			&& (s - nm.prev == 1))
 			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_IO_NUMB);
 		else if (S_QUOTE && !manage_back_quote(s, nm.prev))
+		{
+			// dprintf(3, "debug: |%s|\n", s);
 			ft_string_to_lexer_quote_management(&s, lexer, &nm);
+			// dprintf(3, "sortie: |%s|\n", s);
+		}
 		else if ((((*s == '\n' || *s == ' ') && manage_back_quote(s, nm.prev))
 		|| (nm.current.type != 0 && manage_back_quote(s, nm.prev))) && ++s)
 			continue ;

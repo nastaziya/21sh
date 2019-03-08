@@ -72,27 +72,51 @@ void		ft_tokenize_quote_management(const char **s, t_lexer *lexer,
 	nm->quote_done = 1;
 }
 
+int			ft_isalnum_back(char c)
+{
+	if (c == '\\' || ft_isalnum(c))
+		return (1);
+	return (0);
+}
+
 void		ft_string_to_lexer_quote_management(const char **s,
 				t_lexer *lexer, t_norm *nm)
 {
+	echo ouioooo"         "ffffff\>\>\>\>zxxxxx\"\""cddddd"
+	dprintf(3, "debug: |%s|\n", *s);
 	while (*s && **s)
 	{
+		dprintf(3, "char 1: |%c|\n", **s);
 		if (**s == ' ' && --(*s))
 			break ;
 		ft_find_closing_quote(s, nm);
 		if (!**s)
 			break ;
-		while (**s && **s != '\'' && **s != '"' && **s != ' ')
+		dprintf(3, "char 2: |%c|\n", **s);
+		while (**s && **s != '\'' && **s != '"' && **s != ' ' && ft_isalnum(**s)) //ft_isalnum_back(**s))
 			++(*s);
+		dprintf(3, "char 3: |%c|\n", **s);
+		dprintf(3, "char de merde: |%c|\n", (*(*s - 1)));
 		if (manage_back_quote(*s, nm->prev))
+		{
+			dprintf(3, "youpi\n");
 			++(*s);
+		}
+		else if ((**s == '<' || **s == '>' || **s == '&' || **s == '|') && ((*(*s - 1)) != '\\')
+			&& --(*s))
+			break ;
 		else if (**s && **s != '\'' && **s != '"')
 		{
+			// t_oplist tmp  =  type_of_token(*s);
+			dprintf(3, "sorti par la mapoule\n");
 			while (**s == ' ')
 				--(*s);
+			while (**s == '\\')
+				++(*s);
 			break ;
 		}
 	}
+	dprintf(3, "sortie: |%s|\n", *s);
 	ft_tokenize_quote_management(s, lexer, nm);
 }
 
