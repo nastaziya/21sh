@@ -82,7 +82,7 @@ int			ft_isalnum_back(char c)
 void		ft_string_to_lexer_quote_management(const char **s,
 				t_lexer *lexer, t_norm *nm)
 {
-	echo ouioooo"         "ffffff\>\>\>\>zxxxxx\"\""cddddd"
+	// echo ouioooo"         "ffffff\>\>\>\>zxxxxx\"\""cddddd"
 	dprintf(3, "debug: |%s|\n", *s);
 	while (*s && **s)
 	{
