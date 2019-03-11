@@ -58,8 +58,6 @@ void		ft_find_closing_quote(const char **s, t_norm *nm)
 				break ;
 		}
 	}
-	if (*s < nm->end)
-		++(*s);
 }
 
 void		ft_tokenize_quote_management(const char **s, t_lexer *lexer,
