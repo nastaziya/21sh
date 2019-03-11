@@ -130,8 +130,6 @@ int						manage_back_quote(const char *s, const char *begin);
 void					ft_find_closing_quote(const char **s, t_norm *nm);
 void					ft_tokenize_quote_management(const char **s,
 							t_lexer *lexer, t_norm *nm);
-void					ft_string_to_lexer_quote_management(const char **s,
-							t_lexer *lexer, t_norm *nm);
 char					ft_count_quote(char *str);
 
 /*
@@ -173,9 +171,9 @@ int						ft_manage_string_to_lexer(const char *s,
 void					display_bash(char *str);
 
 /*
-*** - Autre
+*** - norm_utils.c
 */
 
-void					print(const t_lexer *lexer);
+int						norm_quote_end(const char **s, t_norm *nm);
 
 #endif

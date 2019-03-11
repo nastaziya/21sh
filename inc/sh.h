@@ -23,7 +23,7 @@
 # include "parser.h"
 # include "termcap.h"
 
-# define S_QUOTE (*s == '"' || *s == '\'')
+# define S_QUOTE (**s == '"' || **s == '\'')
 
 typedef struct		s_norm_all
 {

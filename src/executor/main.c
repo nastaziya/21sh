@@ -75,19 +75,6 @@ void	norm_all_exec(t_env_tools *env, t_command cmd, char ***heredoc)
 	}
 }
 
-void		print(const t_lexer *lexer)
-{
-	int	i;
-
-	i = 0;
-	while (i < lexer->used_size)
-	{
-		printf("{ |%s| (%i) } ", lexer->tokens[i].content, lexer->tokens[i].type);
-		++i;
-	}
-	printf("\n");
-}
-
 void	all_exec(char **environ, char ***heredoc)
 {
 	t_dlist			*history;
@@ -102,7 +89,6 @@ void	all_exec(char **environ, char ***heredoc)
 	while (42)
 	{
 		lex = final_tokens(&history);
-		print(&lex);
 		command_init(&cmd);
 		add_simple_command(&cmd, lex, &history, heredoc);
 		norm_for_exit(&history, &lex, &cmd, &env);

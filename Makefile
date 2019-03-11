@@ -59,6 +59,7 @@ LEX_FILES =		collect_lines.c\
 				quote_management.c\
 				tokenization.c\
 				utils_lexer.c\
+				norm_utils.c\
 
 LEX_SRC = $(addprefix $(LEX), $(LEX_FILES)) 
 PARSER = parser/
