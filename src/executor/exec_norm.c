@@ -36,6 +36,7 @@ int		ft_isnumber_redir(char *str)
 void	init_red_struct(t_exec_redir *t_red, char ***heredoc)
 {
 	t_red->i_hdoc = 0;
+	t_red->count_here = 0;
 	t_red->file_name = NULL;
 	t_red->fdoutred = 0;
 	t_red->heredoc = heredoc;

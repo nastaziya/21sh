@@ -17,7 +17,6 @@
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <stdlib.h>
-# include <stdio.h>
 # include <string.h>
 # include <sys/stat.h>
 # include "parser.h"
@@ -85,7 +84,7 @@ int					ft_manage_heredoc(t_lexer *lexer, char ***heredoc,
 						t_dlist **history);
 
 /*
-*** - heredoc.c
+*** - env_from_file.c
 */
 
 char				*get_envpath_from_file(void);

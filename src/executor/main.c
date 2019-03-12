@@ -20,6 +20,9 @@ void	check_op_first_exec(t_command cmd, t_env_tools *env, t_exec_redir *t,
 			int *i)
 {
 	save_original_fd(t);
+	if (!is_here(cmd.command[*i].redirection.red,
+			cmd.command[*i].redirection.used_space))
+		(t->count_here)++;
 	if (cmd.command[*i].tok == T_PIPE)
 		ft_pipe_exec(env, cmd, i, t);
 	else
@@ -43,7 +46,7 @@ void	check_op(t_command cmd, t_env_tools *env, char ***heredoc)
 	{
 		if (i == cmd.used_space - 1)
 			break ;
-		save_original_fd(&t);
+		check_op_norm(&t, i, cmd);
 		if (cmd.command[i].tok == T_DBLOR)
 		{
 			ft_or_exec(env, cmd, i + 1, &t);

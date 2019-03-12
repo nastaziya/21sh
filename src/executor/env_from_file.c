@@ -13,6 +13,7 @@
 
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
+#include "../../inc/exec.h"
 #include <fcntl.h>
 
 static void		first_realloc_path(char **s1, char *s2)
@@ -57,4 +58,26 @@ char			*get_envpath_from_file(void)
 	}
 	ft_free_av(paths);
 	return (path);
+}
+
+int				is_here(t_token_type *red, int size)
+{
+	int i;
+
+	i = 0;
+	while (i < size)
+	{
+		if (red[i] == T_DBL_LESS)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void			check_op_norm(t_exec_redir *t, int i, t_command cmd)
+{
+	save_original_fd(t);
+	if (!is_here(cmd.command[i].redirection.red,
+		cmd.command[i].redirection.used_space) && i > t->count_here)
+		(t->count_here)++;
 }

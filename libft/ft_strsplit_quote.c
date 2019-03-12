@@ -13,7 +13,6 @@
 
 #include "libft.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 static int		isnotlegit(char c, char delimitor)
 {

@@ -17,8 +17,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <stdio.h>
-
 static int		ft_stock2line(char **line, char **stock)
 {
 	int		len;

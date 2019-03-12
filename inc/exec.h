@@ -40,6 +40,7 @@ typedef struct	s_exec_redir
 	int			i_hdoc;
 	t_pipe		pipe_tools;
 	char		*file_name;
+	int			count_here;
 }				t_exec_redir;
 
 /*
@@ -106,5 +107,12 @@ int				expand_filename(t_simp_com cmd, t_exec_redir *t, int i,
 void			process_redir_norm(t_exec_redir *t, int *i);
 void			norm_for_exit(t_dlist **history, t_lexer *lex, t_command *cmd,
 				t_env_tools *env);
+
+/*
+*** - env_from_file.c
+*/
+
+void			check_op_norm(t_exec_redir *t, int i, t_command cmd);
+int				is_here(t_token_type *red, int size);
 
 #endif
