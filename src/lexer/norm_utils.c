@@ -24,7 +24,10 @@ int			norm_quote_end(const char **s, t_norm *nm)
 {
 	if (S_QUOTE && !manage_back_quote(*s, nm->prev) &&
 			!ft_string_to_lexer_quote_management(s, nm) &&
-			**s && (*(*s) + 1) && (*(*s) + 1) != ' ' && (*s)++)
+			**s && (*(*s) + 1) && (*(*s) + 1) != ' ')
+	{
+		(*s)++;
 		return (1);
+	}
 	return (0);
 }
