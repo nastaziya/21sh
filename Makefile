@@ -7,7 +7,7 @@ PURPLE=\033[0;35m
 
 NAME =		21sh
 CC = 		gcc -Wall -Wextra -Werror
-FLAGS = 	-g 
+FLAGS = 	
 DEL =		rm -rf
 
 SRC_PATH = ./src/
@@ -136,7 +136,7 @@ clean:
 	@echo "$(JAUNE)$(NAME): Removing $(NAME) ./obj/$(NOCOLOR)"
 
 fclean: clean
-	@/bin/rm -f $(NAME)
+	@/bin/rm -rf $(NAME)
 	@$(MAKE) fclean -C ./libft
 	@echo "$(JAUNE)$(NAME): Removing executable$(NOCOLOR)"
 
