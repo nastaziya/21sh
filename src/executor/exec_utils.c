@@ -16,9 +16,10 @@
 #include "../../inc/expansion.h"
 #include "../../inc/exec.h"
 
-void	path_str(char **envs, char ***paths)
+void	path_str(char **envs, char ***paths, t_env_tools *env)
 {
 	*paths = ft_find_path_and_split(envs);
+	env->t = NULL;
 }
 
 void	check_path_loop(char **path_env, char **path, char **str, int *count)

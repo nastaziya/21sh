@@ -12,6 +12,8 @@
 /* ************************************************************************** */
 
 #include "../../inc/builtin.h"
+#include "../../inc/sh.h"
+#include "../../inc/hash_table.h"
 
 /*
 *** - Aim of the function :
@@ -105,6 +107,8 @@ int		ft_exec_command(t_env_tools *env, char **cmd, int fork)
 			return (ft_builtin_env(cmd, &(env->env_cpy)));
 		else if (!ft_strcmp("exit", cmd[0]))
 			return (ft_builtin_exit(cmd, env));
+		else if (!ft_strcmp("hash", cmd[0]))
+			return (ft_builtin_hash(cmd, env));
 		else
 			return (error_exec_or_exec(env->paths, cmd, env->env_cpy, fork));
 	}
