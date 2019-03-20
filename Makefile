@@ -7,7 +7,8 @@ PURPLE=\033[0;35m
 
 NAME =		21sh
 CC = 		gcc -Wall -Wextra -Werror
-FLAGS = 	-fsanitize=address -g3
+# FLAGS = 	-fsanitize=address -g3
+FLAGS = 	-g
 DEL =		rm -rf
 
 SRC_PATH = ./src/
@@ -99,6 +100,9 @@ HASH = hash/
 HASH_FILES =	hash.c\
 				prime.c\
 				new_elements.c\
+				resize_hash.c\
+				hash_function.c\
+				insert_element_hash.c\
 
 HASH_SRC = $(addprefix $(HASH), $(HASH_FILES)) 
 SRC = $(addprefix $(SRC_PATH), $(EXP_SRC) $(BUILTINS_SRC) $(LEX_SRC) $(PARSER_SRC) $(TERM_SRC) $(EXEC_SRC) $(HASH_SRC)) 

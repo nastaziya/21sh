@@ -28,6 +28,7 @@ t_hitem     *new_element(char *key, char *value)
         return (NULL);
     item->key = strdup(key);
     item->value = strdup(value);
+    item->nb_used = 0;
     return (item);
 }
 

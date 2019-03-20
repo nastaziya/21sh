@@ -38,7 +38,7 @@ void        resize_table(t_htable* table, const int base_size)
     tmp_items = table->items;
     table->items = new->items;
     new->items = tmp_items;
-    delete_hash_table(new);
+    delete_hash_table(&new);
 }
 
 void        resize_table_up(t_htable* table)

@@ -37,19 +37,19 @@ void        delete_element(t_hitem* el)
 *** - Delete the Hash Table
 */
 
-void        delete_hash_table(t_htable* table)
+void        delete_hash_table(t_htable** table)
 {
     int         i;
     
     i = 0;
-    while (++i < table->size)
+    while (++i < (*table)->size)
     {
-        if (table->items[i] != NULL)
-            delete_element(table->items[i]);
+        if ((*table)->items[i] != NULL)
+            delete_element((*table)->items[i]);
     }
-    free(table->items);
-    free(table);
-    table = NULL;
+    free((*table)->items);
+    free((*table));
+    (*table) = NULL;
 }
 
 char        *search_element(t_htable* table, char* key)
@@ -63,13 +63,48 @@ char        *search_element(t_htable* table, char* key)
     i = 1;
     while (item != NULL)
     {
-        if (strcmp(item->key, key) == 0)
+        if (ft_strcmp(item->key, key) == 0)
             return (item->value);
         index = ft_get_hash(key, table->size, i);
         item = table->items[index];
         i++;
     }
     return (NULL);
+}
+
+int         count_size_number(int nb)
+{
+    int i;
+
+    i = 1;
+    while (nb /=10)
+        i++;
+    return (i);
+}
+
+void        ft_print_hash(t_env_tools *env)
+{
+    int     i;
+    int     size;
+
+    i = -1;
+    if (!env->t)
+        ft_putendl_fd("hash: hash table empty", 1);
+    else
+    {
+        ft_putendl_fd("hits	command", 1);
+        while (++i < env->t->size)
+        {
+            if (env->t->items[i] != NULL)
+            {
+                size = count_size_number(env->t->items[i]->nb_used);
+                while (size++ < 4)
+                    ft_putchar_fd(' ', 1);
+                dprintf(1, "%d	", env->t->items[i]->nb_used);
+                ft_putendl_fd(env->t->items[i]->value, 1);
+            }
+        }
+    }
 }
 
 int         ft_builtin_hash(char **cmd, t_env_tools *env)
@@ -80,16 +115,17 @@ int         ft_builtin_hash(char **cmd, t_env_tools *env)
     i = -1;
     len = ft_len_array_char(cmd);
     if (len == 1)
-        ft_print_hash(env->t);
-    else
-    {
-        
-    }
-    
+        ft_print_hash(env);
+
     // (void)cmd;
     (void)env;
-    // env->t = new_hash_table();
+    if (!env->t)
+        env->t = new_hash_table();
+    insert_element(env->t, "ls", "/usr/bin/ls");
     // insert_element(env->t, "ls", "/usr/bin/ls");
+    // insert_element(env->t, "lsi", "/usr/bin/ls1");
+    // insert_element(env->t, "lsi", "/usr/bin/ls1");
+    ft_print_hash(env);
     // insert_element(env->t, "lsi", "/usr/bin/ls1");
     // insert_element(env->t, "lso", "/usr/bin/ls2");
     // insert_element(env->t, "lsa", "/usr/bin/ls3");
@@ -110,7 +146,8 @@ int         ft_builtin_hash(char **cmd, t_env_tools *env)
     // dprintf(1, "retrieve: |%s|\n", search_element(env->t, "ooooooo"));
     // dprintf(1, "hash_i: %d\n", ft_get_hash("/usr/bin/vim", 53, 0));
     // dprintf(1, "hash_LOL: %d\n", ht_hash("/usr/bin/vim", 53, 0));
-    // delete_hash_table(env->t);
+    // delete_hash_table(&(env->t));
+    // env->t = NULL;
     return (0);
 }
 

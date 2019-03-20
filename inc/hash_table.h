@@ -46,13 +46,16 @@ typedef struct      s_htable
 *** - prime.c
 */
 
-int				ft_find_next_prime(int nb);
+int			ft_find_next_prime(int nb);
 /*
 *** - hash.c
 */
 
 void        resize_table_up(t_htable* table);
-void        insert_element(t_htable* table, char *key, char *value);
+// void        insert_element(t_htable* table, char *key, char *value);
+void        delete_hash_table(t_htable** table);
+char        *search_element(t_htable* table, char* key);
+void        delete_element(t_hitem* el);
 
 /*
 *** - new_element.c

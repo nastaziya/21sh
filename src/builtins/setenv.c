@@ -106,7 +106,7 @@ void			ft_builtin_setenv_2(char *av, char ***c_env, char ***paths,
 	{
 		*paths = ft_strsplit(ft_strchr(tmp, '=') + 1, ':');
 		if (env->t)
-			delete_hash_table(env->t);
+			delete_hash_table(&(env->t));
 	}
 	if ((*c_env)[i])
 		ft_builtin_setenv_2_norm(i, c_env, tmp);
