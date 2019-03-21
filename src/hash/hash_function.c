@@ -22,14 +22,14 @@
 
 long        ft_exponent(int prime, int len)
 {
-    double      nb;
-    int         i;
+	double      nb;
+	int         i;
 
-    i = -1;
-    nb = 1;
-    while (++i < len)
-        nb = nb * prime;
-    return (nb);
+	i = -1;
+	nb = 1;
+	while (++i < len)
+		nb = nb * prime;
+	return (nb);
 }
 
 /*
@@ -41,19 +41,19 @@ long        ft_exponent(int prime, int len)
 
 int         ft_hash_generic(char *str, int prime, int size_table)
 {
-    long    index;
-    int     i;
-    int     len;
+	long    index;
+	int     i;
+	int     len;
 
-    index = 0;
-    i = -1;
-    len = ft_strlen(str);
-    while (++i < len)
-    {
-        index += (long)ft_exponent(prime, len - (i+1)) * str[i];
-        index = index % size_table;
-    }
-    return ((int)index);
+	index = 0;
+	i = -1;
+	len = ft_strlen(str);
+	while (++i < len)
+	{
+		index += (long)ft_exponent(prime, len - (i+1)) * str[i];
+		index = index % size_table;
+	}
+	return ((int)index);
 }
 
 /*
@@ -67,10 +67,10 @@ int         ft_hash_generic(char *str, int prime, int size_table)
 
 int         ft_get_hash(char *str, int size_table, int attempt)
 {
-    int hash_a;
-    int hash_b;
-    
-    hash_a = ft_hash_generic(str, HT_PRIME_1, size_table);
-    hash_b = ft_hash_generic(str, HT_PRIME_2, size_table);
-    return ((hash_a + (attempt * (hash_b + 1))) % size_table);
+	int hash_a;
+	int hash_b;
+	
+	hash_a = ft_hash_generic(str, HT_PRIME_1, size_table);
+	hash_b = ft_hash_generic(str, HT_PRIME_2, size_table);
+	return ((hash_a + (attempt * (hash_b + 1))) % size_table);
 }

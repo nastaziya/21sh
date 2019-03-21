@@ -54,7 +54,9 @@ int		check_path(char **path_env, char **path, char **str)
 
 	count = 0;
 	if (path_env != NULL)
+	{
 		check_path_loop(path_env, path, str, &count);
+	}
 	return (count);
 }
 
