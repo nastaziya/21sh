@@ -17,6 +17,8 @@
 # define HT_PRIME_1 151
 # define HT_PRIME_2 163
 # define INITIAL_SIZE 50
+# define TO_RESET 1
+# define NO_RESET 0
 
 /*
 *** - Struct that represents one element (one Hash) of

@@ -72,5 +72,5 @@ int         ft_get_hash(char *str, int size_table, int attempt)
     
     hash_a = ft_hash_generic(str, HT_PRIME_1, size_table);
     hash_b = ft_hash_generic(str, HT_PRIME_2, size_table);
-    return (hash_a + (attempt * (hash_b + 1))) % size_table;
+    return ((hash_a + (attempt * (hash_b + 1))) % size_table);
 }

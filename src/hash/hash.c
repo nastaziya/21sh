@@ -111,21 +111,75 @@ int         ft_builtin_hash(char **cmd, t_env_tools *env)
 {
     int			i;
     int         len;
+    int         boul;
+    char        *path;
 
     i = -1;
+    path = NULL;
     len = ft_len_array_char(cmd);
+    boul = NO_RESET;
     if (len == 1)
         ft_print_hash(env);
+    else
+    {
+        while (cmd[++i] && cmd[i][0] == '-')
+        {
 
+            if (ft_usage_is_good("r", cmd[i]))
+            {
+                dprintf(1, "bash: hash: %s: invalid option\n", cmd[i]);
+                dprintf(1, "hash: usage: hash [-r] [name ...]\n");
+                return (2);
+            }
+            boul = TO_RESET;
+        }
+        if (boul == TO_RESET)
+            delete_hash_table(&(env->t));
+        while (cmd[++i])
+        {
+            if (ft_strchr(cmd[i], '/'))
+                ;
+            else
+            {
+                if (env->paths)
+                {
+                    check_path(env->paths, &path, cmd[i]);
+                    if (!path)
+                    {
+                        dprintf(1, "%s", "bash: hash:");
+                        dprintf(1, "%s: not found\n", cmd[i]);
+                    }
+                    else
+                    {
+                        if (!env->t)
+                            env->t = new_hash_table();
+                        insert_element(env->t, cmd[i], path);
+                    }
+                    // strjoin le path
+                    // si binaire existe dans le path
+                    // l'ajouter
+                    // sinon, error
+                    // et rajouter lors de l'exécution
+                    // le search, et l'incrémentation
+                }
+            }
+            if (path != NULL)
+                free(path);
+            path = NULL;
+        }
+        // j'avance à la prochaine commande
+
+    }
+    
     // (void)cmd;
-    (void)env;
-    if (!env->t)
-        env->t = new_hash_table();
-    insert_element(env->t, "ls", "/usr/bin/ls");
+    // (void)env;
+    // if (!env->t)
+    //     env->t = new_hash_table();
+    // insert_element(env->t, "ls", "/usr/bin/ls");
     // insert_element(env->t, "ls", "/usr/bin/ls");
     // insert_element(env->t, "lsi", "/usr/bin/ls1");
     // insert_element(env->t, "lsi", "/usr/bin/ls1");
-    ft_print_hash(env);
+    // ft_print_hash(env);
     // insert_element(env->t, "lsi", "/usr/bin/ls1");
     // insert_element(env->t, "lso", "/usr/bin/ls2");
     // insert_element(env->t, "lsa", "/usr/bin/ls3");
@@ -145,6 +199,7 @@ int         ft_builtin_hash(char **cmd, t_env_tools *env)
     // dprintf(1, "retrieve: |%s|\n", search_element(env->t, "lsu3355"));
     // dprintf(1, "retrieve: |%s|\n", search_element(env->t, "ooooooo"));
     // dprintf(1, "hash_i: %d\n", ft_get_hash("/usr/bin/vim", 53, 0));
+    // dprintf(1, "hash_i: %d\n", ft_get_hash("/usr/bin/vim/lld/ooooo/eeee/zzzz/e", 53, 0));
     // dprintf(1, "hash_LOL: %d\n", ht_hash("/usr/bin/vim", 53, 0));
     // delete_hash_table(&(env->t));
     // env->t = NULL;
