@@ -97,4 +97,10 @@ char				*get_envpath_from_file(void);
 
 int					ft_builtin_hash(char **cmd, t_env_tools *env);
 
+/*
+*** - delete_print_search.c
+*/
+
+void				ft_print_hash(t_env_tools *env);
+
 #endif

@@ -16,7 +16,7 @@
 #include "../../inc/hash_table.h"
 #include "stdio.h"
 
-void		ft_check_arguments(int *i, char **cmd, int *boul, t_env_tools *env)
+int			ft_check_arguments(int *i, char **cmd, int *boul, t_env_tools *env)
 {
 	while (cmd[*i] && cmd[*i][0] == '-')
 	{
@@ -27,11 +27,12 @@ void		ft_check_arguments(int *i, char **cmd, int *boul, t_env_tools *env)
 			dprintf(1, "hash: usage: hash [-r] [name ...]\n");
 			return (2);
 		}
-		boul = TO_RESET;
+		*boul = TO_RESET;
 		(*i)++;
 	}
-	if (--(*i) && boul == TO_RESET && env->t)
+	if (--(*i) && *boul == TO_RESET && env->t)
 		delete_hash_table(&(env->t));
+	return (0);
 }
 
 void		add_binary_to_hash(int *i, char **cmd, t_env_tools *env,
@@ -77,7 +78,8 @@ int			ft_builtin_hash(char **cmd, t_env_tools *env)
 		ft_print_hash(env);
 	else
 	{
-		ft_check_arguments(&i, cmd, &boul, env);
+		if (ft_check_arguments(&i, cmd, &boul, env))
+			return (2);
 		add_binary_to_hash(&i, cmd, env, &path);
 		if (path != NULL)
 			free(path);

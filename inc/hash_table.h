@@ -14,6 +14,7 @@
 #ifndef HASH_TABLE_H
 # define HASH_TABLE_H
 
+# include "sh.h"
 # define HT_PRIME_1 151
 # define HT_PRIME_2 163
 # define INITIAL_SIZE 50
@@ -58,7 +59,6 @@ void			resize_table_up(t_htable *table);
 void			delete_hash_table(t_htable **table);
 char			*search_element(t_htable *table, char *key);
 void			delete_element(t_hitem *el);
-void			ft_print_hash(t_env_tools *env);
 
 /*
 *** - new_element.c
