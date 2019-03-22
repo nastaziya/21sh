@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/02/06 00:06:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/12 22:02:00 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/03/22 13:40:50 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -173,7 +173,8 @@ int				ctrl_d_management(t_tcap *caps);
 int				ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
 					t_norm_cd *n);
 void			ft_norm_env(char **av, int i, t_norm_env *t, char ***c_env);
-int				ft_builtin_env2(char **av, char **cp_c_env, int i, t_env_tools *env);
+int				ft_builtin_env2(char **av, char **cp_c_env, int i, t_env_tools
+					*env);
 int				ft_manage_option_i_env(char ***cp_c_env, char **env);
 char			*ft_array_char_to_str_replace_env(char **c_env, int avoid,
 					char *av);

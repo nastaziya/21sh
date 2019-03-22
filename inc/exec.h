@@ -91,6 +91,8 @@ int				ft_perror_norm_dir(char *str1, int fd);
 int				ft_print_error_directory(char *str, char *str1, char *str2,
 					int fd);
 int				manage_here_doc(t_simp_com cmd, int i, t_exec_redir *t, int k);
+int				check_hash_then_path(char **paths, char **path, char **str,
+					t_env_tools *env);
 
 /*
 *** - utils_fd.c
