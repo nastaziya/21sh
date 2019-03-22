@@ -86,18 +86,35 @@ int		check_errors_exec(char *path, char **str, int in_env)
 	return (res);
 }
 
+int		check_hash_then_path(char **paths, char **path, char **str,
+			t_env_tools *env)
+{
+	char *tmp;
+
+	tmp = NULL;
+	if (env->t)
+		tmp = search_element(env->t, *str);
+	if (tmp)
+		*path = ft_strdup(tmp);
+	if (!*path)
+		check_path(paths, path, str);
+	return (0);
+}
+
 int		error_exec_or_exec(char **paths, char **str,
-			char **env, int in_env)
+			char **env, t_env_tools *envi)
 {
 	int			res;
 	char		*path;
+	int			in_env;
 
 	path = NULL;
 	res = 0;
+	in_env = envi->in_env;
 	if (str[0] && ft_strchr(str[0], '/'))
 		path = ft_strdup(str[0]);
 	else
-		check_path(paths, &path, str);
+		check_hash_then_path(paths, &path, str, envi);
 	if ((res = check_errors_exec(path, str, in_env)))
 		;
 	else

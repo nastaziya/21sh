@@ -38,10 +38,11 @@ typedef struct	s_norm_cd
 
 typedef struct	s_norm_env
 {
-	int		argc;
-	char	**cp_c_env;
-	int		stop;
-	int		ret;
+	int			argc;
+	char		**cp_c_env;
+	int			stop;
+	int			ret;
+	t_env_tools	*env;
 }				t_norm_env;
 
 /*
@@ -150,7 +151,7 @@ void			ft_print_env(char ***c_env);
 *** - env.c
 */
 
-int				ft_builtin_env(char **av, char ***c_env);
+int				ft_builtin_env(char **av, char ***c_env, t_env_tools *env);
 char			**ft_find_path_and_split(char **c_env);
 
 /*
@@ -172,7 +173,7 @@ int				ctrl_d_management(t_tcap *caps);
 int				ft_find_path_and_cd(char c, char ***c_env, t_env_tools *env,
 					t_norm_cd *n);
 void			ft_norm_env(char **av, int i, t_norm_env *t, char ***c_env);
-int				ft_builtin_env2(char **av, char **cp_c_env, int i, int ret);
+int				ft_builtin_env2(char **av, char **cp_c_env, int i, t_env_tools *env);
 int				ft_manage_option_i_env(char ***cp_c_env, char **env);
 char			*ft_array_char_to_str_replace_env(char **c_env, int avoid,
 					char *av);

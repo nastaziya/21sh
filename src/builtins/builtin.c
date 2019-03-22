@@ -104,13 +104,13 @@ int		ft_exec_command(t_env_tools *env, char **cmd, int fork)
 		else if (!ft_strcmp("cd", cmd[0]))
 			return (ft_builtin_cd(cmd, &(env->env_cpy), env));
 		else if (!ft_strcmp("env", cmd[0]))
-			return (ft_builtin_env(cmd, &(env->env_cpy)));
+			return (ft_builtin_env(cmd, &(env->env_cpy), env));
 		else if (!ft_strcmp("exit", cmd[0]))
 			return (ft_builtin_exit(cmd, env));
 		else if (!ft_strcmp("hash", cmd[0]))
 			return (ft_builtin_hash(cmd, env));
-		else
-			return (error_exec_or_exec(env->paths, cmd, env->env_cpy, fork));
+		else if ((env->in_env = fork))
+			return (error_exec_or_exec(env->paths, cmd, env->env_cpy, env));
 	}
 	return (0);
 }

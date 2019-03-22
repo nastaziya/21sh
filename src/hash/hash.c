@@ -63,7 +63,7 @@ char        *search_element(t_htable* table, char* key)
 	i = 1;
 	while (item != NULL)
 	{
-		if (ft_strcmp(item->key, key) == 0)
+		if (ft_strcmp(item->key, key) == 0 && item->nb_used++)
 			return (item->value);
 		index = ft_get_hash(key, table->size, i);
 		item = table->items[index];
@@ -156,12 +156,6 @@ int			ft_builtin_hash(char **cmd, t_env_tools *env)
 							env->t = new_hash_table();
 						insert_element(env->t, cmd[i], path);
 					}
-					// strjoin le path
-					// si binaire existe dans le path
-					// l'ajouter
-					// sinon, error
-					// et rajouter lors de l'exécution
-					// le search, et l'incrémentation
 				}
 			}
 			if (path != NULL)
@@ -169,11 +163,23 @@ int			ft_builtin_hash(char **cmd, t_env_tools *env)
 			path = NULL;
 		}
 	}
+	return (0);
+}
+
+// A FAIRE -> MODIFIER
 	
 	// (void)cmd;
 	// (void)env;
 	// if (!env->t)
 	//     env->t = new_hash_table();
+
+	// strjoin le path
+	// si binaire existe dans le path
+	// l'ajouter
+	// sinon, error
+	// et rajouter lors de l'exécution
+	// le search, et l'incrémentation
+
 	// insert_element(env->t, "ls", "/usr/bin/ls");
 	// insert_element(env->t, "ls", "/usr/bin/ls");
 	// insert_element(env->t, "lsi", "/usr/bin/ls1");
@@ -186,7 +192,7 @@ int			ft_builtin_hash(char **cmd, t_env_tools *env)
 	// insert_element(env->t, "lsp", "/usr/bin/ls5");
 	// insert_element(env->t, "lsuu", "/usr/bin/ls6");
 	// insert_element(env->t, "lsu33", "/usr/bin/ls7");
-	// insert_element(env->t, "lsu3355", "/usr/bin/ls8");
+	
 	// dprintf(1, "retrieve: |%s|\n", search_element(env->t, "ls"));
 	// dprintf(1, "retrieve: |%s|\n", search_element(env->t, "lsi"));
 	// dprintf(1, "retrieve: |%s|\n", search_element(env->t, "lso"));
@@ -202,12 +208,7 @@ int			ft_builtin_hash(char **cmd, t_env_tools *env)
 	// dprintf(1, "hash_LOL: %d\n", ht_hash("/usr/bin/vim", 53, 0));
 	// delete_hash_table(&(env->t));
 	// env->t = NULL;
-	return (0);
-}
-
-// A FAIRE -> MODIFIER
-
-
+// insert_element(env->t, "lsu3355", "/usr/bin/ls8");
 // si changement de PATH, remettre à 0
 // si "-r" , remettre à 0
 // si exécution de commande, utiliser fonction search element
