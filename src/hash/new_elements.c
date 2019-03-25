@@ -26,8 +26,8 @@ t_hitem		*new_element(char *key, char *value)
 
 	if (!(item = malloc(sizeof(t_hitem))))
 		return (NULL);
-	item->key = strdup(key);
-	item->value = strdup(value);
+	item->key = ft_strdup(key);
+	item->value = ft_strdup(value);
 	item->nb_used = 0;
 	return (item);
 }
