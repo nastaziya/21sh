@@ -109,6 +109,8 @@ int		ft_exec_command(t_env_tools *env, char **cmd, int fork)
 			return (ft_builtin_exit(cmd, env));
 		else if (!ft_strcmp("hash", cmd[0]))
 			return (ft_builtin_hash(cmd, env));
+		else if (!ft_strcmp("test", cmd[0]))
+			return (ft_builtin_test(cmd));
 		else if ((env->in_env = fork))
 			return (error_exec_or_exec(env->paths, cmd, env->env_cpy, env));
 	}
