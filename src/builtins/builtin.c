@@ -90,7 +90,7 @@ int		ft_usage_is_good(char *limitor, char *str)
 *** - and returns the proper int
 */
 
-int		ft_exec_command(t_env_tools *env, char **cmd, int fork)
+int		ft_exec_command(t_env_tools *env, char **cmd, int fork, char **raw_cmd)
 {
 	if (cmd && cmd[0])
 	{
@@ -110,7 +110,7 @@ int		ft_exec_command(t_env_tools *env, char **cmd, int fork)
 		else if (!ft_strcmp("hash", cmd[0]))
 			return (ft_builtin_hash(cmd, env));
 		else if (!ft_strcmp("test", cmd[0]))
-			return (ft_builtin_test(cmd));
+			return (ft_builtin_test(cmd, raw_cmd));
 		else if ((env->in_env = fork))
 			return (error_exec_or_exec(env->paths, cmd, env->env_cpy, env));
 	}

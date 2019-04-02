@@ -66,6 +66,114 @@ typedef struct	s_nom_pwd
 }				t_norm_pwd;
 
 /*
+*** - Test builtin Part
+*/
+
+/*
+*** - Enum for the tok of "-d" :
+*** - T_B is for option -b
+*** - T_LL is for option -L
+*** - 1x "B" --> Lowercase in the option
+*** - 2x "L" --> Uppercase in the option 
+*/
+
+typedef enum	e_test_tok
+{
+	T_B,
+	T_C,
+	T_D,
+	T_E,
+	T_F,
+	T_G,
+	T_LL,
+	T_P,
+	T_R,
+	T_SS,
+	T_S,
+	T_U,
+	T_W,
+	T_X,
+	T_Z,
+	T_SEQ,
+	T_SNE,
+	T_EQ,
+	T_NE,
+	T_GE,
+	T_LT,
+	T_LE,
+	T_EXCLAM,
+	T_WORDS,
+	T_QUOTE,
+	// T_EMPTY
+}				t_test_tok;
+
+/*
+*** - Enum for the types :
+*** - Not -> "!"
+*** - Birany -> "="
+*** - Unary -> "-d"
+*** - Args -> Word
+*/
+
+typedef enum	e_type_test
+{
+	T_ARGS,
+	T_NOT,
+	T_BINARY,
+	T_UNARY,
+	T_QU,
+}				t_type_test;
+
+/*
+*** - Struct used for the initialization
+*** - of the array below
+*/
+
+typedef struct		s_args_tok
+{
+	char				*op;
+	int					size;
+	t_test_tok			tok;
+	t_type_test			type;
+}					t_args_tok;
+
+/*
+*** - Array used to facilitate the tokenization
+*** - for the test command
+*/
+
+static const t_args_tok	g_args_tok[] = {
+	{"-b", 2, T_B, T_UNARY},
+	{"-c", 2, T_C, T_UNARY},
+	{"-d", 2, T_D, T_UNARY},
+	{"-e", 2, T_E, T_UNARY},
+	{"-f", 2, T_F, T_UNARY},
+	{"-g", 2, T_G, T_UNARY},
+	{"-L", 2, T_LL, T_UNARY},
+	{"-p", 2, T_P, T_UNARY},
+	{"-r", 2, T_R, T_UNARY},
+	{"-S", 2, T_SS, T_UNARY},
+	{"-s", 2, T_S, T_UNARY},
+	{"-u", 2, T_U, T_UNARY},
+	{"-w", 2, T_W, T_UNARY},
+	{"-x", 2, T_X, T_UNARY},
+	{"-z", 2, T_Z, T_UNARY},
+	{"=", 1, T_SEQ, T_BINARY},
+	{"!=", 2, T_SNE, T_BINARY},
+	{"-eq", 3, T_EQ, T_BINARY},
+	{"-ne", 3, T_NE, T_BINARY},
+	{"-ge", 3, T_GE, T_BINARY},
+	{"-lt", 3, T_LT, T_BINARY},
+	{"-le", 3, T_LE, T_BINARY},
+	{"!", 1, T_EXCLAM, T_NOT},
+	{NULL, 1, 0, 0}
+};
+
+/*
+*** - End builtin Part
+*/
+
+/*
 *** - builtin.c
 */
 
@@ -75,7 +183,7 @@ int				ft_usage_error_env(char *command, char *btwn, char *after,
 int				ft_int_error(char *str, int fd, int ret);
 int				ft_int_print_error(char *str, char *str2, char *str3, int fd);
 int				ft_len_array_char(char **av);
-int				ft_exec_command(t_env_tools *env, char **cmd, int fork);
+int				ft_exec_command(t_env_tools *env, char **cmd, int fork, char **raw_cmd);
 
 /*
 *** - Nouvelle feuille
@@ -178,5 +286,33 @@ int				ft_builtin_env2(char **av, char **cp_c_env, int i, t_env_tools
 int				ft_manage_option_i_env(char ***cp_c_env, char **env);
 char			*ft_array_char_to_str_replace_env(char **c_env, int avoid,
 					char *av);
+
+/*
+*** - test.c
+*/
+
+int				ft_builtin_test(char **cmd, char **raw_cmd);
+int             process_exclamation(int nb, int ret_in);
+int             process_unary(t_test_tok tok, char *arg);
+int             process_binary(char *str1, t_test_tok tok, char *str2);
+
+/*
+*** - utils_test.c
+*/
+
+t_args_tok      **initialize_arr_tok(int len);
+void            tokenize_test(char **cmd, t_args_tok  ***t);
+int				free_tokens(t_args_tok  ***t, int len);
+int				ft_len_array_char_test(char **av);
+
+/*
+*** - process_2_3args_test.c
+*/
+
+int             is_all(t_args_tok *t);
+int             is_any(t_args_tok *t);
+int             is_s_bin(t_args_tok *t);
+int             ft_test_2_args(t_args_tok  **t, int boul);
+int             ft_test_3_args(t_args_tok  **t, int boul);
 
 #endif

@@ -7,8 +7,8 @@ PURPLE=\033[0;35m
 
 NAME =		21sh
 CC = 		gcc -Wall -Wextra -Werror
-# FLAGS = 	-fsanitize=address -g3
-FLAGS = 	-g
+FLAGS = 	-fsanitize=address -g3
+# FLAGS = 	-g
 DEL =		rm -rf
 
 SRC_PATH = ./src/
@@ -86,6 +86,9 @@ BUILT_FILES = 	builtin.c\
 				utils_2.c\
 				utils_env.c\
 				utils_env_2.c\
+				test.c\
+				utils_test.c\
+				process_2_3args_test.c\
 
 BUILTINS_SRC = $(addprefix $(BUILTINS), $(BUILT_FILES)) 
 EXP = expansion/
