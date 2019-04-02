@@ -18,13 +18,13 @@
 /*
 *** - Aim of the function :
 *** - checks if type belongs to the ALL set
-*** - ALL = ARG + UNARY + BINARY
+*** - ALL = ARG + UNARY + BINARY + EXPANSED
 */
 
 int             is_all(t_args_tok *t)
 {
     if (t->type == T_ARGS || t->type == T_UNARY ||
-        t->type == T_BINARY)
+        t->type == T_BINARY || t->type == T_EXPANSED)
         return (1);
     return (0);
 }
@@ -32,13 +32,14 @@ int             is_all(t_args_tok *t)
 /*
 *** - Aim of the function :
 *** - checks if type belongs to the ANY set
-*** - ANY = ALL + NOT
+*** - ANY = ALL + NOT + EXPANSED
 */
 
 int             is_any(t_args_tok *t)
 {
     if (t->type == T_ARGS || t->type == T_UNARY ||
-        t->type == T_BINARY || t->type == T_NOT)
+        t->type == T_BINARY || t->type == T_NOT
+        || t->type == T_EXPANSED)
         return (1);
     return (0);
 }
@@ -46,12 +47,13 @@ int             is_any(t_args_tok *t)
 /*
 *** - Aim of the function :
 *** - checks if type belongs to the S_BIN set
-*** - S_BIN = BINARY + UNARY + NOT
+*** - S_BIN = BINARY + UNARY + NOT + EXPANSED
 */
 
 int             is_s_bin(t_args_tok *t)
 {
-    if (t->type == T_UNARY || t->type == T_NOT || T_ARGS)
+    if (t->type == T_UNARY || t->type == T_NOT || T_ARGS || 
+        t->type == T_EXPANSED)
         return (1);
     return (0);
 }
@@ -69,7 +71,7 @@ int             ft_test_2_args(t_args_tok  **t, int boul)
     if (t[0]->type == T_UNARY)
         ret = process_unary(t[0]->tok, t[1]->op);
     else if (t[0]->type == T_NOT)
-        ret = process_exclamation(1, 0);
+        ret = process_exclam(1, 0);
     else
     {
         if (boul == 0)
@@ -92,7 +94,7 @@ int             ft_test_3_args(t_args_tok  **t, int boul)
     if (is_any(t[0]) && t[1]->type == T_BINARY && is_any(t[2]))
         ret = process_binary(t[0]->op, t[1]->tok, t[2]->op);
     else if (t[0]->type == T_NOT && t[1]->type == T_UNARY && is_any(t[2]))
-        ret = process_exclamation(1, process_unary(t[1]->tok, t[2]->op));
+        ret = process_exclam(1, process_unary(t[1]->tok, t[2]->op));
     else
     {
         if (t[0]->type == T_NOT && t[1]->type == T_NOT && is_any(t[2])
@@ -101,8 +103,9 @@ int             ft_test_3_args(t_args_tok  **t, int boul)
         else if (is_all(t[0]) && is_any(t[1]) && is_any(t[2]) && (ret = 2)
             && boul == 0)
             dprintf(1, "bash: test: %s: binary operator expected\n", t[1]->op);
-        else if (t[0]->type == T_NOT && t[1]->type == T_ARGS && is_any(t[2])
-            && (ret = 2) && boul == 0)
+        else if (t[0]->type == T_NOT && (t[1]->type == T_ARGS
+            || t[1]->type == T_EXPANSED) && is_any(t[2]) && (ret = 2)
+                && boul == 0)
             dprintf(1, "bash: test: %s: unary operator expected\n", t[1]->op);
     }
     return (ret);

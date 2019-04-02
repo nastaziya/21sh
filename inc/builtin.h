@@ -121,7 +121,7 @@ typedef enum	e_type_test
 	T_NOT,
 	T_BINARY,
 	T_UNARY,
-	T_QU,
+	T_EXPANSED,
 }				t_type_test;
 
 /*
@@ -292,18 +292,16 @@ char			*ft_array_char_to_str_replace_env(char **c_env, int avoid,
 */
 
 int				ft_builtin_test(char **cmd, char **raw_cmd);
-int             process_exclamation(int nb, int ret_in);
-int             process_unary(t_test_tok tok, char *arg);
-int             process_binary(char *str1, t_test_tok tok, char *str2);
+int             process_exclam(int nb, int ret_in);
 
 /*
 *** - utils_test.c
 */
 
 t_args_tok      **initialize_arr_tok(int len);
-void            tokenize_test(char **cmd, t_args_tok  ***t);
+void            tokenize_test(char **cmd, t_args_tok  ***t, char **raw_cmd);
 int				free_tokens(t_args_tok  ***t, int len);
-int				ft_len_array_char_test(char **av);
+int				ft_len_array_char_test(char **av, char **raw_av);
 
 /*
 *** - process_2_3args_test.c
@@ -314,5 +312,17 @@ int             is_any(t_args_tok *t);
 int             is_s_bin(t_args_tok *t);
 int             ft_test_2_args(t_args_tok  **t, int boul);
 int             ft_test_3_args(t_args_tok  **t, int boul);
+
+/*
+*** - process_binary.c
+*/
+
+int             process_binary(char *str1, t_test_tok tok, char *str2);
+
+/*
+*** - process_unary.c
+*/
+
+int             process_unary(t_test_tok tok, char *arg);
 
 #endif
