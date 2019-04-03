@@ -77,6 +77,7 @@ typedef struct	s_nom_pwd
 *** - 2x "L" --> Uppercase in the option 
 */
 
+// T_E
 typedef enum	e_test_tok
 {
 	T_B,
@@ -104,7 +105,6 @@ typedef enum	e_test_tok
 	T_EXCLAM,
 	T_WORDS,
 	T_QUOTE,
-	// T_EMPTY
 }				t_test_tok;
 
 /*
@@ -299,9 +299,9 @@ int             process_exclam(int nb, int ret_in);
 */
 
 t_args_tok      **initialize_arr_tok(int len);
-void            tokenize_test(char **cmd, t_args_tok  ***t, char **raw_cmd);
 int				free_tokens(t_args_tok  ***t, int len);
 int				ft_len_array_char_test(char **av, char **raw_av);
+int             is_real_str_after_expansion(char *cmd);
 
 /*
 *** - process_2_3args_test.c
@@ -324,5 +324,11 @@ int             process_binary(char *str1, t_test_tok tok, char *str2);
 */
 
 int             process_unary(t_test_tok tok, char *arg);
+
+/*
+*** - tokenize_test.c
+*/
+
+void            tokenize_test(char **cmd, t_args_tok  ***t, char **raw_cmd);
 
 #endif

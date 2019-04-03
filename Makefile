@@ -91,6 +91,7 @@ BUILT_FILES = 	builtin.c\
 				process_2_3args_test.c\
 				process_binary.c\
 				process_unary.c\
+				tokenize_test.c\
 
 BUILTINS_SRC = $(addprefix $(BUILTINS), $(BUILT_FILES)) 
 EXP = expansion/
