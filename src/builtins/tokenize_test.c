@@ -14,7 +14,69 @@
 #include "../../inc/sh.h"
 #include "../../inc/builtin.h"
 
-// void        tokenize_check_expansion_first(t_args_tok  ***t, char **cmd, char **raw_cmd, int i, int diff)
+/*
+*** - Aim of the function :
+*** - Tokenize the expansed words
+*** - For < "" > string, we assign the T_QUOTE tag, and the " " op
+*** - For < "  " > string, we assign the T_WORD tag, and 
+*** - the op == str + " " in order to differenciate the "" and " " str after
+*** - If the expansion is an empty variable, skip it -> $Dontexist -> skipped
+*/
+
+void        tokenize_check_expansion_first(t_args_tok  ***t, t_tok_norm p,
+                int *i, int *diff)
+{
+    if  (!ft_strcmp(p.raw_cmd[*i], "\"\"")
+        || !ft_strcmp(p.raw_cmd[*i], "\'\'"))
+    {
+        ((*t)[*i - *diff - 1])->op = ft_strdup(" ");
+        ((*t)[*i - *diff - 1])->size = 0;
+        ((*t)[*i - *diff - 1])->tok = T_QUOTE;
+        ((*t)[*i - *diff - 1])->type = T_EXPANSED;
+    }
+    else if (ft_strchr(p.raw_cmd[*i], '\"') || ft_strchr(p.raw_cmd[*i], '\''))
+    {
+        ((*t)[*i - *diff - 1])->op = ft_strjoin(p.cmd[*i], " ");
+        ((*t)[*i - *diff - 1])->size = ft_strlen(p.cmd[*i]);
+        ((*t)[*i - *diff - 1])->tok = T_WORDS;
+        ((*t)[*i - *diff - 1])->type = T_ARGS;
+    }
+    else
+        (*diff)++;
+}
+
+/*
+*** - Aim of the function :
+*** - First iterates on the array of command to see a pattern
+*** - If there's a match, we copy from the corresponding example
+*** - If not, this is a normal word, and we assign it the argument tag
+*/
+
+void            tokenize_from_pattern(t_args_tok  ***t, t_tok_norm p,
+                    int *i, int *diff)
+{
+    int     j;
+
+    j = -1;
+    while (g_args_tok[++j].op)
+    {
+        if (ft_strcmp(p.cmd[*i], g_args_tok[j].op) == 0)
+        {
+            ((*t)[*i - *diff - 1])->op = ft_strdup(g_args_tok[j].op);
+            ((*t)[*i - *diff - 1])->size = g_args_tok[j].size;
+            ((*t)[*i - *diff - 1])->tok = g_args_tok[j].tok;
+            ((*t)[*i - *diff - 1])->type = g_args_tok[j].type;
+            break ;
+        }
+    }
+    if (!g_args_tok[j].op)
+    {
+        ((*t)[*i - *diff - 1])->op = ft_strdup(p.cmd[*i]);
+        ((*t)[*i - *diff - 1])->size = ft_strlen(p.cmd[*i]);
+        ((*t)[*i - *diff - 1])->tok = T_WORDS;
+        ((*t)[*i - *diff - 1])->type = T_ARGS;
+    }
+}
 
 /*
 *** - Aim of the function :
@@ -27,53 +89,18 @@
 void            tokenize_test(char **cmd, t_args_tok  ***t, char **raw_cmd)
 {
     int                 i;
-    int                 j;
     int                 diff;
+    t_tok_norm          p;
 
     i = 0;
+    p.cmd = cmd;
+    p.raw_cmd = raw_cmd;
     diff = 0;
     while (cmd[++i])
     {
         if (is_real_str_after_expansion(cmd[i]))
-        {
-            if  (!ft_strcmp(raw_cmd[i], "\"\"") || !ft_strcmp(raw_cmd[i], "\'\'"))
-            {
-                ((*t)[i - diff - 1])->op = ft_strdup(" ");
-                ((*t)[i - diff - 1])->size = 0;
-                ((*t)[i - diff - 1])->tok = T_QUOTE;
-                ((*t)[i - diff - 1])->type = T_EXPANSED;
-            }
-            else if (ft_strchr(raw_cmd[i], '\"') || ft_strchr(raw_cmd[i], '\''))
-            {
-                ((*t)[i - diff - 1])->op = ft_strjoin(cmd[i], " ");
-                ((*t)[i - diff - 1])->size = ft_strlen(cmd[i]);
-                ((*t)[i - diff - 1])->tok = T_WORDS;
-                ((*t)[i - diff - 1])->type = T_ARGS;
-            }
-            else
-                diff++;
-        }
+            tokenize_check_expansion_first(t, p, &i, &diff);
         else
-        {
-            j = -1;
-            while (g_args_tok[++j].op)
-            {
-                if (ft_strcmp(cmd[i], g_args_tok[j].op) == 0)
-                {
-                    ((*t)[i - diff - 1])->op = ft_strdup(g_args_tok[j].op);
-                    ((*t)[i - diff - 1])->size = g_args_tok[j].size;
-                    ((*t)[i - diff - 1])->tok = g_args_tok[j].tok;
-                    ((*t)[i - diff - 1])->type = g_args_tok[j].type;
-                    break ;
-                }
-            }
-            if (!g_args_tok[j].op)
-            {
-                ((*t)[i - diff - 1])->op = ft_strdup(cmd[i]);
-                ((*t)[i - diff - 1])->size = ft_strlen(cmd[i]);
-                ((*t)[i - diff - 1])->tok = T_WORDS;
-                ((*t)[i - diff - 1])->type = T_ARGS;
-            }
-        }
+            tokenize_from_pattern(t, p, &i, &diff);
     }
 }

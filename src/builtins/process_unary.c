@@ -83,7 +83,7 @@ void             check_option(t_test_tok tok, struct stat buf, int *ret,
     else if (tok == T_C)
         *ret = (S_ISCHR(buf.st_mode) ? 0 : 1);
     else if (tok == T_D)
-        *ret = (buf.st_mode & S_IFDIR ? 0 : 1);
+    *ret = (S_ISDIR(buf.st_mode) ? 0 : 1);
     else if (tok == T_F)
         *ret = (S_ISREG(buf.st_mode) ? 0 : 1);
     else if (tok == T_G)
@@ -103,6 +103,11 @@ void             check_option(t_test_tok tok, struct stat buf, int *ret,
 /*
 *** - Aim of the function :
 *** - Process the Unary test
+*** - First, we find the full path of the parameter arg
+*** - Then we collect data on it (through stat)
+*** - if the file doesn't exist for these conditions, return 1
+*** - Otherwise, we continue and we check the return of the
+*** - corresponding option
 */
 
 int             process_unary(t_test_tok tok, char *arg)
@@ -113,8 +118,12 @@ int             process_unary(t_test_tok tok, char *arg)
 
     ret = 0;
     path = find_file_path(arg);
-    if ((stat(path, &buf) == -1) && tok == T_E && !ft_free(path))
+    if ((stat(path, &buf) == -1) &&
+        (tok == T_E || tok == T_R || tok == T_LL || tok == T_G
+        || tok == T_S || tok == T_U || tok == T_W || tok == T_X)
+        && !ft_free(path))
         return (1);
+    
     check_option(tok, buf, &ret, arg);
     free(path);
     return (ret);

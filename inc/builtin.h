@@ -170,6 +170,20 @@ static const t_args_tok	g_args_tok[] = {
 };
 
 /*
+*** - Struct for the norm of the tokenize function
+*/
+
+typedef struct			s_tok_norm
+{
+	char				**cmd;
+	char				**raw_cmd;
+	// t_args_tok			***t;
+	// int					i;
+	// int					j;
+	// int					diff;
+}						t_tok_norm;
+
+/*
 *** - End builtin Part
 */
 
