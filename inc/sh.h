@@ -21,6 +21,7 @@
 # include <sys/stat.h>
 # include "parser.h"
 # include "termcap.h"
+# include "hash_table.h"
 
 # define S_QUOTE (**s == '"' || **s == '\'')
 
@@ -41,16 +42,17 @@ typedef struct		s_env_tools
 	char			*home;
 	int				g_return_value;
 	t_norm_all		p;
-
+	t_htable		*t;
+	int				in_env;
 }					t_env_tools;
 
 int					size_str(char **environ);
 char				**copy_env(char **environ, int size, t_env_tools *env);
 void				set_path(char *str, char ***paths);
-void				path_str(char **envs, char ***paths);
+void				path_str(char **envs, char ***paths, t_env_tools *env);
 int					exec(char *path, char **str, char **env, int fork_val);
 int					error_exec_or_exec(char **paths, char **str, char **env,
-						int in_env);
+						t_env_tools *envi);
 void				free_str(char **str);
 
 /*
@@ -88,5 +90,17 @@ int					ft_manage_heredoc(t_lexer *lexer, char ***heredoc,
 */
 
 char				*get_envpath_from_file(void);
+
+/*
+*** - hash.c
+*/
+
+int					ft_builtin_hash(char **cmd, t_env_tools *env);
+
+/*
+*** - delete_print_search.c
+*/
+
+void				ft_print_hash(t_env_tools *env);
 
 #endif

@@ -86,7 +86,7 @@ void	all_exec(char **environ, char ***heredoc)
 	t_env_tools		env;
 
 	env.env_cpy = copy_env(environ, size_str(environ), &env);
-	path_str(env.env_cpy, &env.paths);
+	path_str(env.env_cpy, &env.paths, &env);
 	history = ft_dlstnew(NULL);
 	g_keeprun = 0;
 	while (42)

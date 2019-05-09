@@ -91,3 +91,18 @@ int			manage_aggreg(t_simp_com cmd, int i, t_exec_redir *t)
 	}
 	return (0);
 }
+
+int			check_hash_then_path(char **paths, char **path, char **str,
+				t_env_tools *env)
+{
+	char *tmp;
+
+	tmp = NULL;
+	if (env->t)
+		tmp = search_element(env->t, *str);
+	if (tmp)
+		*path = ft_strdup(tmp);
+	if (!*path)
+		check_path(paths, path, str);
+	return (0);
+}

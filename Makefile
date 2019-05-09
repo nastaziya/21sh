@@ -7,7 +7,8 @@ PURPLE=\033[0;35m
 
 NAME =		21sh
 CC = 		gcc -Wall -Wextra -Werror
-FLAGS = 	
+FLAGS = 	-fsanitize=address -g3
+# FLAGS = 	-g
 DEL =		rm -rf
 
 SRC_PATH = ./src/
@@ -85,6 +86,12 @@ BUILT_FILES = 	builtin.c\
 				utils_2.c\
 				utils_env.c\
 				utils_env_2.c\
+				test.c\
+				utils_test.c\
+				process_2_3args_test.c\
+				process_binary.c\
+				process_unary.c\
+				tokenize_test.c\
 
 BUILTINS_SRC = $(addprefix $(BUILTINS), $(BUILT_FILES)) 
 EXP = expansion/
@@ -95,8 +102,18 @@ EXP_FILES =		expansion.c\
 				treat_special_chars.c\
 
 EXP_SRC = $(addprefix $(EXP), $(EXP_FILES)) 
-SRC = $(addprefix $(SRC_PATH), $(EXP_SRC) $(BUILTINS_SRC) $(LEX_SRC) $(PARSER_SRC) $(TERM_SRC) $(EXEC_SRC))
-OBJ = $(addprefix $(OBJ_PATH), $(EXP_SRC:.c=.o) $(BUILTINS_SRC:.c=.o) $(LEX_SRC:.c=.o) $(PARSER_SRC:.c=.o) $(TERM_SRC:.c=.o) $(EXEC_SRC:.c=.o))
+HASH = hash/
+HASH_FILES =	hash.c\
+				prime.c\
+				new_elements.c\
+				resize_hash.c\
+				hash_function.c\
+				insert_element_hash.c\
+				delete_print_search.c\
+
+HASH_SRC = $(addprefix $(HASH), $(HASH_FILES)) 
+SRC = $(addprefix $(SRC_PATH), $(EXP_SRC) $(BUILTINS_SRC) $(LEX_SRC) $(PARSER_SRC) $(TERM_SRC) $(EXEC_SRC) $(HASH_SRC)) 
+OBJ = $(addprefix $(OBJ_PATH), $(EXP_SRC:.c=.o) $(BUILTINS_SRC:.c=.o) $(LEX_SRC:.c=.o) $(PARSER_SRC:.c=.o) $(TERM_SRC:.c=.o) $(EXEC_SRC:.c=.o) $(HASH_SRC:.c=.o)) 
 
 INC = $(addprefix -I, $(INC_PATH))
 
@@ -107,6 +124,7 @@ INC_FILES = 	builtin.h\
 				parser.h\
 				sh.h\
 				termcap.h\
+				hash_table.h\
 
 INC_DIR = $(addprefix $(INC_PATH), $(INC_FILES))
 
@@ -119,6 +137,7 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c $(INC_DIR)
 	@mkdir -p $(OBJ_PATH)/lexer
 	@mkdir -p $(OBJ_PATH)/parser
 	@mkdir -p $(OBJ_PATH)/termcaps
+	@mkdir -p $(OBJ_PATH)/hash
 	@printf "$(PURPLE)Created $@\r"
 	@$(CC) -c $(FLAGS) $(INC) -o $@ $<
 

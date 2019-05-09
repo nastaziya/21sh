@@ -21,7 +21,6 @@
 typedef enum		e_token_type
 {
 	T_EAT,
-	T_NEG,
 	T_DBLAND,
 	T_DBL_SEMI,
 	T_DBLOR,
@@ -100,7 +99,6 @@ static const t_oplist	g_existing_token[] = {
 	{">&", 2, T_REDIR_GREAT},
 	{"&&", 2, T_DBLAND},
 	{";;", 2, T_DBL_SEMI},
-	{"! ", 2, T_NEG},
 	{"}", 1, T_CL_BRA},
 	{"|", 1, T_PIPE},
 	{"&", 1, T_AND},
