@@ -1,5 +1,5 @@
 # 21sh
-Version 2.0 of my bash implementation.
+<b>Version 2.0 of my bash implementation.</b>
 
 The third project of the system branch, and the first one to be team-based.
 
