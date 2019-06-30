@@ -15,33 +15,6 @@
 
 /*
 *** - Aim of the function :
-*** - Print usage error and returns the proper int
-*/
-
-int		ft_usage_error(char *command, char *btwn, char *after, int i)
-{
-	ft_putstr_fd(command, 2);
-	ft_putstr_fd(btwn, 2);
-	ft_putstr_fd(command, 2);
-	ft_putendl_fd(after, 2);
-	return (i);
-}
-
-/*
-*** - Aim of the function :
-*** - Print usage error and returns the proper int
-*/
-
-int		ft_usage_error_env(char *command, char *btwn, char *after, int i)
-{
-	ft_putstr_fd(command, 2);
-	ft_putstr_fd(btwn, 2);
-	ft_putendl_fd(after, 2);
-	return (i);
-}
-
-/*
-*** - Aim of the function :
 *** - ft_putstr inside int function
 *** - in order to use it inside if statement
 */
@@ -131,7 +104,7 @@ int		ft_exec_command(t_env_tools *env, char **cmd, int fork)
 		else if (!ft_strcmp("env", cmd[0]))
 			return (ft_builtin_env(cmd, &(env->env_cpy)));
 		else if (!ft_strcmp("exit", cmd[0]))
-			return (ft_builtin_exit(cmd));
+			return (ft_builtin_exit(cmd, env));
 		else
 			return (error_exec_or_exec(env->paths, cmd, env->env_cpy, fork));
 	}

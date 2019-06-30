@@ -6,12 +6,13 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/09/07 17:58:18 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 13:50:29 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "../../inc/sh.h"
+#include "../../inc/lexer.h"
 
 /*
 *** - Aim of the function : tokeniwze the part of the string to the assigned
@@ -34,7 +35,8 @@ void		add_token_to_lexer(t_lexer *lexer, const char *text,
 	{
 		temp = lexer->tokens;
 		lexer->capacity = (lexer->used_size * 3) / 2 + 1;
-		if (!(lexer->tokens = malloc(sizeof(t_lexer_token) * lexer->capacity + 1)))
+		if (!(lexer->tokens = malloc(sizeof(t_lexer_token)
+			* lexer->capacity + 1)))
 			return ;
 		if (lexer->tokens == NULL)
 			exit(EXIT_FAILURE);
@@ -99,19 +101,19 @@ int			string_to_lexer(const char *s, t_lexer *lexer)
 	while (s && *s)
 	{
 		nm.current = type_of_token(s);
-		if ((*s == '>' || *s == '<') && (s - nm.start > 0 ?
-					ft_isdigit(*(s - 1)) : 0))
+		if ((*s == '>' || *s == '<') && ft_isdigit(*nm.prev)
+			&& (s - nm.prev == 1))
 			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_IO_NUMB);
-		else if ((*s == '"' || *s == '\'') &&
-			!manage_back_quote(s, nm.start))
-			ft_string_to_lexer_quote_management(&s, lexer, &nm);
-		else if (*s == '\n' && *(s - 1) == '\\' && ++s)
+		else if (norm_quote_end(&s, &nm))
+			continue ;
+		else if ((((*s == '\n' || *s == ' ') && manage_back_quote(s, nm.prev))
+		|| (nm.current.type != 0 && manage_back_quote(s, nm.prev))) && ++s)
 			continue ;
 		else if (nm.current.op != 0 && nm.prev != s)
 			add_token_to_lexer(lexer, nm.prev, s - nm.prev, T_WORD);
-		if (nm.current.op != 0 || nm.quote_done == 1)
+		if (*s && (nm.current.op != 0 || nm.quote_done == 1))
 			ft_string_to_lexer_advance(&s, lexer, &nm);
-		else
+		else if (*s)
 			++s;
 	}
 	if (nm.prev != s)

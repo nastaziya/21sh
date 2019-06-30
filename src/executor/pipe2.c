@@ -1,121 +1,94 @@
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   pipe2.c                                          .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2019/02/12 22:17:57 by gurival-     #+#   ##    ##    #+#       */
+/*   Updated: 2019/03/05 14:45:14 by gurival-    ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
+
 #include "../../inc/sh.h"
 #include "../../inc/exec.h"
-#include "../../inc/builtin.h"
-#include "../../inc/parser.h"
-#include "../../inc/pipe.h"
-#include <stdio.h>
-#include <stdlib.h>
 
-
-int		exec2(char *path, char **str, char **env, int fork_ret)
+int		ret_nr_pipe(t_command cmd, int i)
 {
-	// pid_t	pid;
-	int 	status;
-	int		res;
-	// int		ret_signal;
+	int nr_pipe;
 
-	res = 0;
-	if (fork_ret)
-	{	
-		waitpid(fork_ret, &status, 0);
-		if (WIFEXITED(status))
-			res = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			res = manage_sig_term_ret_1(WTERMSIG(status));
-		if (res > 0)
-			return(res);	
-	}
-	else
+	nr_pipe = 0;
+	while (cmd.command[i].tok == T_PIPE)
 	{
-		execve(path, str, env);
+		nr_pipe++;
+		i++;
+	}
+	return (nr_pipe + 1);
+}
+
+int		exec_in_child(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
+{
+	char	**command;
+	int		ret;
+
+	ret = 0;
+	command = expense_cmd(cmd, *env, *i);
+	dup2(t->pipe_tools.fd_in, 0);
+	if (t->pipe_tools.aux + 1 != t->pipe_tools.len_pipe)
+		dup2(t->pipe_tools.fds[1], 1);
+	if (cmd.command[*i].redirection.used_space > 0)
+		ret = process_redirections(t, cmd.command[*i], env,
+			(*i) - t->count_here);
+	close(t->pipe_tools.fds[0]);
+	ret = ft_exec_command(env, command, t->pipe_tools.pid);
+	env->g_return_value = ret;
+	if (is_built_in(command) || (env->g_return_value != 0))
 		exit(EXIT_FAILURE);
-	}
-	return (0);
+	if (command[0] == NULL)
+		exit(EXIT_FAILURE);
+	free_str(command);
+	return (ret);
 }
 
-static char	*return_path(char **paths, char **str)
+void	norm_pipe_exec(t_exec_redir *t, t_command cmd, int i)
 {
-	char *path;
-	
-	if (str[0] && ft_strchr(str[0], '/'))
-	{
-		path = ft_strdup(str[0]);
-	}
-	else
-		check_path(paths, &path, str);
-	return (path);
-}
-int ret_nr_pipe(t_command cmd)
-{
-    int i;
-    int nr_pipe;
-    
-    i = 0;
-    nr_pipe = 0;
-    while(i < cmd.used_space)
-    {
-        if (cmd.command[i].tok == T_PIPE)
-            nr_pipe++;
-        i++;
-    }
-    return(nr_pipe + 1);
-
+	t->pipe_tools.len_pipe = ret_nr_pipe(cmd, i);
+	t->pipe_tools.aux = 0;
+	t->pipe_tools.fd_in = 0;
 }
 
-int			ft_pipe_exec2(t_env_tools *env, t_command cmd, int *i, t_pipe_struct *pt, t_exec_redir *t)
+void	ft_exec_command_norm(int *i)
 {
-    char **command;
-    char *path;
-    int len_pipe = ret_nr_pipe(cmd);
-     int   p[2];
-   
-     int   fd_in = 0;
-    	int 	status;
-    int ret = 0;
-    int aux = 0;
-
- //cat < toto | ew -l seg fault
-    pid_t pid;
-    (void)pt;
-    while (aux < len_pipe)
-    {
-       
-        command = expense_cmd(cmd, *env, *i);
-        path = return_path(env->paths, command);//, env->env_cpy
-        pipe(p);
-        pid = fork();
-        if (pid == -1)
-        {
-          exit(EXIT_FAILURE);
-        }
-        if (pid == 0)
-        {
-            dup2(fd_in, 0);
-            if (aux + 1 != len_pipe)
-                dup2(p[1], 1);
-            if ((ret = process_redirections(t, cmd.command[*i], env)))
-		        return (ret);
-            close(p[0]);
-            env->g_return_value = ft_exec_command(env, command, pid);
-            if (is_built_in(command) || (env->g_return_value != 0))
-                exit(EXIT_FAILURE);
-            //exec2(path,command,env->env_cpy, pid);
-        }
-       
-            close(p[1]);
-            if(fd_in != 0)
-                close(fd_in);
-            fd_in = p[0];
-            (*i)++;
-            aux++;
-            if (aux == len_pipe)
-                (*i)--;   
-       // }
-          //  free(path);
-           // free(command);
-    }
-    waitpid(pid, &status, 0);
-    while (wait(NULL) > 0)
+	while (wait(NULL) > 0)
 		;
-   return(manage_sig_term_ret_1(status)); 
+	(*i)--;
+}
+
+int		ft_pipe_exec(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
+{
+	int		status;
+
+	norm_pipe_exec(t, cmd, *i);
+	while (t->pipe_tools.aux < t->pipe_tools.len_pipe)
+	{
+		pipe(t->pipe_tools.fds);
+		t->pipe_tools.pid = fork();
+		if (t->pipe_tools.pid == -1)
+			exit(EXIT_FAILURE);
+		if (t->pipe_tools.pid == 0)
+			exec_in_child(env, cmd, i, t);
+		close(t->pipe_tools.fds[1]);
+		if (t->pipe_tools.fd_in != 0)
+			close(t->pipe_tools.fd_in);
+		t->pipe_tools.fd_in = t->pipe_tools.fds[0];
+		(*i)++;
+		t->pipe_tools.aux++;
+		if (t->pipe_tools.aux == t->pipe_tools.len_pipe)
+			(*i)--;
+	}
+	waitpid(t->pipe_tools.pid, &status, 0);
+	env->g_return_value = right_return(status);
+	ft_exec_command_norm(i);
+	return (env->g_return_value);
 }

@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/03/05 14:53:29 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -21,8 +21,8 @@
 
 int			ft_outc(int c)
 {
-  ft_putchar(c);
-  return (0);
+	ft_putchar(c);
+	return (0);
 }
 
 /*
@@ -32,33 +32,22 @@ int			ft_outc(int c)
 
 void		initialize_caps(t_tcap *caps, char *prompt)
 {
-	int 	tmp[2];
-	// if (caps->prompt)
-	// 	free(caps->prompt);
-	if (!caps->prompt)
-		caps->prompt = ft_strdup(prompt);
-	else if (caps->prompt)
-	{
-		// free(caps->prompt);
-		caps->prompt = ft_strdup(prompt);
-	}
+	int		tmp[2];
+
+	caps->prompt = ft_strdup(prompt);
 	caps->size_prompt = ft_strlen(prompt);
 	caps->sz_str = caps->size_prompt;
-	caps->cursor =  caps->size_prompt;
+	caps->cursor = caps->size_prompt;
 	cursor_position(tmp);
 	caps->y_prompt = tmp[1];
 	caps->i = 0;
-	//A free
 	caps->tmp_str = NULL;
-	//A free
 	caps->copy_str = NULL;
 	caps->ct_arrow = 0;
-	// A free
-	// if (caps->str)
-	// 	free(caps->str);
 	if (!(caps->str = (char**)malloc(sizeof(char*))))
 		return ;
 	caps->str[0] = NULL;
+	size_windows(caps);
 }
 
 /*
@@ -72,7 +61,7 @@ void		size_windows(t_tcap *caps)
 
 	if (!(w = (struct winsize *)malloc(sizeof(struct winsize))))
 		return ;
-	ioctl(STDOUT_FILENO,  TIOCGWINSZ, w);
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, w);
 	caps->window_size[0] = w->ws_row;
 	caps->window_size[1] = w->ws_col;
 	free(w);

@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 19:20:09 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/28 13:41:21 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -16,8 +16,10 @@
 int		size_str(char **environ)
 {
 	int	i;
+	int j;
 
 	i = 0;
+	j = 4;
 	while (environ[i] != NULL)
 		i++;
 	return (i);
@@ -28,7 +30,7 @@ void	free_str(char **str)
 	int	i;
 
 	i = 0;
-	while (str[i])
+	while (str[i] != '\0')
 	{
 		free(str[i]);
 		i++;
@@ -71,21 +73,24 @@ char	**copy_env(char **environ, int size, t_env_tools *envi)
 	int		i;
 	int		j;
 
-	i = 0;
+	i = -1;
 	j = 0;
+	size = !getenv("PATH") ? size + 1 : size;
 	if (!(env = (char**)malloc(sizeof(*env) * (size + 1))))
 		return (NULL);
 	env[size] = NULL;
 	env[size - 1] = ft_strdup("CLICOLOR=1");
-	while (environ[i] != NULL)
+	j = size == 2 ? 1 : 0;
+	while (environ[++i] != NULL)
 	{
 		if (ft_strncmp(environ[i], "OLDPWD=", 7))
 		{
 			env[j] = ft_strdup(environ[i]);
 			j++;
 		}
-		i++;
 	}
-	envi->home = ft_strdup(getenv("HOME"));
+	env[0] = getenv("PATH") ? env[0] : get_envpath_from_file();
+	envi->home = getenv("HOME") ? ft_strdup(getenv("HOME"))
+		: ft_strdup("/Users/gurival-");
 	return (env);
 }

@@ -29,7 +29,7 @@ int			manage_sig_term_ret_1(int ret)
 {
 	if (ret == 6)
 		ft_putendl_fd("Abort trap: 6", 2);
-	else if (ret == 7 || ret == 10)
+	else if (ret == 7 || ret == 0)
 		ft_putendl_fd("Bus error: 10", 2);
 	else if (ret == 8)
 		ft_putendl_fd("Floating-point exception: 8", 2);

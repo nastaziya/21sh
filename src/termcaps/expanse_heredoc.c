@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/04/19 18:02:22 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/04/19 18:02:22 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/09 22:39:06 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -16,30 +16,27 @@
 
 void	dquote_heredoc(char **str, int *j, t_dynamic_array *final_array)
 {
-	int size_var_env;
-	
+	int	size_var_env;
+
 	size_var_env = 0;
 	while (str[0][*j] != '\"' && *j < ft_strlen(*str))
 	{
-		if (str[0][*j] == '\\') 
+		if (str[0][*j] == '\\')
 		{
-			//skip backslash
 			(*j)++;
-			//add backslash
 			add_char_to_array(final_array, str[0][*j]);
-			//skip
 			(*j)++;
 		}
 		else
 		{
-			//add otherwise
 			add_char_to_array(final_array, str[0][*j]);
 			(*j)++;
 		}
 	}
 }
 
-void	treat_expansion_cases_heredoc(char **str, int i, t_dynamic_array *final_array)
+void	treat_expansion_cases_heredoc(char **str, int i,
+			t_dynamic_array *final_array)
 {
 	t_norm_exp	n;
 
@@ -55,21 +52,28 @@ void	treat_expansion_cases_heredoc(char **str, int i, t_dynamic_array *final_arr
 			dquote_heredoc(&str[n.i], &n.j, final_array);
 			n.j++;
 		}
-		else if (str[n.i][n.j] == '\\') 
+		else if (str[n.i][n.j] == '\\')
 			treat_backslash(str, n.i, &n.j, final_array);
 		else
 		{
 			add_char_to_array(final_array, str[n.i][n.j]);
 			n.j++;
-		}	
+		}
 	}
 }
 
-void expanded_dynamic_table_heredoc(char **str, int i)
+void	expanded_dynamic_table_heredoc(char **str, int i)
 {
 	t_dynamic_array array_without_backslash0;
+
 	treat_expansion_cases_heredoc(str, i, &array_without_backslash0);
 	free(str[i]);
 	str[i] = ft_strdup(array_without_backslash0.array_expanded);
 	free(array_without_backslash0.array_expanded);
+}
+
+int		ft_clean(void *s, size_t n)
+{
+	ft_bzero(s, n);
+	return (0);
 }

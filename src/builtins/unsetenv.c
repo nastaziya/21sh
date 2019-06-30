@@ -16,6 +16,25 @@
 
 /*
 *** - Aim of the function :
+*** - allocates the new env environment
+*** - If env empty -> allocate a new empty one to avoid segfault
+*/
+
+static void		ft_builtin_unsetenv_2_norm(char ***c_env)
+{
+	if (c_env && *c_env)
+		ft_exchange_chars(*c_env, (char)255, ' ');
+	else
+	{
+		if (!(*c_env = (char**)malloc(sizeof(char*) * 1)))
+			return ;
+		**c_env = ft_strnew(0);
+		**c_env = NULL;
+	}
+}
+
+/*
+*** - Aim of the function :
 *** - Following of the unsetenv function
 *** - We also manage the unsetenv PATH (we modify it's copy)
 *** - Same for the HOME
@@ -48,7 +67,7 @@ static void		ft_builtin_unsetenv_2(char *av, char ***c_env,
 		ret = ft_array_char_to_str(*c_env, i);
 		ft_free_av(c_env[0]);
 		c_env[0] = ft_strsplit(ret, ' ');
-		ft_exchange_chars(*c_env, (char)255, ' ');
+		ft_builtin_unsetenv_2_norm(c_env);
 		free(ret);
 	}
 }

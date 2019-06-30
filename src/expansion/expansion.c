@@ -6,33 +6,12 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2019/02/09 20:05:20 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/03/05 14:51:10 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "../../inc/expansion.h"
-
-/*
-*** - expension treatement
-*** - echo $ USER / echo $\\$USER
-*** - this function add the return of bin commands/builtins
-*** - and add to final expanded array
-*/
-
-void		add_return_from_env(char *ret_nr,
-				t_dynamic_array *array_without_backslash, int *j, int add)
-{
-	int i;
-
-	i = 0;
-	while (i < ft_strlen(ret_nr))
-	{
-		add_char_to_array(array_without_backslash, ret_nr[i]);
-		i++;
-	}
-	*j = *j + add;
-}
 
 /*
 *** - add char from an expended array
@@ -77,11 +56,8 @@ void		treat_expansion_cases(char **str, int i,
 			treat_backslash(str, n.i, &n.j, final_array);
 		else if (str[n.i][n.j] == '$')
 			dollar_expand(str, &n.j, final_array, env);
-		else
-		{
-			add_char_to_array(final_array, str[n.i][n.j]);
+		else if (!add_char_to_array(final_array, str[n.i][n.j]))
 			n.j++;
-		}
 	}
 }
 
@@ -114,6 +90,7 @@ char		**expense_cmd(t_command cmd, t_env_tools env, int i)
 		res[j] = ft_strdup(temp);
 		free(temp);
 	}
+	res[j] = NULL;
 	return (res);
 }
 

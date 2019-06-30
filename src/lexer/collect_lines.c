@@ -6,7 +6,7 @@
 /*   By: gurival- <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/09/06 16:48:04 by gurival-     #+#   ##    ##    #+#       */
-/*   Updated: 2018/09/07 17:58:18 by gurival-    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/03/05 17:59:51 by gurival-    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -22,20 +22,41 @@ char		*ft_manage_prompt(char type_quote)
 {
 	if (type_quote == '"')
 	{
-		ft_putstr_fd("\ndquote > ", 1);
+		display_bash("\ndquote > ");
 		return ("dquote > ");
 	}
 	else if (type_quote == '\'')
 	{
-		ft_putstr_fd("\nsquote > ", 1);
+		display_bash("\nsquote > ");
 		return ("squote > ");
 	}
 	else if (type_quote == '\\')
 	{
-		ft_putstr_fd("\n> ", 1);
+		display_bash("\n> ");
 		return ("> ");
 	}
 	return (NULL);
+}
+
+void		ft_new_prompt_norm(char **cmd, char **tmp, char **line)
+{
+	char *buf;
+
+	if (ft_count_quote(*cmd) == '\\')
+	{
+		buf = ft_strsub(*tmp, 0, ft_strrchr(*tmp, '\\') - *tmp);
+		*cmd = ft_strjoin(buf, *line);
+		free(*tmp);
+		free(buf);
+	}
+	else if (*line && ft_strlen(*line) > 0)
+	{
+		*cmd = ft_strjoin(*tmp, "\n");
+		free(*tmp);
+		*tmp = *cmd;
+		*cmd = ft_strjoin(*tmp, *line);
+		free(*tmp);
+	}
 }
 
 /*
@@ -46,28 +67,26 @@ char		*ft_manage_prompt(char type_quote)
 *** - if yes, end, otherwise, the loop continues
 */
 
-void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
+void		ft_new_prompt(char **cmd, char type_quote, t_dlist **history,
+				t_tcap *caps)
 {
 	int		ret;
 	char	*line;
 	char	*tmp;
+	int		count;
 
-	while (42)
+	count = 0;
+	while (42 && !g_keeprun)
 	{
-		ret = get_line_term(&line, ft_manage_prompt(type_quote), history);
-		// dprintf(2, "line: |%s|\n", line);
-		if (line && ft_strlen(line) > 0)
-		{
-			tmp = *cmd;
-			*cmd = ft_strjoin(tmp, "\n");
-			free(tmp);
-			tmp = *cmd;
-			*cmd = ft_strjoin(tmp, line);
-			free(tmp);
-		}
-		free(line);
+		ret = get_term(&line, ft_manage_prompt(type_quote), history,
+				caps);
+		tmp = *cmd;
+		ft_new_prompt_norm(cmd, &tmp, &line);
+		if (line)
+			free(line);
+		line = NULL;
 		if (!(type_quote = ft_count_quote(*cmd))
-				|| (line && ft_strlen(line) == 0 && type_quote == '\\'))
+				|| (!line && !type_quote))
 			break ;
 	}
 }
@@ -79,18 +98,32 @@ void		ft_new_prompt(char **cmd, char type_quote, t_dlist	**history)
 *** - then checks if the line ends with \
 *** - If yes for any of the above, print the next then parse the quotes
 *** - return 2 is when user presses \n directly after prompt
-*** - returns 3 when ctrl_l key is being pressed, and doesn't print the 
+*** - returns 3 when ctrl_l key is being pressed, and doesn't print the
 *** - \n in this case
 */
+
+void		display_bash(char *str)
+{
+	int i;
+
+	i = -1;
+	ft_putstr_fd("\033[1;32m", 1);
+	while (str[++i] != ' ')
+		write(1, str + i, 1);
+	ft_putstr_fd("\033[1;33m", 1);
+	ft_putstr_fd(ft_strchr(str, ' '), 1);
+	ft_putstr_fd("\033[0;m", 1);
+}
 
 void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 {
 	int		ret;
 	char	type_quote;
+	t_tcap	caps;
 
-	ft_putstr_fd(str, 1);
-	ret = get_line_term(cmd, str, history); //str[0] == '\n' ? str + 1 : 
-	if (ret != 2)//  && ret != 3
+	display_bash(str);
+	ret = get_term(cmd, str, history, &caps);
+	if (ret != 2)
 	{
 		if (ret != 0)
 		{
@@ -98,17 +131,10 @@ void		ft_get_entire_line(char **cmd, char *str, t_dlist **history)
 			exit(1);
 		}
 		else if (*cmd && ft_strlen(*cmd) > 0)
+		{
 			if ((type_quote = ft_count_quote(*cmd)))
-			{
-				// add the string to the history
-				ft_dlstadd(history, ft_dlstnew(*cmd));
-				ft_new_prompt(cmd, type_quote, history);
-				// if during the ft_count_quote, no ctrl_c was used
-				// then, erase the string from the history, it will
-				// be managed later in the lexer
-				if (!g_keeprun && ((*history) = (*history)->next))
-					ft_dlstdelone(&(*history)->prev);
-			}
+				ft_new_prompt(cmd, type_quote, history, &caps);
+		}
 	}
 	ft_putchar_fd('\n', 1);
 }

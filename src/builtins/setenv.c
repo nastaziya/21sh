@@ -16,42 +16,6 @@
 
 /*
 *** - Aim of the function :
-*** - Replace the env with the new string
-*** - And we return the new proper str
-*** - that we will split afterward
-*/
-
-static char		*ft_array_char_to_str_replace_env(char **c_env, int avoid,
-				char *av)
-{
-	char	*ret;
-	char	*tmp;
-	char	*cp_av;
-	int		i;
-
-	i = -1;
-	ret = NULL;
-	tmp = NULL;
-	cp_av = NULL;
-	while (c_env[++i])
-	{
-		if (i != avoid)
-			ft_swap_string(&ret, &tmp, &c_env[i]);
-		else
-		{
-			if (!ft_strchr(av, '='))
-				cp_av = ft_strjoin(av, "=");
-			else
-				cp_av = ft_strdup(av);
-			ft_swap_string(&ret, &tmp, &cp_av);
-			free(cp_av);
-		}
-	}
-	return (ret);
-}
-
-/*
-*** - Aim of the function :
 *** - For the norm
 */
 
