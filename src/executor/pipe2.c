@@ -41,7 +41,7 @@ int		exec_in_child(t_env_tools *env, t_command cmd, int *i, t_exec_redir *t)
 		ret = process_redirections(t, cmd.command[*i], env,
 			(*i) - t->count_here);
 	close(t->pipe_tools.fds[0]);
-	ret = ft_exec_command(env, command, t->pipe_tools.pid, cmd.command[*i].cmd_simple);
+	ret = ft_exec_command(env, command, t->pipe_tools.pid);
 	env->g_return_value = ret;
 	if (is_built_in(command) || (env->g_return_value != 0))
 		exit(EXIT_FAILURE);

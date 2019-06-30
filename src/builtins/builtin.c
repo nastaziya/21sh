@@ -12,8 +12,6 @@
 /* ************************************************************************** */
 
 #include "../../inc/builtin.h"
-#include "../../inc/sh.h"
-#include "../../inc/hash_table.h"
 
 /*
 *** - Aim of the function :
@@ -90,7 +88,7 @@ int		ft_usage_is_good(char *limitor, char *str)
 *** - and returns the proper int
 */
 
-int		ft_exec_command(t_env_tools *env, char **cmd, int fork, char **raw_cmd)
+int		ft_exec_command(t_env_tools *env, char **cmd, int fork)
 {
 	if (cmd && cmd[0])
 	{
@@ -104,15 +102,11 @@ int		ft_exec_command(t_env_tools *env, char **cmd, int fork, char **raw_cmd)
 		else if (!ft_strcmp("cd", cmd[0]))
 			return (ft_builtin_cd(cmd, &(env->env_cpy), env));
 		else if (!ft_strcmp("env", cmd[0]))
-			return (ft_builtin_env(cmd, &(env->env_cpy), env));
+			return (ft_builtin_env(cmd, &(env->env_cpy)));
 		else if (!ft_strcmp("exit", cmd[0]))
 			return (ft_builtin_exit(cmd, env));
-		else if (!ft_strcmp("hash", cmd[0]))
-			return (ft_builtin_hash(cmd, env));
-		else if (!ft_strcmp("test", cmd[0]))
-			return (ft_builtin_test(cmd, raw_cmd));
-		else if ((env->in_env = fork))
-			return (error_exec_or_exec(env->paths, cmd, env->env_cpy, env));
+		else
+			return (error_exec_or_exec(env->paths, cmd, env->env_cpy, fork));
 	}
 	return (0);
 }

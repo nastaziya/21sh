@@ -87,19 +87,17 @@ int		check_errors_exec(char *path, char **str, int in_env)
 }
 
 int		error_exec_or_exec(char **paths, char **str,
-			char **env, t_env_tools *envi)
+			char **env, int in_env)
 {
 	int			res;
 	char		*path;
-	int			in_env;
 
 	path = NULL;
 	res = 0;
-	in_env = envi->in_env;
 	if (str[0] && ft_strchr(str[0], '/'))
 		path = ft_strdup(str[0]);
 	else
-		check_hash_then_path(paths, &path, str, envi);
+		check_path(paths, &path, str);
 	if ((res = check_errors_exec(path, str, in_env)))
 		;
 	else

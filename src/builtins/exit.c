@@ -32,8 +32,6 @@ void	ft_free_all(t_env_tools *env)
 		ft_free_av(*(env->p.heredoc));
 		*(env->p.heredoc) = NULL;
 	}
-	if (env->t)
-		delete_hash_table(&(env->t));
 }
 
 int		ft_print_usage_error_exit(char *btwn)

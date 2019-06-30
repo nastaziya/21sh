@@ -49,15 +49,12 @@ void		ft_cp_env(char ***c_env, char **env)
 	c_env[0][i] = NULL;
 }
 
-int			ft_builtin_env2(char **av, char **cp_c_env, int i, t_env_tools *env)
+int			ft_builtin_env2(char **av, char **cp_c_env, int i, int ret)
 {
 	char	**path;
-	int		ret;
 
-	ret = 0;
-	env->in_env = 2;
 	path = ft_find_path_and_split(cp_c_env);
-	ret = error_exec_or_exec(path, av + i, cp_c_env, env);
+	ret = error_exec_or_exec(path, av + i, cp_c_env, 2);
 	ft_free_av(path);
 	return (ret = 0 ? 2 : ret);
 }
@@ -93,7 +90,7 @@ int			ft_manage_option_i_env(char ***cp_c_env, char **env)
 *** - sinon, après, on envoie le reste à l'execve
 */
 
-int			ft_builtin_env(char **av, char ***c_env, t_env_tools *env)
+int			ft_builtin_env(char **av, char ***c_env)
 {
 	int			i;
 	t_norm_env	t;
@@ -102,7 +99,6 @@ int			ft_builtin_env(char **av, char ***c_env, t_env_tools *env)
 	i = -1;
 	t.stop = 0;
 	t.argc = ft_len_array_char(av);
-	t.env = env;
 	ft_cp_env(&(t.cp_c_env), *c_env);
 	if (t.argc == 1)
 		ft_print_env(c_env);

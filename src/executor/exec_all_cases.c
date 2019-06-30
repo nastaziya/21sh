@@ -39,7 +39,7 @@ int		ft_or_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 			ret = process_redirections(t, cmd.command[i], env,
 				i - t->count_here);
 		if (!ret)
-			env->g_return_value = ft_exec_command(env, cmd_expended, 1, cmd.command[i].cmd_simple);
+			env->g_return_value = ft_exec_command(env, cmd_expended, 1);
 	}
 	free_str(cmd_expended);
 	return (0);
@@ -59,7 +59,7 @@ int		ft_and_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 			ret = process_redirections(t, cmd.command[i], env,
 				i - t->count_here);
 		if (!ret && cmd.command[i].tok != T_PIPE)
-			env->g_return_value = ft_exec_command(env, cmd_expended, 1, cmd.command[i].cmd_simple);
+			env->g_return_value = ft_exec_command(env, cmd_expended, 1);
 	}
 	free_str(cmd_expended);
 	return (0);
@@ -76,7 +76,7 @@ int		ft_semi_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 	if (cmd.command[i].redirection.used_space > 0)
 		ret = process_redirections(t, cmd.command[i], env, i - t->count_here);
 	if (!ret)
-		env->g_return_value = ft_exec_command(env, cmd_expended, 1, cmd.command[i].cmd_simple);
+		env->g_return_value = ft_exec_command(env, cmd_expended, 1);
 	free_str(cmd_expended);
 	return (0);
 }
@@ -96,7 +96,7 @@ int		ft_first_exec(t_env_tools *env, t_command cmd, int i, t_exec_redir *t)
 			ret = process_redirections(t, cmd.command[i], env,
 				i - t->count_here);
 		if (cmd_expended != NULL && cmd.used_space > 0 && !ret)
-			env->g_return_value = ft_exec_command(env, cmd_expended, 1, cmd.command[0].cmd_simple);
+			env->g_return_value = ft_exec_command(env, cmd_expended, 1);
 		free_str(cmd_expended);
 	}
 	return (0);

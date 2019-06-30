@@ -57,11 +57,7 @@ static void		ft_builtin_unsetenv_2(char *av, char ***c_env,
 		i++;
 	if ((!ft_strcmp(av, "PATH") || !ft_strcmp(av, "PATH="))
 		&& !ft_free_av(*paths))
-	{
 		*paths = ft_strsplit(" ", ':');
-		if (env->t)
-			delete_hash_table(&(env->t));
-	}
 	if ((!ft_strcmp(av, "HOME") || !ft_strcmp(av, "HOME="))
 		&& !ft_free(env->home))
 		env->home = ft_strdup(getenv("HOME"));

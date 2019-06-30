@@ -103,7 +103,7 @@ void	ft_norm_env(char **av, int i, t_norm_env *t, char ***c_env)
 	else if (ft_strcmp(av[i], "env") && !t->stop)
 	{
 		t->stop = 1;
-		t->ret = ft_builtin_env2(av, t->cp_c_env, i, t->env);
+		t->ret = ft_builtin_env2(av, t->cp_c_env, i, 0);
 	}
 }
 
